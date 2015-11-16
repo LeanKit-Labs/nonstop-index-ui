@@ -30,8 +30,10 @@ describe( "Dashboard", () => {
 	} );
 
 	describe( "when rendering", () => {
-		it( "should render properly", () => {
-			component.getDOMNode().nodeName.toLowerCase().should.equal( "div" );
+		it( "should render the title", () => {
+			const header = ReactUtils.findRenderedDOMComponentWithClass( component, "content-header" );
+			const title = ReactUtils.findRenderedDOMComponentWithClass( header, "text-primary" );
+			title.getDOMNode().textContent.trim().should.equal( "Dashboard" );
 		} );
 	} );
 } );
