@@ -1,0 +1,18 @@
+image: 'arob/drone-nonstop-node:0.12.7'
+script:
+  - 'ns --verbose'
+cache:
+  mount:
+    - node_modules
+    - .git
+deploy:
+  bash:
+    command: 'ns upload --latest --index 10.0.0.4 --port 4444 --token lkdevtoken'
+notify:
+  slack:
+    webhook_url: 'https://hooks.slack.com/services/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'
+    username: 'azurebuild'
+    channel: '#hackbot'
+    on_started: true
+    on_success: true
+    on_failure: true

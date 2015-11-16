@@ -1,0 +1,85 @@
+/* UTILITY (HELPER) classes */
+
+/* text helpers */
+.u-textAllCaps {
+	text-transform: uppercase;
+}
+
+/* media object format */
+.u-mediaObject,
+.u-mediaInfo {
+	overflow: hidden;
+	_overflow: visible;
+	zoom: 1;
+	display: block;
+}
+
+.u-mediaItem {
+	float: left;
+	margin-right: 10px;
+	display: block;
+}
+
+.u-mediaItem--right {
+	float: right;
+	margin-left: 10px;
+	display: block;
+}
+
+.u-mediaInfo {
+	width: auto;
+	display: block;
+}
+
+.u-mediaObject-stacked {
+
+	.u-mediaItem,
+	.u-mediaItem--right {
+		float: none;
+		clear: both;
+		margin-right: 0;
+		margin-left: 0;
+		width: 100%;
+	}
+}
+
+.u-checkboxLabel {
+	display: table;
+
+	& > input {
+		margin-right: 10px;
+		display: table-cell;
+	}
+
+	& > div {
+		width: auto;
+		display: table-cell;
+	}
+
+	& small {
+		display: block;
+	}
+}
+
+/* list formatting */
+ul.u-unList {
+	margin: 0;
+	padding: 0;
+
+	& > li {
+		list-style-type: none;
+		display: inline;
+	}
+}
+
+.u-posTransformVerticalCenter {
+	position: absolute !important;
+	left: 0% !important;
+	right: 0% !important;
+	top: 50% !important;
+	transform: translateY(-50%) !important;
+}
+
+.u-autoWidth {
+	width: auto !important;
+}
