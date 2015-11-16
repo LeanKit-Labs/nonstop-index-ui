@@ -43,10 +43,6 @@ describe( "Toolbar", () => {
 	} );
 
 	describe( "when rendering", () => {
-		it( "should render properly", () => {
-			component.getDOMNode().nodeName.toLowerCase().should.equal( "header" );
-		} );
-
 		it( "should render the logo", () => {
 			const logo = ReactUtils.findRenderedComponentWithType( component, dependencies.Logo );
 			should.exist( logo );
