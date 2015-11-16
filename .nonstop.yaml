@@ -9,7 +9,6 @@ projects:
   'nonstop-index-ui':
     path: './'
     steps:
-      npmrc: './:cp ./.docker/.npmrc ./'
       npm:
         path: './'
         command: 'npm'
