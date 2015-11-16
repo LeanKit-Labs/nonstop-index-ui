@@ -1,0 +1,12 @@
+{
+  "globals": {
+    "_": false,
+    "logAdapter": false,
+    "setupLog": false,
+    "should": false
+  },
+
+  "env": {
+    "mocha": true
+  }
+}

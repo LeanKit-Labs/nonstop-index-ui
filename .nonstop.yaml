@@ -1,0 +1,29 @@
+platforms:
+  darwin:
+    architecture:
+      - 'x64'
+  linux:
+    architecture:
+      - 'x64'
+projects:
+  'nonstop-index-ui':
+    path: './'
+    steps:
+      npmrc: './:cp ./.docker/.npmrc ./'
+      npm:
+        path: './'
+        command: 'npm'
+        arguments:
+          - 'install'
+      test:
+        path: './'
+        command: 'npm'
+        arguments:
+          - 'test'
+      build:
+        path: './'
+        command: 'gulp'
+        arguments:
+          - 'build'
+    pack:
+      pattern: '*,.docker/**/*,client/**/*,docs/**/*,public/**/*,server/**/*,tasks/**/*,node_modules/**/*'

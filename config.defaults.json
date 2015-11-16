@@ -1,0 +1,67 @@
+{
+	"client" : {
+		"luxAutohost": {
+			"filter": {
+				"actions": [ ]
+			},
+			"metrics": {
+				"timeout": 15000,
+				"messages": 500
+			},
+			"logging": {
+				"timeout": 5000,
+				"messages": 25
+			}
+		},
+		"themeOptions": []
+	},
+	"name": "nonstop-index-ui",
+	"environment": "dev",
+	"rootUrl": "",
+	"host": {
+		"resources": "server/resource",
+		"appName": "nonstop-index-ui",
+		"port": 8048,
+		"socketIO": false,
+		"noOptions": true,
+		"anonymous": [ "/_status", "/images", "/js", "/css", "/fonts" ],
+		"modules": [ "autohost-logging-collector", "autohost-metrics-collector", "autohost-pubsub" ],
+		"apiPrefix": "",
+		"static": {
+			"path": "public",
+			"maxAge": "1d"
+		},
+		"urlPrefix": ""
+	},
+	"logging": {
+		"logChannel": "log",
+		"namespace": "nonstop-index-ui",
+		"adapters": {
+			"stdOut": {
+				"level": 5,
+				"topic": "autohost.access,nonstop-index-ui.#",
+				"bailIfDebug": true
+			}
+		}
+	},
+	"metrics": {
+		"fanout": "metronic.all.ex",
+		"topic": "metronic.topic.ex"
+	},
+	"redis": {
+		"host": "localhost",
+		"port": 6379
+	},
+	"session": {
+		"config": {
+			"name": "nonstop-index-ui.sid",
+			"secret": "I eat my peas with honey, I've done it all my life"
+		},
+		"redis" : {
+			"enabled" : false,
+			"host": "127.0.0.1",
+			"port": 6379,
+			"prefix" : "nonstop-index-ui"
+		}
+	}
+}
