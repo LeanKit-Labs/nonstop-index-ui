@@ -1,14 +1,17 @@
 import React from "react";
 import { RouteHandler } from "react-router";
 import lux from "lux.js";
-import {} from "./App.less";
+import "./App.less";
+import Toolbar from "Toolbar";
 
 function getState() {
-	return {};
+	return {
+		initialized: true
+	};
 }
 
 export default React.createClass( {
-	mixins: [ lux.reactMixin.store, lux.reactMixin.actionCreator ],
+	mixins: [ lux.reactMixin.actionCreator ],
 	getActions: [ "initializePage" ],
 	getInitialState() {
 		return getState();
@@ -25,7 +28,14 @@ export default React.createClass( {
 	},
 	render: function() {
 		if ( this.state.initialized ) {
-			return ( <div className=""><RouteHandler /></div> );
+			return (
+				<div className="skin-blue">
+					<Toolbar />
+					<div className="wrapper">
+						<RouteHandler />
+					</div>
+				</div>
+			);
 		} else {
 			return this.renderLoader();
 		}

@@ -34,7 +34,7 @@ module.exports = {
 				}
 			},
 			{ test: /\.css$/, loader: "style-loader!css-loader!autoprefixer-loader?{browsers:[\"last 2 version\", \"ie >= 9\"]}" },
-			{ test: /\.less$/, loader: "style-loader!css-loader!autoprefixer-loader?{browsers:[\"last 2 version\", \"ie >= 9\"]}" },
+			{ test: /\.less$/, loader: "style-loader!css-loader!autoprefixer-loader?{browsers:[\"last 2 version\", \"ie >= 9\"]}!less-loader" },
 			{ test: /sinon.*\.js/, loader: "imports?define=>false" }
 		]
 	},
