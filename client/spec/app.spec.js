@@ -18,6 +18,7 @@ describe( "app", () => {
 			when: {
 				Promise: promiseStub
 			},
+			"stores/projectStore": {},
 			"infrastructure/errorHandler": errorHandlerStub,
 			"infrastructure/api": {},
 			"infrastructure/router": {}

@@ -37,7 +37,7 @@ export default React.createClass( {
 					</ol>
 				</section>
 				<section className="content">
-					<ProjectList projects={ this.state.projects } />
+					<ProjectList projects={ this.state.projects } onSelectProject={ function() {} } />
 				</section>
 			</div>
 		);

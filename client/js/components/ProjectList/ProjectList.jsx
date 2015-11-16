@@ -4,7 +4,8 @@ import "./ProjectList.less";
 
 export default React.createClass( {
 	propTypes: {
-		projects: React.PropTypes.object.isRequired,
+		onSelectProject: React.PropTypes.func.isRequired,
+		projects: React.PropTypes.array.isRequired,
 		title: React.PropTypes.string
 	},
 	getDefaultProps() {
@@ -13,8 +14,12 @@ export default React.createClass( {
 			projects: null
 		};
 	},
-	getInitialState() {
-		return {};
+	renderProjects() {
+		return this.props.projects.map( project => {
+			return <a key={ project.name } onClick={ this.props.onSelectProject.bind( null, project.name ) } className="list-group-item">
+				<h3 className="list-group-item-heading"><span>{ project.name }</span></h3>
+			</a>;
+		} );
 	},
 	render() {
 		return (
@@ -24,11 +29,7 @@ export default React.createClass( {
 				</div>
 				<div className="box-body no-padding">
 					<div className="list-group list-full-width">
-						{ this.props.projects.map( project => {
-							return <a href="#" className="list-group-item">
-								<h3 className="list-group-item-heading"><span>{ project.name }</span></h3>
-							</a>;
-						} ) }
+						{ this.renderProjects() }
 					</div>
 				</div>
 			</div>

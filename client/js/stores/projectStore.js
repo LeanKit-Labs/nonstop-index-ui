@@ -8,7 +8,6 @@ export default new lux.Store( {
 		projects: {}
 	},
 	handlers: {
-		loadProjects() {},
 		loadProjectsSuccess( { packages } ) {
 			this.setState( this.reduceProjects( packages ) );
 		}
