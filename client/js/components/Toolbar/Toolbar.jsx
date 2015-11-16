@@ -29,7 +29,7 @@ export default React.createClass( {
 		return (
 			<header className="main-header">
 
-				<a href="index2.html" className="logo">
+				<a href="/" className="logo">
 					<Logo />
 				</a>
 
