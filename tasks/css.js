@@ -18,7 +18,7 @@ gulp.task( "css:dev", [ "suitcss:refresh" ], function( done ) {
 	return gulp.src( [ "./client/less/app.less" ] )
 		.pipe( sourcemaps.init() )
 		.pipe( gulpLess( {
-			paths: [],
+			paths: [ "node_modules" ],
 			globalVars: {
 				theme: appConfig.theme
 			}
@@ -40,7 +40,7 @@ gulp.task( "css:build", [ "suitcss:refresh" ], function( done ) {
 
 	return gulp.src( [ "./client/less/app.less" ] )
 		.pipe( gulpLess( {
-			paths: [],
+			paths: [ "node_modules" ],
 			cleanCss: true,
 			globalVars: {
 				theme: appConfig.theme

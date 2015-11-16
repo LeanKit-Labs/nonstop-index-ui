@@ -7,10 +7,15 @@
     "ReactUtils": false,
     "should": false,
     "sinon": false,
-    "when": false
+    "when": false,
+    "getMockReactComponent": false
   },
 
   "env": {
     "mocha": true
+  },
+
+  "rules": {
+    "react/prop-types": 0
   }
 }

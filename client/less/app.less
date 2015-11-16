@@ -1,15 +1,17 @@
-@path:"./";
+@import "bootstrap/less/bootstrap.less";
+@import "adminlte/AdminLTE.less";
+@import "adminlte/skins/skin-blue.less";
+@import "base/utilities.less";
+@import "modules/spinner.less";
 
-@import (inline) "@{path}base/normalize.css";
-@import (inline) "@{path}base/foundation.css";
-@import "@{path}base/base.less";
-@import "@{path}base/utilities.less";
+@import (inline) "suitcss/align.css";
+@import (inline) "suitcss/display.css";
+@import (inline) "suitcss/layout.css";
+@import (inline) "suitcss/position.css";
+@import (inline) "suitcss/text.css";
 
-@import (inline) "@{path}suitcss/align.css";
-@import (inline) "@{path}suitcss/display.css";
-@import (inline) "@{path}suitcss/layout.css";
-@import (inline) "@{path}suitcss/position.css";
-@import (inline) "@{path}suitcss/text.css";
+@import "font-awesome/font-awesome";
+@fa-font-path: "../fonts/font-awesome";
 
-@import "@{path}font-awesome/font-awesome";
-@fa-font-path: "./font-awesome";
+@import "variables.less";
+@import "theme.less";

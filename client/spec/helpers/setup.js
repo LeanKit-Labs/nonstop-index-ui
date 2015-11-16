@@ -14,3 +14,11 @@ global.React = require( "react" );
 global.ReactUtils = global.React.addons.TestUtils;
 global.postal = require( "postal" );
 global.lux = require( "lux.js" );
+
+global.getMockReactComponent = function( name ) {
+	return React.createClass( {
+		render() {
+			return <div>{ name } { this.props.children }</div>;
+		}
+	} );
+};
