@@ -11,6 +11,7 @@ describe( "Toolbar", () => {
 		lux.customActionCreator( actions );
 
 		dependencies = {
+			Logo: getMockReactComponent( "Logo" ),
 			"stores/layoutStore": {
 				getState: sinon.stub().returns( {} )
 			}
@@ -43,7 +44,22 @@ describe( "Toolbar", () => {
 
 	describe( "when rendering", () => {
 		it( "should render properly", () => {
-			component.getDOMNode().nodeName.toLowerCase().should.equal( "div" );
+			component.getDOMNode().nodeName.toLowerCase().should.equal( "header" );
+		} );
+
+		it( "should render the logo", () => {
+			const logo = ReactUtils.findRenderedComponentWithType( component, dependencies.Logo );
+			should.exist( logo );
+		} );
+	} );
+
+	describe( "when handling store changes", () => {
+		it( "should update state", () => {
+			dependencies[ "stores/layoutStore" ].getState.returns( { newState: true } );
+			postal.channel( "lux.store" ).publish( "layout.changed" );
+			component.state.should.eql( {
+				newState: true
+			} );
 		} );
 	} );
 
