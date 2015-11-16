@@ -1,0 +1,16 @@
+{
+  "globals": {
+    "_": false,
+    "lux": false,
+    "postal": false,
+    "React": false,
+    "ReactUtils": false,
+    "should": false,
+    "sinon": false,
+    "when": false
+  },
+
+  "env": {
+    "mocha": true
+  }
+}
