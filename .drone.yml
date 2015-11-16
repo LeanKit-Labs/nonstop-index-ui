@@ -1,4 +1,4 @@
-image: 'arob/drone-nonstop-node:0.12.7'
+image: 'arob/drone-nonstop-browser'
 script:
   - 'ns --verbose'
 cache:

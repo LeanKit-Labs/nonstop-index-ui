@@ -20,10 +20,6 @@ module.exports = _.merge( shared, {
 			{
 				test: /\.js$/,
 				loader: "source-map-loader"
-			},
-			{
-				test: /client\/.+\.(css|js|jsx|less|html)$/,
-				loader: localLoader( "prefix" ) + "?prefix=" + appConfig.rootUrl
 			}
 		]
 	},
