@@ -4,6 +4,7 @@ import when from "when";
 import { handleRejection, handleException } from "infrastructure/errorHandler";
 import api from "infrastructure/api";
 import router from "infrastructure/router";
+import projectStore from "stores/projectStore";
 
 /* istanbul ignore next only used for development */
 if ( DEBUG ) {
@@ -12,6 +13,7 @@ if ( DEBUG ) {
 	window.$ = $;
 	window.router = router;
 	window.api = api;
+	window.projectStore = projectStore;
 }
 
 // errors when rendering reports are typically initiated as the result of an async request returning
