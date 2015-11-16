@@ -32,14 +32,14 @@ describe( "Logo", () => {
 
 		it( "should apply the proper default class", () => {
 			let className = component.getDOMNode().className;
-			className = className.baseVal ? className.baseVal : className;
+			className = className.baseVal || className;
 			className.should.equal( "ns-logo" );
 		} );
 
 		it( "should apply the class from props", () => {
 			component.setProps( { className: "my-logo" } );
 			let className = component.getDOMNode().className;
-			className = className.baseVal ? className.baseVal : className;
+			className = className.baseVal || className;
 			className.should.equal( "ns-logo my-logo" );
 		} );
 	} );
