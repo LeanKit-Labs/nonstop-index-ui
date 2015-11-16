@@ -10,7 +10,7 @@ if ( !endsWithSlash.test( basePath ) ) {
 export default new lux.Store( {
 	namespace: "navigation",
 	state: {
-		path: "connections",
+		path: "",
 		direction: "forward"
 	},
 	handlers: {

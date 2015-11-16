@@ -1,0 +1,26 @@
+.spinner {
+	position: fixed;
+	top: 50%;
+	left: 50%;
+	text-align: center;
+	color: fade( @color-spinner, 50% );
+	transform: translateY(-50%) translateX(-50%);
+
+	i {
+		padding: 2px 1px 1px 2px;
+		line-height: 1;
+	}
+
+	.fa-spin {
+		animation: spin 1s infinite linear;
+	}
+
+	.no-cssanimations & {
+		width: 58px;
+		height: 58px;
+		background: url( @image-spinner ) center center no-repeat;
+		i {
+			display: none;
+		}
+	}
+}
