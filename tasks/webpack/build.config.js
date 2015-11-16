@@ -16,12 +16,7 @@ module.exports = _.merge( shared, {
 		filename: "main.js"
 	},
 	module: {
-		preLoaders: [
-			{
-				test: /client\/.+\.(css|js|jsx|less|html)$/,
-				loader: localLoader( "prefix" ) + "?prefix=" + appConfig.rootUrl
-			}
-		]
+		preLoaders: []
 	},
 	plugins: [
 		new webpack.optimize.OccurenceOrderPlugin(),
