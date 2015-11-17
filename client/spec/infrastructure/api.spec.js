@@ -1,5 +1,6 @@
 import apiFactory from "inject!infrastructure/api";
 import * as packagesResponse from "../data/packagesResponse";
+import * as hostsResponse from "../data/hostsResponse";
 
 describe( "API", () => {
 	let dependencies, halonStubs, jQueryAdapter, api, actions, errorLog;
@@ -10,6 +11,9 @@ describe( "API", () => {
 			followResourceLink: sinon.stub(),
 			package: {
 				list: sinon.stub().resolves( packagesResponse )
+			},
+			host: {
+				list: sinon.stub().resolves( hostsResponse )
 			},
 			connect: sinon.spy( () => {
 				return {
@@ -32,7 +36,9 @@ describe( "API", () => {
 		actions = {
 			pageInitialized: sinon.stub(),
 			loadProjectsSuccess: sinon.stub(),
-			loadProjectsError: sinon.stub()
+			loadProjectsError: sinon.stub(),
+			loadHostsSuccess: sinon.stub(),
+			loadHostsError: sinon.stub()
 		};
 
 		lux.customActionCreator( actions );
@@ -92,6 +98,36 @@ describe( "API", () => {
 					}
 				} );
 				lux.publishAction( "loadProjects" );
+			} );
+		} );
+	} );
+
+	describe( "when handling loadHosts", () => {
+		describe( "with successful response", () => {
+			it( "should invoke host list resource", () => {
+				lux.publishAction( "loadHosts" );
+				halonStubs.host.list.should.be.calledOnce;
+			} );
+			it( "should publish loadHostsSuccess action", ( done ) => {
+				lux.customActionCreator( {
+					loadHostsSuccess( data ) {
+						data.should.eql( hostsResponse );
+						done();
+					}
+				} );
+				lux.publishAction( "loadHosts" );
+			} );
+		} );
+		describe( "with failed response", () => {
+			it( "should publish loadHostsError action", ( done ) => {
+				halonStubs.host.list = sinon.stub().rejects( new Error( "OHSNAP" ) );
+				lux.customActionCreator( {
+					loadHostsError( err ) {
+						err.message.should.eql( "OHSNAP" );
+						done();
+					}
+				} );
+				lux.publishAction( "loadHosts" );
 			} );
 		} );
 	} );
