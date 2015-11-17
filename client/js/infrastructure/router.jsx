@@ -3,7 +3,7 @@ import App from "App";
 import Dashboard from "Dashboard";
 import ProjectDetail from "ProjectDetail";
 import luxLocationFactory from "infrastructure/luxLocationFactory";
-import navStore from "stores/navigation";
+import navigationStore from "stores/navigationStore";
 import React from "react";
 
 var routes = (
@@ -15,7 +15,7 @@ var routes = (
 
 const router = Router.create( {
 	routes: routes,
-	location: luxLocationFactory( navStore )
+	location: luxLocationFactory( navigationStore )
 } );
 
 router.run( ( Handler, state ) => React.render( <Handler { ...state } />, document.body ) );

@@ -12,7 +12,7 @@ describe( "ProjectDetail", () => {
 
 		dependencies = {
 			"stores/projectStore": {
-				getState: sinon.stub().returns( {} )
+				getProject: sinon.stub().returns( {} )
 			}
 		};
 
@@ -31,7 +31,7 @@ describe( "ProjectDetail", () => {
 
 	describe( "when handling props", () => {
 		it( "should have default props", () => {
-			component.props.should.eql( {} );
+			component.props.should.eql( { params: {} } );
 		} );
 	} );
 

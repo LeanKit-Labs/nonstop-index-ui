@@ -5,7 +5,7 @@ import { handleRejection, handleException } from "infrastructure/errorHandler";
 import api from "infrastructure/api";
 import router from "infrastructure/router";
 import projectStore from "stores/projectStore";
-import navStore from "stores/navigation";
+import navStore from "stores/navigationStore";
 
 /* istanbul ignore next only used for development */
 if ( DEBUG ) {

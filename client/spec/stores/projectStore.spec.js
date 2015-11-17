@@ -41,5 +41,25 @@ describe( "project store", () => {
 				{ name: "nonstop-index-ui", owner: "LeanKit-Labs", branch: "master" }
 			] );
 		} );
+
+		describe( "getProject", () => {
+			let project;
+
+			beforeEach( () => {
+				Object.assign( projectStore.getState(), projectsParsed );
+				project = projectStore.getProject( "core-blu", "BanditSoftware", "master" );
+			} );
+
+			it( "should get a list of owners and branches", () => {
+				project.owners.should.eql( [ "BanditSoftware" ] );
+				project.branches.should.eql( [ "master" ] );
+			} );
+
+			it( "should get a list of known packages", () => {
+				project.packages.should.have.lengthOf( 2 );
+				project.packages[0].should.be.an( "object" );
+				project.packages[1].should.be.an( "object" );
+			} );
+		} );
 	} );
 } );

@@ -21,7 +21,7 @@ describe( "Router", () => {
 			Dashboard: getMockReactComponent( "Dashboard" ),
 			ProjectDetail: getMockReactComponent( "ProjectDetail" ),
 			"infrastructure/luxLocationFactory": luxLocationStub,
-			"stores/navigation": navStore
+			"stores/navigationStore": navStore
 		} );
 	} );
 

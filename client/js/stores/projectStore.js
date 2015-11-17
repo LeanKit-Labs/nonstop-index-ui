@@ -40,5 +40,23 @@ export default new lux.Store( {
 			} );
 			return memo;
 		}, [] );
+	},
+	getProject( name, owner, branch ) {
+		const { packages, projects } = this.getState();
+		const currentProject = projects[name];
+
+		if ( !currentProject ) {
+			return { owners: [], branches: [], packages: [] };
+		}
+
+		const currentOwner = currentProject.owners[owner];
+		let branchPackages = _get( currentOwner, [ "branches", branch ], [] );
+		branchPackages = branchPackages.map( item => packages[item] );
+
+		return {
+			owners: Object.keys( currentProject.owners ),
+			branches: Object.keys( currentOwner.branches ),
+			packages: branchPackages
+		};
 	}
 } );

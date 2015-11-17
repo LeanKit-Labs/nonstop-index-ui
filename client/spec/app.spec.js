@@ -19,7 +19,7 @@ describe( "app", () => {
 				Promise: promiseStub
 			},
 			"stores/projectStore": {},
-			"stores/navigation": {},
+			"stores/navigationStore": {},
 			"infrastructure/errorHandler": errorHandlerStub,
 			"infrastructure/api": {},
 			"infrastructure/router": {}
