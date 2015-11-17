@@ -1,13 +1,29 @@
 import React from "react";
 
+import lux from "lux.js";
+import projectStore from "stores/projectStore";
+import ProjectList from "ProjectList";
 import "./Dashboard.less";
 
+function getState() {
+	return {
+		projects: projectStore.getProjects()
+	};
+}
+
 export default React.createClass( {
+	mixins: [ lux.reactMixin.store ],
+	stores: {
+		listenTo: "project",
+		onChange() {
+			this.setState( getState() );
+		}
+	},
 	getDefaultProps() {
 		return {};
 	},
 	getInitialState() {
-		return {};
+		return getState();
 	},
 	render() {
 		return (
@@ -21,7 +37,7 @@ export default React.createClass( {
 					</ol>
 				</section>
 				<section className="content">
-
+					<ProjectList projects={ this.state.projects } onSelectProject={ function() {} } />
 				</section>
 			</div>
 		);
