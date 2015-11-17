@@ -5,6 +5,7 @@ import { handleRejection, handleException } from "infrastructure/errorHandler";
 import api from "infrastructure/api";
 import router from "infrastructure/router";
 import projectStore from "stores/projectStore";
+import navStore from "stores/navigation";
 
 /* istanbul ignore next only used for development */
 if ( DEBUG ) {
@@ -13,6 +14,7 @@ if ( DEBUG ) {
 	window.$ = $;
 	window.router = router;
 	window.api = api;
+	window.navStore = navStore;
 	window.projectStore = projectStore;
 }
 

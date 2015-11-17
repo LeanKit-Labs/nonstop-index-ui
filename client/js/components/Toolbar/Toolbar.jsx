@@ -12,7 +12,7 @@ function getState() {
 
 export default React.createClass( {
 	mixins: [ lux.reactMixin.actionCreator, lux.reactMixin.store ],
-	getActions: [ "exampleAction" ],
+	getActions: [ "viewHome" ],
 	stores: {
 		listenTo: [ "layout" ],
 		onChange() {
@@ -29,7 +29,7 @@ export default React.createClass( {
 		return (
 			<header className="main-header">
 
-				<a href="/" className="logo">
+				<a onClick={ this.viewHome } className="logo">
 					<Logo />
 				</a>
 

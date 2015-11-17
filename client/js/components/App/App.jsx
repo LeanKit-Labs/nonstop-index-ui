@@ -3,6 +3,8 @@ import { RouteHandler } from "react-router";
 import lux from "lux.js";
 import "./App.less";
 import Toolbar from "Toolbar";
+import { get as _get } from "lodash";
+import win from "window";
 
 function getState() {
 	return {
@@ -16,8 +18,16 @@ export default React.createClass( {
 	getInitialState() {
 		return getState();
 	},
+	componentDidUpdate: function( props, state ) {
+		this.updateTitle();
+	},
 	componentDidMount: function() {
+		this.updateTitle();
 		this.initializePage( {} );
+	},
+	updateTitle() {
+		const project = _get( this.props, "params.name", "Dashboard" );
+		win.document.title = `${project} - Nonstop Index`;
 	},
 	renderLoader() {
 		return (

@@ -52,7 +52,6 @@ module.exports = function( options ) {
 		result.host.http.middleware( "/", require( "./middleware/header" )( pkg ) );
 		result.host.http.middleware( "/", require( "./middleware/cache-header" )() );
 		result.host.start();
-		result.host.http.middleware( "/", require( "./middleware/notFound" )( config ) );
 		return result;
 	}
 

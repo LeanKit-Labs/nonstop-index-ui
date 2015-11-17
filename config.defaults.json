@@ -26,7 +26,7 @@
 		"port": 8048,
 		"socketIO": false,
 		"noOptions": true,
-		"anonymous": [ "/_status", "/images", "/js", "/css", "/fonts" ],
+		"anonymous": [ "/_status", "/project", "/images", "/js", "/css", "/fonts" ],
 		"modules": [ "autohost-logging-collector", "autohost-metrics-collector", "autohost-pubsub" ],
 		"apiPrefix": "",
 		"static": {

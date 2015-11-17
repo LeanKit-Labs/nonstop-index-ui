@@ -2,9 +2,10 @@ import apiFactory from "inject!infrastructure/api";
 import * as packagesResponse from "../data/packagesResponse";
 
 describe( "API", () => {
-	let dependencies, halonStubs, jQueryAdapter, api, actions;
+	let dependencies, halonStubs, jQueryAdapter, api, actions, errorLog;
 
 	beforeEach( () => {
+		errorLog = sinon.stub( console, "error" );
 		halonStubs = {
 			followResourceLink: sinon.stub(),
 			package: {
@@ -29,7 +30,6 @@ describe( "API", () => {
 		dependencies.halon.jQueryAdapter = jQueryAdapter;
 
 		actions = {
-			error: sinon.stub(),
 			pageInitialized: sinon.stub(),
 			loadProjectsSuccess: sinon.stub(),
 			loadProjectsError: sinon.stub()
@@ -41,18 +41,15 @@ describe( "API", () => {
 	} );
 
 	afterEach( () => {
+		errorLog.restore();
 		Object.keys( lux.actions ).forEach( key => delete lux.actions[ key ] );
 		api.luxCleanup();
 	} );
 
 	it( "should initialize halon", () => {
-		dependencies.halon.should.be.calledTwice;
-		jQueryAdapter.should.be.calledTwice.and.calledWith( dependencies.jquery );
-		halonStubs.connect.should.be.calledTwice;
-	} );
-
-	it( "should handle errors while initializing halon", () => {
-		actions.error.should.be.calledTwice.and.calledWith( "connect error" );
+		dependencies.halon.should.be.calledOnce;
+		jQueryAdapter.should.be.calledOnce.and.calledWith( dependencies.jquery );
+		halonStubs.connect.should.be.calledOnce;
 	} );
 
 	describe( "when handling initializePage", () => {
@@ -60,6 +57,13 @@ describe( "API", () => {
 			lux.publishAction( "initializePage" );
 			halonStubs.package.list.should.be.calledOnce;
 		} );
+	} );
+
+	it( "should handle errors while initializing halon", () => {
+		errorLog.should.be.calledOnce.and.calledWith( "connect error" );
+		dependencies.halon.should.be.calledOnce;
+		jQueryAdapter.should.be.calledOnce.and.calledWith( dependencies.jquery );
+		halonStubs.connect.should.be.calledOnce;
 	} );
 
 	describe( "when handling loadProjects", () => {

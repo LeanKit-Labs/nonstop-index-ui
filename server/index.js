@@ -3,7 +3,6 @@ require( "babel/register" );
 var config = require( "./config" );
 var pkg = require( "../package.json" );
 var fount = require( "fount" );
-var hyped = require( "hyped" )( true, true );
 var log = require( "./config/log" );
 var metronic = require( "./config/metrics" );
 var redis = require( "./config/redis" );
@@ -21,7 +20,6 @@ fount.register( "ahpubsub", pubsub );
 module.exports = require( "./init" )( {
 	fount: fount,
 	pkg: pkg,
-	hyped: hyped,
 	log: log,
 	metrics: metrics,
 	config: config
