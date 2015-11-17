@@ -3,25 +3,18 @@ var _ = require( "lodash" );
 var fs = require( "fs" );
 var path = require( "path" );
 var opsTerms = [
-	"LK__AUTH__REDIRECT_URL",
-	"LK_AUTH_USER_ENDPOINT_PROTOCOL",
-	"LK__DATA_ACCESS__ENABLE_CACHE",
-	"LK__HOST__PORT",
-	"LK__LOGGING__ADAPTERS__STD_OUT__LEVEL",
-	"LK_RABBIT_USER",
-	"LK_RABBIT_PASS",
-	"LK_RABBIT_HOST",
-	"LK_RABBIT_PORT",
-	"LK_RABBIT_VHOST",
-	"LK_REDIS_HOST",
-	"LK_REDIS_PORT",
-	"LK_SESSION_REDIS_HOST",
-	"LK_SESSION_REDIS_PORT",
-	"LK_SESSION_REDIS_PREFIX",
-	"LK_SQL_HOST",
-	"LK_SQL_USER",
-	"LK_SQL_PASS",
-	"LK_SQL_DATABASE"
+	"NS__HOST__PORT",
+	"NS__LOGGING__ADAPTERS__STD_OUT__LEVEL",
+	"NS_RABBIT_USER",
+	"NS_RABBIT_PASS",
+	"NS_RABBIT_HOST",
+	"NS_RABBIT_PORT",
+	"NS_RABBIT_VHOST",
+	"NS_REDIS_HOST",
+	"NS_REDIS_PORT",
+	"NS_SESSION_REDIS_HOST",
+	"NS_SESSION_REDIS_PORT",
+	"NS_SESSION_REDIS_PREFIX"
 ];
 
 function insertMarkers( str ) {
@@ -65,7 +58,7 @@ function processConfigNode( keyBase, data, output, hasCamelCase ) {
 
 function generateEnvVarMarkdown( root ) {
 	var items = [];
-	processConfigNode( [ "LK" ], require( "../config.defaults.json" ), items );
+	processConfigNode( [ "NS" ], require( "../config.defaults.json" ), items );
 
 	// convert to markdown
 	var section = "";
@@ -104,7 +97,7 @@ gulp.task( "document-config", [], function( done ) {
 		}
 
 		var header = "| Group / Variable | Default |\n|-------------|---------|\n";
-		var generatedMD = header + generateEnvVarMarkdown( "LK" ) + "\n";
+		var generatedMD = header + generateEnvVarMarkdown( "NS" ) + "\n";
 
 		var update = md.substring( 0, index.start ) + generatedMD + md.substring( index.stop );
 		fs.writeFile( readme, update, function() {

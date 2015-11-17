@@ -5,7 +5,7 @@ import window from "window";
 import config from "../clientConfig";
 
 var nsAPI = window.nsAPI = halon( {
-	root: `${ config[ "nonstop-index-api" ] }`,
+	root: `${ config.nonstopIndexApi }`,
 	knownOptions: {
 		package: [ "list" ],
 		host: [ "list" ]

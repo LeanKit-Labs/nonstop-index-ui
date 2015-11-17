@@ -7,7 +7,7 @@ var pid = process.pid;
 var defaults = require( "../config.defaults.json" );
 
 var opts = {
-	prefix: "lk",
+	prefix: "ns",
 	defaults: defaults
 };
 
