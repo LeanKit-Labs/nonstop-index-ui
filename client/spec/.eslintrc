@@ -4,6 +4,7 @@
     "lux": false,
     "postal": false,
     "React": false,
+    "ReactDOM": false,
     "ReactUtils": false,
     "should": false,
     "sinon": false,

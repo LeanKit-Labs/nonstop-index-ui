@@ -2,9 +2,13 @@ import routerFactory from "inject!infrastructure/router.jsx";
 import ReactRouter, { RouteHandler } from "react-router";
 
 describe( "Router", () => {
-	let router, luxLocationStub, navStore;
+	let router, luxLocationStub, navStore, el;
 
 	beforeEach( () => {
+		el = document.createElement( "div" );
+		el.className = "app-root";
+		document.body.appendChild( el );
+
 		luxLocationStub = sinon.stub().returns( ReactRouter.HistoryLocation );
 		navStore = {
 			namespace: "navigation"
@@ -26,7 +30,8 @@ describe( "Router", () => {
 	} );
 
 	afterEach( () => {
-		React.unmountComponentAtNode( document.body );
+		ReactDOM.unmountComponentAtNode( el );
+		document.body.removeChild( el );
 	} );
 
 	it( "should pass the navigation store to the luxLocationFactory", () => {

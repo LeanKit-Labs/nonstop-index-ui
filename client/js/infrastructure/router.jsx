@@ -4,7 +4,8 @@ import Dashboard from "Dashboard";
 import ProjectDetail from "ProjectDetail";
 import luxLocationFactory from "infrastructure/luxLocationFactory";
 import navigationStore from "stores/navigationStore";
-import React from "react";
+import React from "react"; //eslint-disable-line no-unused-vars
+import ReactDOM from "react-dom";
 
 var routes = (
 	<Route path="/" handler={ App }>
@@ -18,6 +19,6 @@ const router = Router.create( {
 	location: luxLocationFactory( navigationStore )
 } );
 
-router.run( ( Handler, state ) => React.render( <Handler { ...state } />, document.body ) );
+router.run( ( Handler, state ) => ReactDOM.render( <Handler { ...state } />, document.querySelector( ".app-root" ) ) );
 
 export default router;

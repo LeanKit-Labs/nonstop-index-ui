@@ -42,7 +42,7 @@ describe( "App Component", () => {
 	afterEach( () => {
 		delete lux.actions.initializePage;
 		if ( component ) {
-			React.unmountComponentAtNode( component.getDOMNode().parentNode );
+			ReactDOM.unmountComponentAtNode( ReactDOM.findDOMNode( component ).parentNode );
 		}
 	} );
 

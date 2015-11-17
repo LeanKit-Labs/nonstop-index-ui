@@ -26,7 +26,7 @@ describe( "Toolbar", () => {
 		Object.keys( actions ).forEach( key => delete lux.actions[ key ] );
 
 		if ( component ) {
-			React.unmountComponentAtNode( component.getDOMNode().parentNode );
+			ReactDOM.unmountComponentAtNode( ReactDOM.findDOMNode( component ).parentNode );
 		}
 	} );
 

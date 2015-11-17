@@ -43,7 +43,6 @@ module.exports = {
 		extensions: [ "", ".webpack.js", ".web.js", ".js", ".jsx" ],
 		alias: _.extend( {
 				window: "infrastructure/windowProxy",
-				react: "react/addons",
 				"react-router": "react-router/umd/ReactRouter",
 				modernizr: "lib/modernizr/modernizr.custom"
 			}, aliasComponents()
