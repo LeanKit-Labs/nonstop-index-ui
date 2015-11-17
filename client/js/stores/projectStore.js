@@ -1,5 +1,5 @@
 import lux from "lux.js";
-import { get as _get, set as _set } from "lodash";
+import { reduce, get as _get, set as _set } from "lodash";
 
 export default new lux.Store( {
 	namespace: "project",
@@ -30,8 +30,15 @@ export default new lux.Store( {
 	getProjects() {
 		let projects = this.getState().projects;
 
-		return Object.keys( projects ).map( project => {
-			return { name: project };
-		} );
+		return reduce( projects, ( memo, project, name ) => {
+			const owner = Object.keys( project.owners )[ 0 ];
+			const branch = Object.keys( project.owners[ owner ].branches )[ 0 ];
+			memo.push( {
+				name,
+				owner,
+				branch
+			} );
+			return memo;
+		}, [] );
 	}
 } );

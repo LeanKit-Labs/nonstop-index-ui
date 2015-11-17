@@ -16,8 +16,11 @@ export default React.createClass( {
 	},
 	renderProjects() {
 		return this.props.projects.map( project => {
-			return <a key={ project.name } onClick={ this.props.onSelectProject.bind( null, project.name ) } className="list-group-item">
+			return <a key={ project.name } onClick={ this.props.onSelectProject.bind( null, project ) } className="list-group-item">
 				<h3 className="list-group-item-heading"><span>{ project.name }</span></h3>
+				<p className="list-group-item-text text-muted">
+					<i className="fa fa-code-fork"></i> <strong>{ project.owner }/{ project.branch }</strong>
+				</p>
 			</a>;
 		} );
 	},
