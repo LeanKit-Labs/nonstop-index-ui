@@ -143,13 +143,13 @@ describe( "LuxLocation factory", function() {
 				navStoreStub.wasLastChangeFromBrowser.returns( true );
 			} );
 
-			it( "should non call browserNavigated for an event without state", () => {
+			it( "should not call browserNavigated for an event without state", () => {
 				const onPopState = windowStub.addEventListener.getCall( 0 ).args[ 1 ];
 				onPopState( {} );
 				actions.browserNavigated.should.not.be.called;
 			} );
 
-			it( "should non call browserNavigated for an event with state", () => {
+			it( "should not call browserNavigated for an event with state", () => {
 				const onPopState = windowStub.addEventListener.getCall( 0 ).args[ 1 ];
 				const evt = {
 					state: {
@@ -197,7 +197,7 @@ describe( "LuxLocation factory", function() {
 
 				LuxLocation.stores.onChange();
 				windowStub.history.pushState.should.be.calledOnce
-					.and.calledWithMatch( { path: "/path/123", id: 123 }, "", "/path/123" );
+					.and.calledWith( { path: "/path/123", id: 123 }, "", "/path/123" );
 
 				listener.should.be.calledOnce.and.calledWith( {
 					path: "/path/123", type: "push"
