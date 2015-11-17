@@ -15,23 +15,10 @@ var nsAPI = window.nsAPI = halon( {
 } );
 
 function errorHandler( error ) {
-	const message = error.toString();
-	lux.publishAction( "error", error.stack || message );
+	console.error( error );
 }
 
 nsAPI.connect().catch( errorHandler );
-
-var uiAPI = halon( {
-	root: `${ window.location.origin }/`,
-	knownOptions: {
-		logging: [ "upload" ],
-		metricsCollector: [ "upload" ]
-	},
-	adapter: halon.jQueryAdapter( $ ),
-	version: 1
-} );
-
-uiAPI.connect().catch( errorHandler );
 
 function loadProjects() {
 	nsAPI.package.list()
@@ -43,10 +30,7 @@ function loadProjects() {
 
 export default lux.mixin( {
 	getActions: [
-		"pageInitialized",
-		"loadProjectsSuccess",
-		"loadProjectsError"
-
+		"pageInitialized"
 	],
 	namespace: "api",
 	handlers: {

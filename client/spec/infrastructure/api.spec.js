@@ -29,7 +29,6 @@ describe( "API", () => {
 		dependencies.halon.jQueryAdapter = jQueryAdapter;
 
 		actions = {
-			error: sinon.stub(),
 			pageInitialized: sinon.stub(),
 			loadProjectsSuccess: sinon.stub(),
 			loadProjectsError: sinon.stub()
@@ -46,13 +45,9 @@ describe( "API", () => {
 	} );
 
 	it( "should initialize halon", () => {
-		dependencies.halon.should.be.calledTwice;
-		jQueryAdapter.should.be.calledTwice.and.calledWith( dependencies.jquery );
-		halonStubs.connect.should.be.calledTwice;
-	} );
-
-	it( "should handle errors while initializing halon", () => {
-		actions.error.should.be.calledTwice.and.calledWith( "connect error" );
+		dependencies.halon.should.be.calledOnce;
+		jQueryAdapter.should.be.calledOnce.and.calledWith( dependencies.jquery );
+		halonStubs.connect.should.be.calledOnce;
 	} );
 
 	describe( "when handling initializePage", () => {
