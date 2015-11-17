@@ -42,10 +42,7 @@ export default new lux.Store( {
 		browserNavigated: function( event ) {
 			const { history, currentHistory } = this.getState();
 			const { state: eventState } = event;
-			if ( !eventState ) {
-				return;
-			}
-			const pastEvent = findIndex( history, { id: eventState.id } );
+			const pastEvent = findIndex( history, { id: eventState ? eventState.id : 0 } );
 			if ( pastEvent > -1 ) {
 				this.setState( {
 					currentHistory: pastEvent,

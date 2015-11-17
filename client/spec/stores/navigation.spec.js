@@ -149,8 +149,17 @@ describe( "navigation store", () => {
 					lux.publishAction( "browserNavigated", {} );
 				} );
 
-				it( "should do nothing", () => {
-					navigationStore.getState().lastChangeFromBrowser.should.be.false;
+				it( "should navigate to the first item in history", () => {
+					state.path.should.equal( "" );
+				} );
+				it( "should update the direction to backward", () => {
+					state.direction.should.equal( "backward" );
+				} );
+				it( "should set the currentHistory correctly", () => {
+					state.currentHistory.should.equal( 0 );
+				} );
+				it( "should mark the request as from the browser", () => {
+					state.lastChangeFromBrowser.should.be.true;
 				} );
 			} );
 			describe( "and event state matches cached history (going backwards)", () => {
