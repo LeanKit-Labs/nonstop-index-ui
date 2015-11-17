@@ -24,7 +24,7 @@
     "classnames": "^2.1.2",
     "configya": "^0.2.1",
     "fount": "^0.1.0",
-    "halon": "~0.3.3",
+    "halon": "~0.4.1",
     "hyped": "^0.4.4",
     "jquery": "2.1.4",
     "lodash": "3.x",
