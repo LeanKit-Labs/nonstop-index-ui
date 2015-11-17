@@ -5,8 +5,15 @@ import luxLocationFactory from "infrastructure/luxLocationFactory";
 import navStore from "stores/navigation";
 import React from "react";
 
+var Project = React.createClass( {
+	render: function() {
+		return <div>{ this.props.name }</div>;
+	}
+} );
+
 var routes = (
 	<Route path="/" handler={ App }>
+		<Route path="/project/:name" handler={ Project } />
 		<Route path="/" handler={ Dashboard } />
 	</Route>
 );

@@ -5,7 +5,7 @@ describe( "Toolbar", () => {
 
 	beforeEach( () => {
 		actions = {
-			exampleAction: sinon.stub()
+			viewHome: sinon.stub()
 		};
 
 		lux.customActionCreator( actions );
@@ -61,8 +61,9 @@ describe( "Toolbar", () => {
 
 	describe( "when handling clicks", () => {
 		it( "should trigger the example action", () => {
-			component.exampleAction();
-			lux.actions.exampleAction.should.be.calledOnce;
+			const logo = ReactUtils.findRenderedDOMComponentWithClass( component, "logo" );
+			ReactUtils.Simulate.click( logo );
+			lux.actions.viewHome.should.be.calledOnce;
 		} );
 	} );
 } );

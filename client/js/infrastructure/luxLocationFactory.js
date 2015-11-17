@@ -1,61 +1,98 @@
-define( [
-	"lux.js"
-], function( lux ) {
-	return function( navStore ) {
-		// File adapted from react-router/lib/locations/HistoryLocation.js
-		if ( !navStore ) {
-			throw new Error( "LuxLocation must be supplied a navigation store" );
+import lux from "lux.js";
+import win from "window";
+
+export default function( navStore ) {
+	// File adapted from react-router/lib/locations/HistoryLocation.js
+	if ( !navStore ) {
+		throw new Error( "LuxLocation must be supplied a navigation store" );
+	}
+
+	var _listeners = [];
+	var _isListening = false;
+
+	function notifyChange( type ) {
+		var change = {
+			path: LuxLocation.getCurrentPath(),
+			type: type
+		};
+
+		_listeners.forEach( function( listener ) {
+			listener.call( LuxLocation, change );
+		} );
+	}
+
+	function onPopState( event ) {
+		if ( event.state === undefined ) {
+			return; // Ignore extraneous popstate events in WebKit.
 		}
 
-		var _listeners = [];
+		lux.publishAction( "browserNavigated", event );
+	}
 
-		function notifyChange( type ) {
-			var change = {
-				path: LuxLocation.getCurrentPath(),
-				type: type
-			};
-
-			_listeners.forEach( function( listener ) {
-				listener.call( LuxLocation, change );
-			} );
-		}
-
-		var LuxLocation = lux.mixin( {
-			stores: {
-				listenTo: [ "navigation" ],
-				onChange: function() {
-					var direction = navStore.getDirection();
-					notifyChange( direction === "forward" ? "push" : "pop" );
+	var LuxLocation = lux.mixin( {
+		stores: {
+			listenTo: [ "navigation" ],
+			onChange: function() {
+				var direction = navStore.getDirection();
+				var fromBrowser = navStore.wasLastChangeFromBrowser();
+				if ( !fromBrowser ) {
+					const entry = navStore.getHistoryEntry();
+					if ( direction === "forward" ) {
+						win.history.pushState( entry, "", entry.path );
+					} else {
+						win.history.back();
+					}
 				}
-			},
 
-			addChangeListener: function( listener ) {
-				_listeners.push( listener );
-			},
-
-			removeChangeListener: function( listener ) {
-				_listeners = _listeners.filter( function( l ) {
-					return l !== listener;
-				} );
-			},
-
-			// Not implemented because we are not navigating
-			// the router directly
-			push: function() {},
-			replace: function() {},
-			pop: function() {},
-
-			getCurrentPath: function() {
-				return navStore.getFullPath();
-			},
-
-			toString: function() {
-				return "<LuxLocation>";
+				notifyChange( direction === "forward" ? "push" : "pop" );
 			}
+		},
 
-		}, lux.mixin.store );
+		addChangeListener: function( listener ) {
+			_listeners.push( listener );
 
-		return LuxLocation;
-	};
-} );
+			if ( !_isListening ) {
+				if ( win.addEventListener ) {
+					win.addEventListener( "popstate", onPopState, false );
+				} else {
+					win.attachEvent( "onpopstate", onPopState );
+				}
 
+				_isListening = true;
+			}
+		},
+
+		removeChangeListener: function( listener ) {
+			_listeners = _listeners.filter( function( l ) {
+				return l !== listener;
+			} );
+
+			if ( _listeners.length === 0 ) {
+				if ( win.removeEventListener ) {
+					win.removeEventListener( "popstate", onPopState, false );
+				} else {
+					win.removeEvent( "onpopstate", onPopState );
+				}
+
+				_isListening = false;
+			}
+		},
+
+		// Not implemented because we are not navigating
+		// the router directly
+		push: function() {},
+		replace: function() {},
+		pop: function() {},
+
+		getCurrentPath: function() {
+			return navStore.getFullPath();
+		},
+
+		toString: function() {
+			return "<LuxLocation>";
+		}
+
+	}, lux.mixin.store );
+
+	return LuxLocation;
+};

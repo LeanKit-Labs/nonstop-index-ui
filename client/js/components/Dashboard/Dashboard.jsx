@@ -12,13 +12,14 @@ function getState() {
 }
 
 export default React.createClass( {
-	mixins: [ lux.reactMixin.store ],
+	mixins: [ lux.reactMixin.store, lux.reactMixin.actionCreator ],
 	stores: {
 		listenTo: "project",
 		onChange() {
 			this.setState( getState() );
 		}
 	},
+	getActions: [ "viewProject" ],
 	getDefaultProps() {
 		return {};
 	},
@@ -37,7 +38,7 @@ export default React.createClass( {
 					</ol>
 				</section>
 				<section className="content">
-					<ProjectList projects={ this.state.projects } onSelectProject={ function() {} } />
+					<ProjectList projects={ this.state.projects } onSelectProject={ this.viewProject } />
 				</section>
 			</div>
 		);

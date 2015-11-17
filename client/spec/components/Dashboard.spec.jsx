@@ -1,9 +1,15 @@
 import dashboardFactory from "inject!Dashboard";
 
 describe( "Dashboard", () => {
-	let component, dependencies;
+	let component, dependencies, actions;
 
 	beforeEach( () => {
+		actions = {
+			viewProject: sinon.stub()
+		};
+
+		lux.customActionCreator( actions );
+
 		dependencies = {
 			ProjectList: getMockReactComponent( "ProjectList" ),
 			"stores/projectStore": {
@@ -17,6 +23,8 @@ describe( "Dashboard", () => {
 	} );
 
 	afterEach( () => {
+		Object.keys( actions ).forEach( key => delete lux.actions[ key ] );
+
 		if ( component ) {
 			React.unmountComponentAtNode( component.getDOMNode().parentNode );
 		}
@@ -42,6 +50,11 @@ describe( "Dashboard", () => {
 			const title = ReactUtils.findRenderedDOMComponentWithClass( header, "text-primary" );
 			title.getDOMNode().textContent.trim().should.equal( "Dashboard" );
 		} );
+
+		it( "should render the ProjectList", () => {
+			const projList = ReactUtils.findRenderedComponentWithType( component, dependencies.ProjectList );
+			should.exist( projList );
+		} );
 	} );
 
 	describe( "when handling store changes", () => {
@@ -51,6 +64,14 @@ describe( "Dashboard", () => {
 			component.state.should.eql( {
 				projects: [ { name: "new" } ]
 			} );
+		} );
+	} );
+
+	describe( "when a project is selected", () => {
+		it( "should call viewProject", () => {
+			const projList = ReactUtils.findRenderedComponentWithType( component, dependencies.ProjectList );
+			projList.props.onSelectProject( "core-blu" );
+			actions.viewProject.should.be.calledOnce.and.calledWith( "core-blu" );
 		} );
 	} );
 } );
