@@ -68,8 +68,8 @@ export default new lux.Store( {
 		viewHome: function() {
 			navigateForward( this, "" );
 		},
-		viewProject: function( projectName ) {
-			navigateForward( this, `project/${projectName}` );
+		viewProject: function( { name, owner, branch } ) {
+			navigateForward( this, `project/${name}/${owner}/${branch}` );
 		}
 	},
 	getPath() {

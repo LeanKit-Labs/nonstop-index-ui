@@ -20,7 +20,7 @@ export default function( host ) {
 				}
 			},
 			self: {
-				url: "/project/:name",
+				url: "/project/*",
 				hidden: true,
 				method: "GET",
 				handle: ( env ) => {

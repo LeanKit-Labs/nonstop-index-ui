@@ -18,7 +18,7 @@ global.lux = require( "lux.js" );
 global.getMockReactComponent = function( name ) {
 	return React.createClass( {
 		render() {
-			return <div>{ name } { this.props.children }</div>;
+			return <div className={ `component-${name.toLowerCase()}` }> { name } { this.props.children }</div>;
 		}
 	} );
 };

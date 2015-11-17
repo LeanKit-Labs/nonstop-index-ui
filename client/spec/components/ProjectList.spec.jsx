@@ -32,39 +32,45 @@ describe( "ProjectList", () => {
 		it( "should render projects", () => {
 			component.setProps( {
 				projects: [
-					{ name: "project-one" },
-					{ name: "project-two" },
-					{ name: "project-three" }
+					{ name: "project-one", owner: "owner-one", branch: "branch-one" },
+					{ name: "project-two", owner: "owner-two", branch: "branch-two" },
+					{ name: "project-three", owner: "owner-three", branch: "branch-three" }
 				]
 			} );
 
 			const items = ReactUtils.scryRenderedDOMComponentsWithClass( component, "list-group-item" );
 			const headings = ReactUtils.scryRenderedDOMComponentsWithClass( component, "list-group-item-heading" );
+			const details = ReactUtils.scryRenderedDOMComponentsWithClass( component, "list-group-item-text" );
 
 			items.should.have.lengthOf( 3 );
 
 			headings[0].getDOMNode().textContent.should.equal( "project-one" );
 			headings[1].getDOMNode().textContent.should.equal( "project-two" );
 			headings[2].getDOMNode().textContent.should.equal( "project-three" );
+
+			details[0].getDOMNode().textContent.trim().should.equal( "owner-one/branch-one" );
+			details[1].getDOMNode().textContent.trim().should.equal( "owner-two/branch-two" );
+			details[2].getDOMNode().textContent.trim().should.equal( "owner-three/branch-three" );
 		} );
 	} );
 
 	describe( "when clicking on a project", () => {
+		let projects;
+
 		beforeEach( function() {
-			component.setProps( {
-				projects: [
-					{ name: "project-one" },
-					{ name: "project-two" },
-					{ name: "project-three" }
-				]
-			} );
+			projects = [
+				{ name: "project-one", owner: "owner", branch: "master" },
+				{ name: "project-two", owner: "owner", branch: "master" },
+				{ name: "project-three", owner: "owner", branch: "master" }
+			];
+			component.setProps( { projects } );
 		} );
 		it( "should trigger onSelectProject with the project name", () => {
 			let items = ReactUtils.scryRenderedDOMComponentsWithClass( component, "list-group-item" );
 
 			ReactUtils.Simulate.click( items[ 1 ].getDOMNode() );
 
-			selectStub.should.be.calledOnce.and.calledWith( "project-two" );
+			selectStub.should.be.calledOnce.and.calledWith( projects[ 1 ] );
 		} );
 	} );
 } );

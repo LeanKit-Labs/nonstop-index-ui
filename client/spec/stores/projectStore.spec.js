@@ -37,8 +37,8 @@ describe( "project store", () => {
 		it( "should provide a way to get the projects list", () => {
 			Object.assign( projectStore.getState(), projectsParsed );
 			projectStore.getProjects().should.eql( [
-				{ name: "core-blu" },
-				{ name: "nonstop-index-ui" }
+				{ name: "core-blu", owner: "BanditSoftware", branch: "master" },
+				{ name: "nonstop-index-ui", owner: "LeanKit-Labs", branch: "master" }
 			] );
 		} );
 	} );

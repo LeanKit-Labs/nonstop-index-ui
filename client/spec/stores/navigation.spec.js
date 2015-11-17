@@ -85,15 +85,19 @@ describe( "navigation store", () => {
 			beforeEach( () => {
 				state = navigationStore.getState();
 				state.lastChangeFromBrowser = true;
-				lux.publishAction( "viewProject", "nonstop-index-ui" );
+				lux.publishAction( "viewProject", {
+					name: "nonstop-index-ui",
+					owner: "LeanKit-Labs",
+					branch: "master"
+				} );
 			} );
 			it( "should set the path and direction", () => {
-				state.path.should.equal( "project/nonstop-index-ui" );
+				state.path.should.equal( "project/nonstop-index-ui/LeanKit-Labs/master" );
 				state.direction.should.equal( "forward" );
 			} );
 			it( "should update history", () => {
 				state.history.should.have.lengthOf( 2 );
-				state.history[ 1 ].should.contain( { path: "project/nonstop-index-ui" } );
+				state.history[ 1 ].should.contain( { path: "project/nonstop-index-ui/LeanKit-Labs/master" } );
 			} );
 			it( "should update the current history", () => {
 				state.currentHistory.should.equal( 1 );
