@@ -51,12 +51,24 @@ export default new lux.Store( {
 
 		const currentOwner = currentProject.owners[owner];
 		let branchPackages = _get( currentOwner, [ "branches", branch ], [] );
-		branchPackages = branchPackages.map( item => packages[item] );
+
+		const versions = branchPackages.reduce( ( memo, name ) => {
+			let item = packages[name];
+			let version = item.version.split('-')[0];
+
+			const packagesPath = [ version, "builds", `b${item.build}`, "packages" ];
+			let buildPackages = _get( memo, packagesPath, [] );
+
+			buildPackages.push( item );
+			_set( memo, packagesPath, buildPackages );
+
+			return memo;
+		}, {} );
 
 		return {
 			owners: Object.keys( currentProject.owners ),
 			branches: Object.keys( currentOwner.branches ),
-			packages: branchPackages
+			versions
 		};
 	}
 } );
