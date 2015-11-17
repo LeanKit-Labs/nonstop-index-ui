@@ -1,6 +1,6 @@
 import apiFactory from "inject!infrastructure/api";
-import * as packagesResponse from "../data/packagesResponse";
-import * as hostsResponse from "../data/hostsResponse";
+import packagesResponse from "../data/packagesResponse";
+import hostsResponse from "../data/hostsResponse";
 
 describe( "API", () => {
 	let dependencies, halonStubs, jQueryAdapter, api, actions, errorLog;
@@ -59,9 +59,19 @@ describe( "API", () => {
 	} );
 
 	describe( "when handling initializePage", () => {
-		it( "should call the package list endpoint", () => {
+		it( "should call the package list endpoint and then the hosts list", ( done ) => {
+			lux.customActionCreator( {
+				loadProjectsSuccess() {
+					halonStubs.package.list.should.be.calledOnce;
+					halonStubs.host.list.should.not.be.called;
+				},
+				loadHostsSuccess() {
+					halonStubs.package.list.should.be.calledOnce;
+					done();
+				}
+			} );
+
 			lux.publishAction( "initializePage" );
-			halonStubs.package.list.should.be.calledOnce;
 		} );
 	} );
 

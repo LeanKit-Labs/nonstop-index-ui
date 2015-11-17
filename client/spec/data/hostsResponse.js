@@ -15,7 +15,7 @@ module.exports = {
 				tolerance: 5000
 			},
 			package: {
-				project: "core-blu",
+				project: "nonstop-index-ui",
 				owner: "BanditSoftware",
 				branch: "master",
 				osVersion: "any",
@@ -150,7 +150,7 @@ module.exports = {
 				tolerance: 5000
 			},
 			package: {
-				project: "littlebrudder",
+				project: "nonstop-index-ui",
 				owner: "arobson",
 				branch: "master",
 				osVersion: "any",
