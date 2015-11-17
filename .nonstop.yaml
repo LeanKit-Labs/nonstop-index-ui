@@ -19,10 +19,5 @@ projects:
         command: 'npm'
         arguments:
           - 'test'
-      build:
-        path: './'
-        command: 'gulp'
-        arguments:
-          - 'build'
     pack:
-      pattern: '*,.docker/**/*,client/**/*,docs/**/*,public/**/*,server/**/*,tasks/**/*,node_modules/**/*'
+      pattern: '*,client/**/*,public/**/*,server/**/*,tasks/**/*,node_modules/**/*'
