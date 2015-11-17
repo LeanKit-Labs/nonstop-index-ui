@@ -103,6 +103,7 @@
     "proxyquire": "^1.4.0",
     "raw-loader": "^0.5.1",
     "react-addons-test-utils": "^0.14.2",
+    "react-bootstrap": "^0.28.1",
     "react-dom": "^0.14.2",
     "react-intl": "^1.2.1",
     "require-dir": "^0.3.0",

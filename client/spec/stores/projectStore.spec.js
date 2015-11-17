@@ -51,14 +51,30 @@ describe( "project store", () => {
 			} );
 
 			it( "should get a list of owners and branches", () => {
-				project.owners.should.eql( [ "BanditSoftware" ] );
+				project.owners.should.eql( [ {
+					name: "BanditSoftware",
+					branches: [ "master" ]
+				} ] );
 				project.branches.should.eql( [ "master" ] );
 			} );
 
-			it( "should get a list of known packages", () => {
-				project.packages.should.have.lengthOf( 2 );
-				project.packages[0].should.be.an( "object" );
-				project.packages[1].should.be.an( "object" );
+			it( "should get a list of known versions", () => {
+				project.versions.should.have.key( "0.1.5" );
+			} );
+
+			it( "should separate by builds for each version", () => {
+				const version = project.versions[ "0.1.5" ];
+				version.builds.should.have.keys( "b11", "b10" );
+			} );
+
+			it( "should group packages for each build", () => {
+				const version = project.versions[ "0.1.5" ];
+				const build10 = version.builds.b10;
+				const build11 = version.builds.b11;
+				build10.packages.should.have.lengthOf( 1 );
+				build10.packages[ 0 ].should.be.an( "object" );
+				build11.packages.should.have.lengthOf( 1 );
+				build11.packages[ 0 ].should.be.an( "object" );
 			} );
 		} );
 	} );
