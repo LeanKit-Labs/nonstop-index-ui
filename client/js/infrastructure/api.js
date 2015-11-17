@@ -7,7 +7,8 @@ import config from "../clientConfig";
 var nsAPI = window.nsAPI = halon( {
 	root: `${ config[ "nonstop-index-api" ] }`,
 	knownOptions: {
-		package: [ "list" ]
+		package: [ "list" ],
+		host: [ "list" ]
 	},
 	adapter: halon.jQueryAdapter( $ ),
 	version: 1,
@@ -30,7 +31,9 @@ function loadProjects() {
 
 export default lux.mixin( {
 	getActions: [
-		"pageInitialized"
+		"pageInitialized",
+		"loadHostsSuccess",
+		"loadHostsError"
 	],
 	namespace: "api",
 	handlers: {
@@ -39,6 +42,13 @@ export default lux.mixin( {
 		},
 		loadProjects() {
 			loadProjects();
+		},
+		loadHosts() {
+			nsAPI.host.list()
+				.then(
+					( data ) => this.loadHostsSuccess( data ),
+					( data ) => this.loadHostsError( data )
+				);
 		}
 	}
 }, lux.mixin.actionCreator, lux.mixin.actionListener );
