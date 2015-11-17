@@ -1,6 +1,6 @@
 {
   "name": "nonstop-index-ui",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "LeanKit Card UI Project",
   "repository": {
     "type": "git",
@@ -16,7 +16,7 @@
     }
   ],
   "dependencies": {
-    "autohost": "^0.5.1",
+    "autohost": "^0.5.3",
     "autohost-logging-collector": "^0.1.2",
     "autohost-metrics-collector": "^0.2.0",
     "autohost-pubsub": "^0.1.0",
