@@ -76,6 +76,9 @@ export default new lux.Store( {
 		},
 		viewHosts: function() {
 			navigateForward( this, "nonstop/host" );
+		},
+		viewConfigurator: function() {
+			navigateForward( this, "nonstop/host/configure" );
 		}
 	},
 	getPath() {

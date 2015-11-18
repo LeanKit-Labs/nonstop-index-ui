@@ -12,7 +12,7 @@ function getState() {
 
 export default React.createClass( {
 	mixins: [ lux.reactMixin.actionCreator, lux.reactMixin.store ],
-	getActions: [ "viewHome", "viewHosts" ],
+	getActions: [ "viewHome", "viewHosts", "viewConfigurator" ],
 	stores: {
 		listenTo: [ "layout" ],
 		onChange() {
@@ -37,6 +37,11 @@ export default React.createClass( {
 							<li className="dropdown messages-menu">
 								<a onClick={ this.viewHosts } className="dropdown-toggle" data-toggle="dropdown">
 									<i className="fa fa-cubes"></i> Hosts
+								</a>
+							</li>
+							<li className="dropdown messages-menu">
+								<a onClick={ this.viewConfigurator } className="dropdown-toggle" data-toggle="dropdown">
+									<i className="fa fa-cogs"></i> Configuration
 								</a>
 							</li>
 						</ul>
