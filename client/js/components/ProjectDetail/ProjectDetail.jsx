@@ -1,32 +1,69 @@
 import React from "react";
+import ProjectDetailHeader from "ProjectDetailHeader";
+import VersionGroup from "VersionGroup";
 import lux from "lux.js";
-
 import projectStore from "stores/projectStore";
 
 import "./ProjectDetail.less";
 
-function getState() {
-	return projectStore.getState();
+function getState( { name, owner, branch } ) {
+	return projectStore.getProject( name, owner, branch );
 }
 
 export default React.createClass( {
 	mixins: [ lux.reactMixin.actionCreator, lux.reactMixin.store ],
-	getActions: [ "exampleAction" ],
+	getActions: [ "viewProject" ],
 	stores: {
 		listenTo: [ "project" ],
 		onChange() {
-			this.setState( getState() );
+			this.setState( getState( this.props.params ) );
 		}
 	},
+	propTypes: {
+		params: React.PropTypes.shape( {
+			name: React.PropTypes.string.isRequired,
+			owner: React.PropTypes.string.isRequired,
+			branch: React.PropTypes.string.isRequired
+		} )
+	},
 	getDefaultProps() {
-		return {};
+		return { params: {} };
 	},
 	getInitialState() {
-		return getState();
+		return getState( this.props.params );
+	},
+	componentWillReceiveProps( newProps ) {
+		this.setState( getState( newProps.params ) );
+	},
+	onSelectBranch( branchName ) {
+		const params = this.props.params;
+		this.viewProject( {
+			name: params.name,
+			owner: params.owner,
+			branch: branchName
+		} );
+	},
+	onSelectOwner( owner ) {
+		const params = this.props.params;
+		const branch = owner.branches.includes( params.branch ) ? params.branch : owner.branches[ 0 ];
+		this.viewProject( {
+			name: params.name,
+			owner: owner.name,
+			branch: branch
+		} );
 	},
 	render() {
 		return (
-			<div></div>
+			<div className="projectDetail">
+				<ProjectDetailHeader
+					{ ...this.props.params }
+					className="content-header"
+					owners={ this.state.owners }
+					branches={ this.state.branches }
+					onSelectOwner={ this.onSelectOwner }
+					onSelectBranch={ this.onSelectBranch } />
+				<VersionGroup className="content" versions={ this.state.versions } />
+			</div>
 		);
 	}
 } );

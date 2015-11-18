@@ -92,4 +92,3 @@ export default new lux.Store( {
 		return this.getState().lastChangeFromBrowser;
 	}
 } );
-

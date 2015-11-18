@@ -11,7 +11,8 @@ global._ = require( "lodash" );
 global.sinon = require( "sinon" );
 require( "sinon-as-promised" );
 global.React = require( "react" );
-global.ReactUtils = global.React.addons.TestUtils;
+global.ReactDOM = require( "react-dom" );
+global.ReactUtils = require( "react-addons-test-utils" );
 global.postal = require( "postal" );
 global.lux = require( "lux.js" );
 

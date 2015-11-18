@@ -13,7 +13,7 @@ describe( "Logo", () => {
 
 	afterEach( () => {
 		if ( component ) {
-			React.unmountComponentAtNode( component.getDOMNode().parentNode );
+			ReactDOM.unmountComponentAtNode( ReactDOM.findDOMNode( component ).parentNode );
 		}
 	} );
 

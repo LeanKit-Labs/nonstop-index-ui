@@ -1,4 +1,4 @@
-const navigationStoreFactory = require( "inject!stores/navigation" );
+const navigationStoreFactory = require( "inject!stores/navigationStore" );
 
 describe( "navigation store", () => {
 	let navigationStore, locationStub;

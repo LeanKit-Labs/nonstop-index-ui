@@ -26,7 +26,7 @@ describe( "Dashboard", () => {
 		Object.keys( actions ).forEach( key => delete lux.actions[ key ] );
 
 		if ( component ) {
-			React.unmountComponentAtNode( component.getDOMNode().parentNode );
+			ReactDOM.unmountComponentAtNode( ReactDOM.findDOMNode( component ).parentNode );
 		}
 	} );
 
@@ -47,8 +47,8 @@ describe( "Dashboard", () => {
 	describe( "when rendering", () => {
 		it( "should render the title", () => {
 			const header = ReactUtils.findRenderedDOMComponentWithClass( component, "content-header" );
-			const title = ReactUtils.findRenderedDOMComponentWithClass( header, "text-primary" );
-			title.getDOMNode().textContent.trim().should.equal( "Dashboard" );
+			const title = header.querySelector( ".text-primary" );
+			title.textContent.trim().should.equal( "Dashboard" );
 		} );
 
 		it( "should render the ProjectList", () => {

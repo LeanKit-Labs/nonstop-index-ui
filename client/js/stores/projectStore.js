@@ -1,5 +1,5 @@
 import lux from "lux.js";
-import { reduce, get as _get, set as _set } from "lodash";
+import { map, reduce, get as _get, set as _set } from "lodash";
 
 export default new lux.Store( {
 	namespace: "project",
@@ -40,5 +40,40 @@ export default new lux.Store( {
 			} );
 			return memo;
 		}, [] );
+	},
+	getProject( name, owner, branch ) {
+		const { packages, projects } = this.getState();
+		const currentProject = projects[name];
+
+		if ( !currentProject ) {
+			return { owners: [], branches: [], versions: {} };
+		}
+
+		const currentOwner = currentProject.owners[owner];
+		let branchPackages = _get( currentOwner, [ "branches", branch ], [] );
+
+		const versions = branchPackages.reduce( ( memo, name ) => {
+			let item = packages[name];
+			let version = item.version.split( "-" )[0];
+
+			const packagesPath = [ version, "builds", `b${item.build}`, "packages" ];
+			let buildPackages = _get( memo, packagesPath, [] );
+
+			buildPackages.push( item );
+			_set( memo, packagesPath, buildPackages );
+
+			return memo;
+		}, {} );
+
+		return {
+			owners: map( currentProject.owners, ( owner, name ) => {
+				return {
+					name,
+					branches: Object.keys( owner.branches )
+				};
+			} ),
+			branches: Object.keys( currentOwner.branches ),
+			versions
+		};
 	}
 } );
