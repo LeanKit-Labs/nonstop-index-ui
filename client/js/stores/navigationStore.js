@@ -2,6 +2,9 @@ import lux from "lux.js";
 import window from "window";
 import { findIndex } from "lodash";
 
+// We are well aware that there's plenty of work to be done to
+// get basePath, urlPrefix, etc. all aligned and to be made
+// fully configurable, etc. Right now, the goal is to ship a PoC
 var basePath = "/";
 
 function navigateForward( store, path, fromBrowser ) {
@@ -66,7 +69,7 @@ export default new lux.Store( {
 			} );
 		},
 		viewHome: function() {
-			navigateForward( this, "" );
+			navigateForward( this, "nonstop/" );
 		},
 		viewProject: function( { name, owner, branch } ) {
 			navigateForward( this, `nonstop/project/${name}/${owner}/${branch}` );

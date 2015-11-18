@@ -39,21 +39,21 @@ describe( "Router", () => {
 	} );
 
 	it( "should render the App", () => {
-		router.transitionTo( "/" );
+		router.transitionTo( "/nonstop/" );
 
 		const app = document.querySelector( ".component-app" );
 		should.exist( app );
 	} );
 
 	it( "should render the Dashboard component for the root path", () => {
-		router.transitionTo( "/" );
+		router.transitionTo( "/nonstop/" );
 
 		const dashboard = document.querySelector( ".component-dashboard" );
 		should.exist( dashboard );
 	} );
 
 	it( "should render the ProjectDetail component for project paths", () => {
-		router.transitionTo( "/project/project-name/owner/branch" );
+		router.transitionTo( "/nonstop/project/project-name/owner/branch" );
 
 		const projectDetail = document.querySelector( ".component-projectdetail" );
 		should.exist( projectDetail );
