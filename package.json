@@ -17,6 +17,7 @@
   ],
   "dependencies": {
     "autohost": "^0.5.3",
+    "autohost-github-auth": "^1.0.0-beta",
     "autohost-logging-collector": "^0.1.2",
     "autohost-metrics-collector": "^0.2.0",
     "autohost-pubsub": "^0.1.0",

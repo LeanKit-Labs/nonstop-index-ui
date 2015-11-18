@@ -42,6 +42,12 @@ To start the nonstop-index-ui, run `gulp dev`.
 <!-- EnvironmentVariables -->
 | Group / Variable | Default |
 |-------------|---------|
+| **auth** | |
+| NS__AUTH__LOGIN_ENDPOINT | `"/nonstop/auth/login"` |
+| NS__AUTH__AUTH_ENDPOINT | `"/nonstop/auth/github"` |
+| NS__AUTH__GITHUB__CLIENT_ID | `"YOUR_CLIENT_ID_HERE"` |
+| NS__AUTH__GITHUB__CLIENT_SECRET | `"YOUR_CLIENT_SECRET_HERE"` |
+| NS__AUTH__GITHUB__CALLBACK_URL | `"http://localhost:8048/nonstop/auth/github/callback"` |
 | **client** | |
 | NS__CLIENT__LUX_AUTOHOST__FILTER__ACTIONS | `[]` |
 | NS__CLIENT__LUX_AUTOHOST__METRICS__TIMEOUT | `15000` |
@@ -49,6 +55,7 @@ To start the nonstop-index-ui, run `gulp dev`.
 | NS__CLIENT__LUX_AUTOHOST__LOGGING__TIMEOUT | `5000` |
 | NS__CLIENT__LUX_AUTOHOST__LOGGING__MESSAGES | `25` |
 | NS__CLIENT__THEME_OPTIONS | `[]` |
+| NS__CLIENT__FEATURE_OPTIONS__CONFIG | `true` |
 | NS__CLIENT__NONSTOP_INDEX_API | `"http://nsindex.com:4444/api"` |
 | NS_CLIENT_HEADERS__AUTHORIZATION | `"Bearer SooPurSeekretTokin"` |
 | **name** | |
@@ -63,12 +70,12 @@ To start the nonstop-index-ui, run `gulp dev`.
 | NS_HOST_PORT | `8048` |
 | NS__HOST__SOCKET_I_O | `false` |
 | NS__HOST__NO_OPTIONS | `true` |
-| NS_HOST_ANONYMOUS | `["/_status","/project","/images","/js","/css","/fonts"]` |
+| NS_HOST_ANONYMOUS | `["/nonstop/_status","/nonstop/auth/login","/nonstop/images","/nonstop/js","/nonstop/css","/nonstop/fonts"]` |
 | NS_HOST_MODULES | `["autohost-logging-collector","autohost-metrics-collector","autohost-pubsub"]` |
 | NS__HOST__API_PREFIX | `""` |
 | NS_HOST_STATIC_PATH | `"public"` |
 | NS__HOST__STATIC__MAX_AGE | `"1d"` |
-| NS__HOST__URL_PREFIX | `""` |
+| NS__HOST__URL_PREFIX | `"/nonstop"` |
 | **logging** | |
 | NS__LOGGING__LOG_CHANNEL | `"log"` |
 | NS_LOGGING_NAMESPACE | `"nonstop-index-ui"` |
