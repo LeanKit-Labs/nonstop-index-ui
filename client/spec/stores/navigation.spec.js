@@ -35,12 +35,12 @@ describe( "navigation store", () => {
 				state = navigationStore.getState();
 			} );
 			it( "should set the path and direction", () => {
-				state.path.should.equal( "" );
+				state.path.should.equal( "nonstop/" );
 				state.direction.should.equal( "forward" );
 			} );
 			it( "should update history", () => {
 				state.history.should.have.lengthOf( 2 );
-				state.history[ 1 ].should.contain( { path: "" } );
+				state.history[ 1 ].should.contain( { path: "nonstop/" } );
 			} );
 			it( "should update the current history", () => {
 				state.currentHistory.should.equal( 1 );
@@ -64,12 +64,12 @@ describe( "navigation store", () => {
 				lux.publishAction( "viewHome" );
 			} );
 			it( "should set the path and direction", () => {
-				state.path.should.equal( "" );
+				state.path.should.equal( "nonstop/" );
 				state.direction.should.equal( "forward" );
 			} );
 			it( "should update history", () => {
 				state.history.should.have.lengthOf( 2 );
-				state.history[ 1 ].should.contain( { path: "" } );
+				state.history[ 1 ].should.contain( { path: "nonstop/" } );
 			} );
 			it( "should update the current history", () => {
 				state.currentHistory.should.equal( 1 );
@@ -92,12 +92,12 @@ describe( "navigation store", () => {
 				} );
 			} );
 			it( "should set the path and direction", () => {
-				state.path.should.equal( "project/nonstop-index-ui/LeanKit-Labs/master" );
+				state.path.should.equal( "nonstop/project/nonstop-index-ui/LeanKit-Labs/master" );
 				state.direction.should.equal( "forward" );
 			} );
 			it( "should update history", () => {
 				state.history.should.have.lengthOf( 2 );
-				state.history[ 1 ].should.contain( { path: "project/nonstop-index-ui/LeanKit-Labs/master" } );
+				state.history[ 1 ].should.contain( { path: "nonstop/project/nonstop-index-ui/LeanKit-Labs/master" } );
 			} );
 			it( "should update the current history", () => {
 				state.currentHistory.should.equal( 1 );

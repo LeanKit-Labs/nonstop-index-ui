@@ -3,11 +3,13 @@ import React from "react";
 import lux from "lux.js";
 import projectStore from "stores/projectStore";
 import ProjectList from "ProjectList";
+import HostList from "HostList";
 import "./Dashboard.less";
 
 function getState() {
 	return {
-		projects: projectStore.getProjects()
+		projects: projectStore.getProjects(),
+		hosts: projectStore.getHosts()
 	};
 }
 
@@ -19,7 +21,7 @@ export default React.createClass( {
 			this.setState( getState() );
 		}
 	},
-	getActions: [ "viewProject" ],
+	getActions: [ "viewProject", "viewHost" ],
 	getDefaultProps() {
 		return {};
 	},
@@ -39,6 +41,9 @@ export default React.createClass( {
 				</section>
 				<section className="content">
 					<ProjectList projects={ this.state.projects } onSelectProject={ this.viewProject } />
+				</section>
+				<section className="content">
+					<HostList hosts={ this.state.hosts } onSelectHost={ this.viewHost } />
 				</section>
 			</div>
 		);

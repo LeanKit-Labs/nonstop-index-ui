@@ -11,7 +11,8 @@ gulp.task( "generate-config", function() {
 		{
 			appName: pkgJson.name,
 			key: config.name + ".client",
-			version: pkgJson.version
+			version: pkgJson.version,
+			urlPrefix: config.host.urlPrefix
 		}
 	);
 	clientConfig.branding = clientConfig.branding && clientConfig.branding[ appConfig.theme ];

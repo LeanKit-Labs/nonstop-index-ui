@@ -1,15 +1,38 @@
 import lux from "lux.js";
 import { map, reduce, get as _get, set as _set } from "lodash";
 
+function getHostDetails( host ) {
+	const { project: projectName, branch, owner } = host.package;
+	const { name: hostName, ip } = host.serviceHost.host;
+
+	return {
+		name: host.name,
+		projectName,
+		branch,
+		owner,
+		hostName,
+		ip
+	};
+}
+
 export default new lux.Store( {
 	namespace: "project",
 	state: {
 		packages: {},
-		projects: {}
+		projects: {},
+		hosts: []
 	},
 	handlers: {
 		loadProjectsSuccess( { packages } ) {
 			this.setState( this.reduceProjects( packages ) );
+		},
+		loadHostsSuccess( { hosts = [] } ) {
+			const mappedHosts = hosts.map( getHostDetails );
+
+			this.setState( {
+				projects: this.addHostsToProjects( mappedHosts ),
+				hosts: mappedHosts
+			} );
 		}
 	},
 	reduceProjects( packages ) {
@@ -26,6 +49,18 @@ export default new lux.Store( {
 			projects: {},
 			packages: {}
 		} );
+	},
+	addHostsToProjects( hosts ) {
+		return reduce( hosts, ( memo, host ) => {
+			const project = memo[ host.projectName ];
+
+			if ( project ) {
+				project.hosts = project.hosts || [];
+				project.hosts.push( host );
+			}
+
+			return memo;
+		}, this.getState().projects );
 	},
 	getProjects() {
 		let projects = this.getState().projects;
@@ -73,7 +108,11 @@ export default new lux.Store( {
 				};
 			} ),
 			branches: Object.keys( currentOwner.branches ),
-			versions
+			versions,
+			hosts: currentProject.hosts
 		};
+	},
+	getHosts() {
+		return this.getState().hosts;
 	}
 } );

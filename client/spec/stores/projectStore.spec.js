@@ -2,6 +2,8 @@ import projectStoreFactory from "inject!stores/projectStore";
 
 const packagesResponse = require( "../data/packagesResponse" );
 const projectsParsed = require( "../data/projectsParsed" );
+const hostsResponse = require( "../data/hostsResponse" );
+const projectsWithHostsParsed = require( "../data/projectsWithHostsParsed" );
 
 describe( "project store", () => {
 	let projectStore;
@@ -18,7 +20,8 @@ describe( "project store", () => {
 		it( "should add default state", () => {
 			projectStore.getState().should.eql( {
 				projects: {},
-				packages: {}
+				packages: {},
+				hosts: []
 			} );
 		} );
 	} );
@@ -29,6 +32,15 @@ describe( "project store", () => {
 				lux.publishAction( "loadProjectsSuccess", packagesResponse );
 				const state = projectStore.getState();
 				state.should.be.eql( projectsParsed );
+			} );
+		} );
+
+		describe( "when handling loadHostsSuccess", () => {
+			it( "should add hosts to projects", () => {
+				const state = projectStore.getState();
+				state.projects = projectsParsed.projects;
+				lux.publishAction( "loadHostsSuccess", hostsResponse );
+				state.projects.should.eql( projectsWithHostsParsed );
 			} );
 		} );
 	} );

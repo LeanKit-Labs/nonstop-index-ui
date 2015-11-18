@@ -1,5 +1,6 @@
 const packagesResponse = require( "./packagesResponse" );
 module.exports = {
+	hosts: [],
 	projects: {
 		"core-blu": {
 			owners: {

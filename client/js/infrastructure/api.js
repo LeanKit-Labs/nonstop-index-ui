@@ -12,7 +12,8 @@ var nsAPI = window.nsAPI = halon( {
 	},
 	adapter: halon.jQueryAdapter( $ ),
 	version: 1,
-	headers: config.headers
+	headers: config.headers,
+	resourceUrlPrefix: "/index"
 } );
 
 function errorHandler( error ) {
@@ -22,33 +23,31 @@ function errorHandler( error ) {
 nsAPI.connect().catch( errorHandler );
 
 function loadProjects() {
-	nsAPI.package.list()
+	return nsAPI.package.list()
 		.then(
 			( data ) => lux.publishAction( "loadProjectsSuccess", data ),
 			( data ) => lux.publishAction( "loadProjectsError", data )
 		);
 }
 
+function loadHosts() {
+	return nsAPI.host.list()
+		.then(
+			( data ) => lux.publishAction( "loadHostsSuccess", data ),
+			( data ) => lux.publishAction( "loadHostsError", data )
+		);
+}
+
 export default lux.mixin( {
 	getActions: [
-		"pageInitialized",
-		"loadHostsSuccess",
-		"loadHostsError"
+		"pageInitialized"
 	],
 	namespace: "api",
 	handlers: {
 		initializePage() {
-			loadProjects();
+			loadProjects().then( loadHosts );
 		},
-		loadProjects() {
-			loadProjects();
-		},
-		loadHosts() {
-			nsAPI.host.list()
-				.then(
-					( data ) => this.loadHostsSuccess( data ),
-					( data ) => this.loadHostsError( data )
-				);
-		}
+		loadProjects,
+		loadHosts
 	}
 }, lux.mixin.actionCreator, lux.mixin.actionListener );

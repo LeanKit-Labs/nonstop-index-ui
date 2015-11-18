@@ -15,7 +15,7 @@ var appConfig = global.appConfig = {
 	root: __dirname,
 	theme: "bandit",
 	themeOptions: config.client.themeOptions || [ "bandit" ],
-	rootUrl: config.rootUrl
+	rootUrl: config.host.urlPrefix
 };
 
 process.on( "uncaughtException", function( err ) {
