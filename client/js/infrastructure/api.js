@@ -50,8 +50,8 @@ export default lux.mixin( {
 		},
 		loadProjects,
 		loadHosts,
-		applySettings() {
-			const settings = configurationStore.getChanges();
+		applySettings( settings ) {
+			settings = settings || configurationStore.getChanges();
 			nsAPI.host.configure( settings );
 		}
 	}

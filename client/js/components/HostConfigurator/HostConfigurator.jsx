@@ -143,7 +143,7 @@ export default React.createClass( {
 						{ this.renderVersionDropdown() }
 						</div>
 						<div className="box-footer">
-							<button disabled={ !this.state.applyEnabled } onClick={ this.applySettings } type="submit" className="btn btn-primary">Apply Settings</button>
+							<button disabled={ !this.state.applyEnabled } onClick={ this.applySettings.bind( this, null ) } type="submit" className="btn btn-primary">Apply Settings</button>
 						</div>
 					</div>
 				</section>

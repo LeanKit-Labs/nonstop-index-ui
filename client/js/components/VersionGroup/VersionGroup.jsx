@@ -1,5 +1,7 @@
 import React from "react";
 import { padLeft, map, flatten } from "lodash";
+import DropdownButton from "react-bootstrap/lib/DropdownButton";
+import MenuItem from "react-bootstrap/lib/MenuItem";
 
 import "./VersionGroup.less";
 
@@ -34,11 +36,14 @@ function slug( { owner, project, slug } ) {
 export default React.createClass( {
 	propTypes: {
 		className: React.PropTypes.string,
+		hosts: React.PropTypes.array,
+		onRelease: React.PropTypes.func.isRequired,
 		versions: React.PropTypes.object.isRequired
 	},
 	getDefaultProps() {
 		return {
-			className: ""
+			className: "",
+			hosts: null
 		};
 	},
 	renderBuildGroup( { packages }, build ) {
@@ -50,10 +55,22 @@ export default React.createClass( {
 					<td>{ platform( p.platform ) }</td>
 					<td>{ architecture( p.architecture ) }</td>
 					<td>{ slug( p ) }</td>
-					<td><em className="text-muted">Not Released</em></td>
+					<td>{ this.renderRelease( p ) }</td>
 				</tr>
 			);
 		} ) );
+	},
+	handleOnRelease( pkg, event, name ) {
+		const data = [];
+		[ "project", "owner", "branch", "version" ].forEach( function( field ) {
+			data.push( { op: "change", field, value: pkg[ field ] } );
+		} );
+		this.props.onRelease( { name, data } );
+	},
+	renderRelease( pkg ) {
+		return <DropdownButton bsStyle="default" title="Deploy" id={ `dropdown-basic-${pkg.version}` } onSelect={ this.handleOnRelease.bind( this, pkg ) }>
+			{ this.props.hosts.map( host => <MenuItem key={ host.name } eventKey={ host.name }>{ host.name }</MenuItem> ) }
+		</DropdownButton>;
 	},
 	renderVersionGroup( { builds }, versionNumber ) {
 		const latestBuild = Object.keys( builds )[ 0 ];
@@ -77,7 +94,7 @@ export default React.createClass( {
 										<th scope="col">Platform</th>
 										<th scope="col">Architecture</th>
 										<th scope="col">Slug</th>
-										<th scope="col">Release</th>
+										<th scope="col">Actions</th>
 									</tr>
 								</thead>
 								<tbody>

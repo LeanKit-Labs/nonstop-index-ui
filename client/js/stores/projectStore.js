@@ -81,7 +81,7 @@ export default new lux.Store( {
 		const currentProject = projects[name];
 
 		if ( !currentProject ) {
-			return { owners: [], branches: [], versions: {} };
+			return { owners: [], branches: [], versions: {}, hosts: [] };
 		}
 
 		const currentOwner = currentProject.owners[owner];
@@ -109,7 +109,7 @@ export default new lux.Store( {
 			} ),
 			branches: Object.keys( currentOwner.branches ),
 			versions,
-			hosts: currentProject.hosts
+			hosts: currentProject.hosts || []
 		};
 	},
 	getHosts() {

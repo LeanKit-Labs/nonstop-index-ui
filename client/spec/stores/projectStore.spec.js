@@ -60,7 +60,8 @@ describe( "project store", () => {
 				project.should.eql( {
 					owners: [],
 					branches: [],
-					versions: {}
+					versions: {},
+					hosts: []
 				} );
 			} );
 		} );

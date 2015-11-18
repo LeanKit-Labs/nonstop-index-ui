@@ -9,9 +9,11 @@ describe( "VersionGroup", () => {
 	} );
 
 	function createComponent( props = {} ) {
-		if ( !props.versions ) {
-			props.versions = {};
-		}
+		_.defaults( props, {
+			versions: {},
+			hosts: [],
+			onRelease: _.noop
+		} );
 		component = ReactUtils.renderIntoDocument( <VersionGroup {...props} /> );
 	}
 
