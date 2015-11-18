@@ -11,15 +11,15 @@ export default React.createClass( {
 	getDefaultProps() {
 		return {
 			title: "Hosts",
-			projects: null
+			hosts: []
 		};
 	},
 	renderHosts() {
 		return this.props.hosts.map( host => {
-			return <a key={ host.serviceHost.name } onClick={ this.props.onSelectHost.bind( null, host ) } className="list-group-item">
-				<h3 className="list-group-item-heading"><span>{ host.serviceHost.name }</span></h3>
+			return <a key={ host.name } onClick={ this.props.onSelectHost.bind( null, host ) } className="list-group-item">
+				<h3 className="list-group-item-heading"><span>{ host.name }</span></h3>
 				<p className="list-group-item-text text-muted">
-					<i className="fa fa-code-fork"></i> <strong>{ host.package.owner }/{ host.package.project }/{ host.package.branch }</strong>
+					<i className="fa fa-code-fork"></i> <strong>{ host.owner }/{ host.projectName }/{ host.branch }</strong>
 				</p>
 			</a>;
 		} );

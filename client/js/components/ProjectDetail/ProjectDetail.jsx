@@ -3,6 +3,7 @@ import ProjectDetailHeader from "ProjectDetailHeader";
 import VersionGroup from "VersionGroup";
 import lux from "lux.js";
 import projectStore from "stores/projectStore";
+import HostList from "HostList";
 
 import "./ProjectDetail.less";
 
@@ -12,7 +13,7 @@ function getState( { name, owner, branch } ) {
 
 export default React.createClass( {
 	mixins: [ lux.reactMixin.actionCreator, lux.reactMixin.store ],
-	getActions: [ "viewProject" ],
+	getActions: [ "viewProject", "viewHost" ],
 	stores: {
 		listenTo: [ "project" ],
 		onChange() {
@@ -63,6 +64,7 @@ export default React.createClass( {
 					onSelectOwner={ this.onSelectOwner }
 					onSelectBranch={ this.onSelectBranch } />
 				<VersionGroup className="content" versions={ this.state.versions } />
+				<HostList hosts={ this.state.hosts } onSelectHost={ this.viewHost } />
 			</div>
 		);
 	}

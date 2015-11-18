@@ -20,7 +20,7 @@ export default new lux.Store( {
 	state: {
 		packages: {},
 		projects: {},
-		hosts: {}
+		hosts: []
 	},
 	handlers: {
 		loadProjectsSuccess( { packages } ) {
@@ -108,7 +108,11 @@ export default new lux.Store( {
 				};
 			} ),
 			branches: Object.keys( currentOwner.branches ),
-			versions
+			versions,
+			hosts: currentProject.hosts
 		};
+	},
+	getHosts() {
+		return this.getState().hosts;
 	}
 } );

@@ -13,7 +13,8 @@ describe( "Dashboard", () => {
 		dependencies = {
 			ProjectList: getMockReactComponent( "ProjectList" ),
 			"stores/projectStore": {
-				getProjects: sinon.stub().returns( [] )
+				getProjects: sinon.stub().returns( [] ),
+				getHosts: sinon.stub().returns( [] )
 			}
 		};
 
@@ -39,7 +40,8 @@ describe( "Dashboard", () => {
 	describe( "when handling state", () => {
 		it( "should have initial state", () => {
 			component.state.should.eql( {
-				projects: []
+				projects: [],
+				hosts: []
 			} );
 		} );
 	} );
@@ -62,7 +64,8 @@ describe( "Dashboard", () => {
 			dependencies[ "stores/projectStore" ].getProjects.returns( [ { name: "new" } ] );
 			postal.channel( "lux.store" ).publish( "project.changed" );
 			component.state.should.eql( {
-				projects: [ { name: "new" } ]
+				projects: [ { name: "new" } ],
+				hosts: []
 			} );
 		} );
 	} );

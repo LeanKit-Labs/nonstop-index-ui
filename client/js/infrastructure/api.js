@@ -3,7 +3,6 @@ import halon from "halon";
 import $ from "jquery";
 import window from "window";
 import config from "../clientConfig";
-import hostsResponse from "../../spec/data/hostsResponse.js";
 
 var nsAPI = window.nsAPI = halon( {
 	root: `${ config.nonstopIndexApi }`,
@@ -13,7 +12,8 @@ var nsAPI = window.nsAPI = halon( {
 	},
 	adapter: halon.jQueryAdapter( $ ),
 	version: 1,
-	headers: config.headers
+	headers: config.headers,
+	resourceUrlPrefix: "/index"
 } );
 
 function errorHandler( error ) {
@@ -33,7 +33,7 @@ function loadProjects() {
 function loadHosts() {
 	return nsAPI.host.list()
 		.then(
-			( data ) => lux.publishAction( "loadHostsSuccess", hostsResponse ),
+			( data ) => lux.publishAction( "loadHostsSuccess", data ),
 			( data ) => lux.publishAction( "loadHostsError", data )
 		);
 }
