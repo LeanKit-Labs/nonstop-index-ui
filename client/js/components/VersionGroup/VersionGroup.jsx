@@ -37,6 +37,7 @@ export default React.createClass( {
 	propTypes: {
 		className: React.PropTypes.string,
 		hosts: React.PropTypes.array,
+		onRelease: React.PropTypes.func.isRequired,
 		versions: React.PropTypes.object.isRequired
 	},
 	getDefaultProps() {
@@ -59,8 +60,12 @@ export default React.createClass( {
 			);
 		} ) );
 	},
-	handleOnRelease( pkg, event, key ) {
-		console.log( event, key, pkg );
+	handleOnRelease( pkg, event, name ) {
+		const data = [];
+		[ "project", "owner", "branch", "version" ].forEach( function( field ) {
+			data.push( { op: "change", field, value: pkg[ field ] } );
+		} );
+		this.props.onRelease( { name, data } );
 	},
 	renderRelease( pkg ) {
 		return <DropdownButton bsStyle="default" title="Deploy" id={ `dropdown-basic-${pkg.version}` } onSelect={ this.handleOnRelease.bind( this, pkg ) }>

@@ -17,7 +17,7 @@ function getState( { name, owner, branch } ) {
 
 export default React.createClass( {
 	mixins: [ lux.reactMixin.actionCreator, lux.reactMixin.store ],
-	getActions: [ "viewProject", "viewHost" ],
+	getActions: [ "viewProject", "viewHost", "applySettings" ],
 	stores: {
 		listenTo: [ "project" ],
 		onChange() {
@@ -70,7 +70,10 @@ export default React.createClass( {
 					<section className="content">
 						<div className="row">
 							<div className="col-md-8">
-								<VersionGroup versions={ this.state.versions } hosts={ this.state.allHosts } />
+								<VersionGroup
+									versions={ this.state.versions }
+									hosts={ this.state.allHosts }
+									onRelease={ this.applySettings } />
 							</div>
 							<div className="col-md-4">
 								<HostList hosts={ this.state.hosts } onSelectHost={ this.viewHost } />

@@ -18,7 +18,8 @@ describe( "ProjectDetail Component", () => {
 					branches: [],
 					owners: [],
 					versions: {}
-				} )
+				} ),
+				getHosts: sinon.stub().returns( [] )
 			}
 		};
 		ProjectDetail = projectDetailFactory( dependencies );
@@ -46,7 +47,8 @@ describe( "ProjectDetail Component", () => {
 			component.state.should.eql( {
 				branches: [],
 				owners: [],
-				versions: {}
+				versions: {},
+				allHosts: []
 			} );
 		} );
 
