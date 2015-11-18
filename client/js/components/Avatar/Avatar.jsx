@@ -14,7 +14,7 @@ export default React.createClass( {
 	},
 	render() {
 		return (
-			<img className="avatar" src={ `https://avatars.githubusercontent.com/${ this.props.owner }?s=${ this.props.size || 16 }` } />
+			<img className="avatar" src={ `https://avatars.githubusercontent.com/${ this.props.owner }?s=${ this.props.size }` } />
 		);
 	}
 } );
