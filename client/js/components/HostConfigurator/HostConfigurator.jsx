@@ -6,14 +6,14 @@ import Dropdown from "react-bootstrap/lib/Dropdown";
 import MenuItem from "react-bootstrap/lib/MenuItem";
 
 function getState() {
-	return configurationStore.getOptions();
+	return Object.assign( {}, configurationStore.getOptions(), { applyEnabled: configurationStore.getApplyEnabled() } );
 }
 
 export default React.createClass( {
 	mixins: [ lux.reactMixin.actionCreator, lux.reactMixin.store ],
-	getActions: [ "configureHost", "selectProject", "selectOwner", "selectBranch", "selectVersion" ],
+	getActions: [ "configureHost", "selectProject", "selectOwner", "selectBranch", "selectVersion", "selectHost", "applySettings" ],
 	stores: {
-		listenTo: [ "configuration" ],
+		listenTo: [ "configuration", "project" ],
 		onChange() {
 			this.setState( getState() );
 		}
@@ -24,12 +24,31 @@ export default React.createClass( {
 	getInitialState() {
 		return getState();
 	},
+	renderHostDropdown() {
+		const manyHosts = this.state.hosts.length > 1;
+		const selected = this.state.selectedHost;
+		return (
+			<div className="form-group">
+				<label className="hostConfiguration-dropdownLabel" htmlFor="hostDropdown">Host</label>
+				<Dropdown ref="hostDropdown" bsStyle="default" id="hostDropdown">
+					<Dropdown.Toggle disabled={ !manyHosts } noCaret={ !manyHosts }>
+						<i className="fa fa-book"></i> { selected && selected.name }
+					</Dropdown.Toggle>
+					<Dropdown.Menu>
+					{ this.state.hosts.map( host => {
+						return <MenuItem key={ host.name } onSelect={ this.selectHost.bind( this, host ) }>{ host.name }</MenuItem>;
+					} ) }
+					</Dropdown.Menu>
+				</Dropdown>
+			</div>
+		);
+	},
 	renderProjectDropdown() {
 		const manyProjects = this.state.projects.length > 1;
 		const selected = this.state.selectedProject;
 		return (
-			<div className="">
-				<label htmlFor="projectDropdown">Project</label>
+			<div className="form-group">
+				<label className="hostConfiguration-dropdownLabel" htmlFor="projectDropdown">Project</label>
 				<Dropdown bsStyle="default" id="projectDropdown">
 					<Dropdown.Toggle disabled={ !manyProjects } noCaret={ !manyProjects }>
 						<i className="fa fa-book"></i> { selected }
@@ -47,8 +66,8 @@ export default React.createClass( {
 		const manyOwners = this.state.owners.length > 1;
 		const selected = this.state.selectedOwner;
 		return (
-			<div className="">
-				<label htmlFor="ownerDropdown">Owner</label>
+			<div className="form-group">
+				<label className="hostConfiguration-dropdownLabel" htmlFor="ownerDropdown">Owner</label>
 				<Dropdown bsStyle="default" id="ownerDropdown">
 					<Dropdown.Toggle disabled={ !manyOwners } noCaret={ !manyOwners }>
 						<i className="fa fa-book"></i> { selected }
@@ -66,8 +85,8 @@ export default React.createClass( {
 		const manyBranches = this.state.branches.length > 1;
 		const selected = this.state.selectedBranch;
 		return (
-			<div className="">
-				<label htmlFor="branchDropdown">Branch</label>
+			<div className="form-group">
+				<label className="hostConfiguration-dropdownLabel" htmlFor="branchDropdown">Branch</label>
 				<Dropdown bsStyle="default" id="branchDropdown">
 					<Dropdown.Toggle disabled={ !manyBranches } noCaret={ !manyBranches }>
 						<i className="fa fa-book"></i> { selected }
@@ -82,11 +101,11 @@ export default React.createClass( {
 		);
 	},
 	renderVersionDropdown() {
-		const manyVersions = this.state.owners.length > 1;
+		const manyVersions = this.state.versions.length > 1;
 		const selected = this.state.selectedVersion;
 		return (
-			<div className="">
-				<label htmlFor="versionDropdown">Version</label>
+			<div className="form-group">
+				<label className="hostConfiguration-dropdownLabel" htmlFor="versionDropdown">Version</label>
 				<Dropdown bsStyle="default" id="versionDropdown">
 					<Dropdown.Toggle disabled={ !manyVersions } noCaret={ !manyVersions }>
 						<i className="fa fa-book"></i> { selected }
@@ -116,17 +135,16 @@ export default React.createClass( {
 						<div className="box-header with-border">
 							<h3 className="box-title">Configuration Settings</h3>
 						</div>
-						<form role="form" lpformnum="1">
-							<div className="box-body">
-							{ this.renderProjectDropdown() }
-							{ this.renderOwnerDropdown() }
-							{ this.renderBranchDropdown() }
-							{ this.renderVersionDropdown() }
-							</div>
-							<div className="box-footer">
-								<button type="submit" className="btn btn-primary">Submit</button>
-							</div>
-						</form>
+						<div className="box-body">
+						{ this.renderHostDropdown() }
+						{ this.renderProjectDropdown() }
+						{ this.renderOwnerDropdown() }
+						{ this.renderBranchDropdown() }
+						{ this.renderVersionDropdown() }
+						</div>
+						<div className="box-footer">
+							<button disabled={ !this.state.applyEnabled } onClick={ this.applySettings } type="submit" className="btn btn-primary">Apply Settings</button>
+						</div>
 					</div>
 				</section>
 			</div>

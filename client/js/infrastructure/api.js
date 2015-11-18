@@ -3,6 +3,7 @@ import halon from "halon";
 import $ from "jquery";
 import window from "window";
 import config from "../clientConfig";
+import configurationStore from "stores/configurationStore";
 
 var nsAPI = window.nsAPI = halon( {
 	root: `${ config.nonstopIndexApi }`,
@@ -48,6 +49,10 @@ export default lux.mixin( {
 			loadProjects().then( loadHosts );
 		},
 		loadProjects,
-		loadHosts
+		loadHosts,
+		applySettings() {
+			const settings = configurationStore.getChanges();
+			nsAPI.host.configure( settings );
+		}
 	}
 }, lux.mixin.actionCreator, lux.mixin.actionListener );
