@@ -15,7 +15,7 @@
 		},
 		"themeOptions": [],
 		"featureOptions": {
-			"config": false
+			"config": true
 		},
 		"nonstopIndexApi": "http://nsindex.com:4444/api",
 		"headers": {

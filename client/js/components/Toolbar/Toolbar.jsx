@@ -44,6 +44,11 @@ export default React.createClass( {
 				<nav className="navbar navbar-inverse navbar-static-top" role="navigation">
 					<div className="navbar-custom-menu">
 						<ul className="nav navbar-nav">
+							<li className="dropdown messages-menu">
+								<a onClick={ this.viewHome } className="dropdown-toggle" data-toggle="dropdown">
+									<i className="fa fa-dashboard"></i> Dashboard
+								</a>
+							</li>
 							{ featureOptions.config ? this.renderConfig() : null }
 						</ul>
 					</div>

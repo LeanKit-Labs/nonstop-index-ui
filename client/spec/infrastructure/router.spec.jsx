@@ -24,6 +24,7 @@ describe( "Router", () => {
 			App: App,
 			Dashboard: getMockReactComponent( "Dashboard" ),
 			ProjectDetail: getMockReactComponent( "ProjectDetail" ),
+			HostConfigurator: getMockReactComponent( "HostConfigurator" ),
 			"infrastructure/luxLocationFactory": luxLocationStub,
 			"stores/navigationStore": navStore
 		} );
@@ -57,5 +58,12 @@ describe( "Router", () => {
 
 		const projectDetail = document.querySelector( ".component-projectdetail" );
 		should.exist( projectDetail );
+	} );
+
+	it( "should render the HostConfigurator component for configure paths", () => {
+		router.transitionTo( "/nonstop/host/configure" );
+
+		const taskConfigurator = document.querySelector( ".component-hostconfigurator" );
+		should.exist( taskConfigurator );
 	} );
 } );
