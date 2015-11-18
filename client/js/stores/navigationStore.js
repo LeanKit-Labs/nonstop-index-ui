@@ -69,7 +69,10 @@ export default new lux.Store( {
 			navigateForward( this, "" );
 		},
 		viewProject: function( { name, owner, branch } ) {
-			navigateForward( this, `project/${name}/${owner}/${branch}` );
+			navigateForward( this, `nonstop/project/${name}/${owner}/${branch}` );
+		},
+		viewHosts: function() {
+			navigateForward( this, "nonstop/host" );
 		}
 	},
 	getPath() {
