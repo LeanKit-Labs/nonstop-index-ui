@@ -20,9 +20,6 @@ export default React.createClass( {
 			className: ""
 		};
 	},
-	getInitialState() {
-		return {};
-	},
 	onSelectOwner( owner ) {
 		this.props.onSelectOwner( owner );
 	},

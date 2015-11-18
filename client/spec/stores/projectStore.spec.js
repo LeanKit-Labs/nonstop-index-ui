@@ -42,7 +42,18 @@ describe( "project store", () => {
 			] );
 		} );
 
-		describe( "getProject", () => {
+		describe( "getProject before project has been loaded", () => {
+			it( "should return an results with empty properties", () => {
+				const project = projectStore.getProject( "core-blu", "BanditSoftware", "master" );
+				project.should.eql( {
+					owners: [],
+					branches: [],
+					versions: {}
+				} );
+			} );
+		} );
+
+		describe( "getProject after project has been loaded", () => {
 			let project;
 
 			beforeEach( () => {
