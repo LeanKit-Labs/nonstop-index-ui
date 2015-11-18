@@ -50,6 +50,15 @@ export default lux.mixin( {
 		},
 		loadProjects,
 		loadHosts,
+		loadHostStatus( host ) {
+			nsAPI.host.status( { name: host } ).then(
+				( data ) => lux.publishAction( "loadHostStatusSuccess", {
+					name: host,
+					status: data
+				} ),
+				( data ) => lux.publishAction( "loadHostStatusError", data )
+			);
+		},
 		applySettings( settings ) {
 			settings = settings || configurationStore.getChanges();
 			nsAPI.host.configure( settings );

@@ -3,6 +3,8 @@ import "./HostList.less";
 import { flatten } from "lodash";
 
 export default React.createClass( {
+	mixins: [ lux.reactMixin.actionCreator ],
+	getActions: [ "loadHostStatus" ],
 	propTypes: {
 		hosts: React.PropTypes.array.isRequired,
 		onSelectHost: React.PropTypes.func.isRequired,
@@ -24,9 +26,24 @@ export default React.createClass( {
 				<td><i className="fa text-green fa-fw fa-code-fork"></i> { host.owner }/{ host.branch }</td>
 			</tr>,
 			<tr key={ `${host.name}-name-${i}` }>
+				<td>{ this.renderStatus( host ) }</td>
 				<td><i className="fa text-purple fa-fw fa-server"></i> { host.hostName }</td>
 			</tr>
 		] );
+	},
+	renderStatus( host ) {
+		if ( !host.status ) {
+			return <button onClick={ this.loadHostStatus.bind( this, host.name ) }>Get Status</button>;
+		} else {
+			return (
+				<div>
+					{ host.status.hostUptime }
+					{ host.status.serviceUptime }
+					{ host.status.slug }
+					{ host.status.version }
+				</div>
+			);
+		}
 	},
 	renderHosts() {
 		return (

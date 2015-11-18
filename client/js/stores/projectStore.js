@@ -1,5 +1,5 @@
 import lux from "lux.js";
-import { map, reduce, get as _get, set as _set } from "lodash";
+import { map, reduce, get as _get, set as _set, find } from "lodash";
 
 function getHostDetails( host ) {
 	const { project: projectName, branch, owner } = host.package;
@@ -33,6 +33,17 @@ export default new lux.Store( {
 				projects: this.addHostsToProjects( mappedHosts ),
 				hosts: mappedHosts
 			} );
+		},
+		loadHostStatusSuccess( { name, status } ) {
+			const host = find( this.getState().hosts, { name } );
+			if ( host ) {
+				host.status = {
+					serviceUptime:  _get( status, [ "uptime", "service" ], "" ),
+					hostUptime: _get( status, [ "uptime", "host" ], "" ),
+					slug: _get( status.activity, [ "running", "slug" ], "" ),
+					version: _get( status.activity, [ "running", "version" ], "" )
+				}
+			}
 		}
 	},
 	reduceProjects( packages ) {
