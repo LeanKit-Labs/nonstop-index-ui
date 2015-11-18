@@ -1,5 +1,5 @@
 import React from "react";
-
+import Avatar from "Avatar";
 import "./ProjectList.less";
 
 export default React.createClass( {
@@ -19,6 +19,7 @@ export default React.createClass( {
 			return <a key={ project.name } onClick={ this.props.onSelectProject.bind( null, project ) } className="list-group-item">
 				<h3 className="list-group-item-heading"><span>{ project.name }</span></h3>
 				<p className="list-group-item-text text-muted">
+					<Avatar owner={ project.owner } />
 					<i className="fa fa-code-fork"></i> <strong>{ project.owner }/{ project.branch }</strong>
 				</p>
 			</a>;
