@@ -1,5 +1,6 @@
 import React from "react";
 import "./HostList.less";
+import lux from "lux.js";
 import { flatten } from "lodash";
 
 export default React.createClass( {
@@ -19,28 +20,30 @@ export default React.createClass( {
 	renderHost( host, i ) {
 		return ( [
 			<tr key={ `${host.name}-${i}` }>
-				<td rowSpan="3" ><strong>{ host.name }</strong><br />{ host.ip }</td>
+				<td rowSpan="4" ><strong>{ host.name }</strong><br />{ host.ip }</td>
 				<td><i className="fa text-primary fa-fw fa-bookmark"></i> { host.projectName }</td>
 			</tr>,
 			<tr key={ `${host.name}-branch-${i}` }>
 				<td><i className="fa text-green fa-fw fa-code-fork"></i> { host.owner }/{ host.branch }</td>
 			</tr>,
 			<tr key={ `${host.name}-name-${i}` }>
-				<td>{ this.renderStatus( host ) }</td>
 				<td><i className="fa text-purple fa-fw fa-server"></i> { host.hostName }</td>
+			</tr>,
+			<tr key={ `${host.name}-status-${i}` }>
+				<td>{ this.renderStatus( host ) }</td>
 			</tr>
 		] );
 	},
 	renderStatus( host ) {
 		if ( !host.status ) {
-			return <button onClick={ this.loadHostStatus.bind( this, host.name ) }>Get Status</button>;
+			return <button className="btn btn-default btn-small" onClick={ this.loadHostStatus.bind( this, host.name ) }>Get Status</button>;
 		} else {
 			return (
 				<div>
-					{ host.status.hostUptime }
-					{ host.status.serviceUptime }
-					{ host.status.slug }
-					{ host.status.version }
+					<strong>Host Uptime</strong> { host.status.hostUptime }<br />
+					<strong>Service Uptime</strong> { host.status.serviceUptime }<br />
+					<strong>Slug</strong> { host.status.slug }<br />
+					<strong>Version</strong> { host.status.version }
 				</div>
 			);
 		}
