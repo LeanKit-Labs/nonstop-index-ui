@@ -1,4 +1,5 @@
 import React from "react";
+import Avatar from "Avatar";
 import Dropdown from "react-bootstrap/lib/Dropdown";
 import MenuItem from "react-bootstrap/lib/MenuItem";
 
@@ -31,7 +32,7 @@ export default React.createClass( {
 		return (
 			<Dropdown bsStyle="default" id="ownerDropdown">
 				<Dropdown.Toggle disabled={ !manyOwners } noCaret={ !manyOwners }>
-					<i className="fa fa-book"></i> { this.props.owner }
+					<Avatar owner={ this.props.owner } />{ this.props.owner }
 				</Dropdown.Toggle>
 				<Dropdown.Menu>
 				{ this.props.owners.map( owner => {

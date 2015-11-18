@@ -6,6 +6,7 @@ import api from "infrastructure/api";
 import router from "infrastructure/router";
 import projectStore from "stores/projectStore";
 import navStore from "stores/navigationStore";
+import configurationStore from "stores/configurationStore";
 
 /* istanbul ignore next only used for development */
 if ( DEBUG ) {
@@ -16,6 +17,7 @@ if ( DEBUG ) {
 	window.api = api;
 	window.navStore = navStore;
 	window.projectStore = projectStore;
+	window.configurationStore = configurationStore;
 }
 
 // errors when rendering reports are typically initiated as the result of an async request returning

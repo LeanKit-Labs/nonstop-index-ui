@@ -74,8 +74,8 @@ export default new lux.Store( {
 		viewProject: function( { name, owner, branch } ) {
 			navigateForward( this, `nonstop/project/${name}/${owner}/${branch}` );
 		},
-		viewHosts: function() {
-			navigateForward( this, "nonstop/host" );
+		viewConfigurator: function() {
+			navigateForward( this, "nonstop/host/configure" );
 		}
 	},
 	getPath() {
