@@ -14,6 +14,9 @@
 			}
 		},
 		"themeOptions": [],
+		"featureOptions": {
+			"config": false
+		},
 		"nonstopIndexApi": "http://nsindex.com:4444/api",
 		"headers": {
 			"Authorization": "Bearer SooPurSeekretTokin"

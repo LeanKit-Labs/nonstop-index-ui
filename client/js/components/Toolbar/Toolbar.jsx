@@ -3,6 +3,7 @@ import lux from "lux.js";
 
 import layoutStore from "stores/layoutStore";
 import Logo from "Logo";
+import { featureOptions } from "../../clientConfig";
 
 import "./Toolbar.less";
 
@@ -25,6 +26,15 @@ export default React.createClass( {
 	getInitialState() {
 		return getState();
 	},
+	renderConfig() {
+		return (
+			<li className="dropdown messages-menu">
+				<a onClick={ this.viewConfigurator } className="dropdown-toggle" data-toggle="dropdown">
+					<i className="fa fa-cogs"></i> Configuration
+				</a>
+			</li>
+		);
+	},
 	render() {
 		return (
 			<header className="main-header">
@@ -34,11 +44,7 @@ export default React.createClass( {
 				<nav className="navbar navbar-inverse navbar-static-top" role="navigation">
 					<div className="navbar-custom-menu">
 						<ul className="nav navbar-nav">
-							<li className="dropdown messages-menu">
-								<a onClick={ this.viewConfigurator } className="dropdown-toggle" data-toggle="dropdown">
-									<i className="fa fa-cogs"></i> Configuration
-								</a>
-							</li>
+							{ featureOptions.config ? this.renderConfig() : null }
 						</ul>
 					</div>
 				</nav>
