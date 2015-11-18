@@ -21,7 +21,7 @@ describe( "project store", () => {
 			projectStore.getState().should.eql( {
 				projects: {},
 				packages: {},
-				hosts: {}
+				hosts: []
 			} );
 		} );
 	} );
