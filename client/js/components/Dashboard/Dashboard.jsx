@@ -40,10 +40,14 @@ export default React.createClass( {
 					</ol>
 				</section>
 				<section className="content">
-					<ProjectList projects={ this.state.projects } onSelectProject={ this.viewProject } />
-				</section>
-				<section className="content">
-					<HostList hosts={ this.state.hosts } onSelectHost={ this.viewHost } />
+					<div className="row">
+						<div className="col-md-6">
+							<ProjectList projects={ this.state.projects } onSelectProject={ this.viewProject } />
+						</div>
+						<div className="col-md-6">
+							<HostList hosts={ this.state.hosts } onSelectHost={ this.viewHost } />
+						</div>
+					</div>
 				</section>
 			</div>
 		);

@@ -28,8 +28,8 @@ export default React.createClass( {
 	render() {
 		return (
 			<div className="box box-primary">
-				<div className="box-header">
-					<h3 className="box-title">{ this.props.title }</h3>
+				<div className="box-header bg-info">
+					<h3 className="box-title text-primary"><i className="fa fa-bookmark"></i> { this.props.title }</h3>
 				</div>
 				<div className="box-body no-padding">
 					<div className="list-group list-full-width">

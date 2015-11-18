@@ -63,8 +63,16 @@ export default React.createClass( {
 					branches={ this.state.branches }
 					onSelectOwner={ this.onSelectOwner }
 					onSelectBranch={ this.onSelectBranch } />
-				<VersionGroup className="content" versions={ this.state.versions } />
-				<HostList hosts={ this.state.hosts } onSelectHost={ this.viewHost } />
+					<section className="content">
+						<div className="row">
+							<div className="col-md-8">
+								<VersionGroup versions={ this.state.versions } />
+							</div>
+							<div className="col-md-4">
+								<HostList hosts={ this.state.hosts } onSelectHost={ this.viewHost } />
+							</div>
+						</div>
+					</section>
 			</div>
 		);
 	}

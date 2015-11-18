@@ -27,7 +27,7 @@ describe( "ProjectList", () => {
 	describe( "when rendering", () => {
 		it( "should render a title", () => {
 			const title = ReactUtils.findRenderedDOMComponentWithClass( component, "box-title" );
-			title.getDOMNode().textContent.should.equal( "Projects" );
+			title.getDOMNode().textContent.trim().should.equal( "Projects" );
 		} );
 		it( "should render projects", () => {
 			component.setProps( {
