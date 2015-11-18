@@ -20,6 +20,7 @@ describe( "app", () => {
 			},
 			"stores/projectStore": {},
 			"stores/navigationStore": {},
+			"stores/configurationStore": {},
 			"infrastructure/errorHandler": errorHandlerStub,
 			"infrastructure/api": {},
 			"infrastructure/router": {}

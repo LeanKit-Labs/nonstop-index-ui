@@ -26,6 +26,9 @@ describe( "API", () => {
 
 		dependencies = {
 			halon: sinon.stub().returns( halonStubs ),
+			"stores/configurationStore": {
+				getChanges: sinon.stub()
+			},
 			jquery: {
 				ajaxSetup: sinon.stub()
 			}
