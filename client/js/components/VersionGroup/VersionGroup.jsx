@@ -63,7 +63,7 @@ export default React.createClass( {
 		console.log( event, key, pkg );
 	},
 	renderRelease( pkg ) {
-		return <DropdownButton bsStyle="default" title="Release" id={ `dropdown-basic-${pkg.version}` } onSelect={ this.handleOnRelease.bind( this, pkg ) }>
+		return <DropdownButton bsStyle="default" title="Deploy" id={ `dropdown-basic-${pkg.version}` } onSelect={ this.handleOnRelease.bind( this, pkg ) }>
 			{ this.props.hosts.map( host => <MenuItem key={ host.name } eventKey={ host.name }>{ host.name }</MenuItem> ) }
 		</DropdownButton>;
 	},
@@ -89,7 +89,7 @@ export default React.createClass( {
 										<th scope="col">Platform</th>
 										<th scope="col">Architecture</th>
 										<th scope="col">Slug</th>
-										<th scope="col">Release</th>
+										<th scope="col">Actions</th>
 									</tr>
 								</thead>
 								<tbody>
