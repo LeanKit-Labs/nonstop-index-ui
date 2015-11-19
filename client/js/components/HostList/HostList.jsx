@@ -1,14 +1,13 @@
 import React from "react";
-import "./HostList.less";
 import lux from "lux.js";
 import { flatten } from "lodash";
+import "./HostList.less";
 
 export default React.createClass( {
 	mixins: [ lux.reactMixin.actionCreator ],
 	getActions: [ "loadHostStatus" ],
 	propTypes: {
 		hosts: React.PropTypes.array.isRequired,
-		onSelectHost: React.PropTypes.func.isRequired,
 		title: React.PropTypes.string
 	},
 	getDefaultProps() {
@@ -39,7 +38,7 @@ export default React.createClass( {
 			return <button className="btn btn-default btn-small" onClick={ this.loadHostStatus.bind( this, host.name ) }>Get Status</button>;
 		} else {
 			return (
-				<div>
+				<div className="hostList-status">
 					<strong>Host Uptime</strong> { host.status.hostUptime }<br />
 					<strong>Service Uptime</strong> { host.status.serviceUptime }<br />
 					<strong>Slug</strong> { host.status.slug }<br />
@@ -50,7 +49,7 @@ export default React.createClass( {
 	},
 	renderHosts() {
 		return (
-			<div className="row">
+			<div className="hostList row">
 				<div className="col-md-12">
 					<table className="table no-padding">
 						<thead>
