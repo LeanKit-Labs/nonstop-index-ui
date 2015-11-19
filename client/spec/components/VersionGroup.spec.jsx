@@ -1,10 +1,19 @@
 import versionGroupFactory from "inject!VersionGroup";
 
 describe( "VersionGroup", () => {
-	let component, dependencies, VersionGroup;
+	let component, components, dependencies, VersionGroup;
 
 	beforeEach( () => {
-		dependencies = {};
+		components = {
+			DropdownButton: getMockReactComponent( "DropdownButton" ),
+			MenuItem: getMockReactComponent( "MenuItem" )
+		};
+
+		dependencies = {
+			"react-bootstrap/lib/DropdownButton": components.DropdownButton,
+			"react-bootstrap/lib/MenuItem": components.MenuItem
+		};
+
 		VersionGroup = versionGroupFactory( dependencies );
 	} );
 
@@ -68,23 +77,30 @@ describe( "VersionGroup", () => {
 		} );
 
 		describe( "builds and packages", () => {
-			let rows;
+			let rows, onReleaseStub;
 
 			beforeEach( () => {
+				onReleaseStub = sinon.stub();
+
 				createComponent( {
 					versions: {
 						1: {
 							builds: {
 								b1: { packages: [
-									{ file: "p01", architecture: "x86", platform: "darwin", slug: "123", owner: "owner", project: "project" },
-									{ file: "p02", architecture: "x64", platform: "linux", slug: "234", owner: "owner", project: "project" }
+									{ file: "p01", architecture: "x86", platform: "darwin", slug: "123", owner: "ownerOne", project: "projectOne", branch: "branchOne", version: "1b1" },
+									{ file: "p02", architecture: "x64", platform: "linux", slug: "234", owner: "ownerOne", project: "projectTwo", branch: "branchTwo", version: "1b1" }
 								] },
 								b2: { packages: [
-									{ file: "p03", architecture: "x128", platform: "amd", slug: "123", owner: "owner", project: "project" }
+									{ file: "p03", architecture: "x128", platform: "amd", slug: "123", owner: "ownerOne", project: "projectOne", branch: "branchOne", version: "1b2" }
 								] }
 							}
 						}
-					}
+					},
+					hosts: [
+						{ name: "hostOne" },
+						{ name: "hostTwo" }
+					],
+					onRelease: onReleaseStub
 				} );
 				rows = ReactDOM.findDOMNode( component ).querySelectorAll( "tbody tr" );
 			} );
@@ -118,8 +134,40 @@ describe( "VersionGroup", () => {
 
 			it( "should create a link to github for the slugs", () => {
 				const link = rows[ 0 ].querySelector( "a" );
-				link.href.should.equal( "https://github.com/owner/project/commit/123" );
+				link.href.should.equal( "https://github.com/ownerOne/projectOne/commit/123" );
 				link.textContent.trim().should.equal( "123" );
+			} );
+
+			it( "should render a Deploy button for each row", () => {
+				const toggles = ReactUtils.scryRenderedComponentsWithType( component, components.DropdownButton );
+				toggles.should.have.lengthOf( 3 );
+			} );
+
+			it( "should render the branch choices in the menu", () => {
+				const items = ReactUtils.scryRenderedComponentsWithType( component, components.MenuItem );
+				items.should.have.lengthOf( 6 );
+
+				const values = [ "hostOne", "hostTwo" ];
+
+				_.each( [ ...values, ...values, ...values ], ( value, index ) => {
+					ReactDOM.findDOMNode( items[ index ] ).textContent.should.contain( value );
+				} );
+			} );
+
+			it( "should call the onRelease prop onSelect of Dropdown", () => {
+				const firstToggle = ReactUtils.scryRenderedComponentsWithType( component, components.DropdownButton )[ 0 ];
+
+				firstToggle.props.onSelect( {}, "hostOne" );
+
+				onReleaseStub.should.be.calledOnce.and.calledWith( {
+					name: "hostOne",
+					data: [
+						{ field: "project", op: "change", value: "projectOne" },
+						{ field: "owner", op: "change", value: "ownerOne" },
+						{ field: "branch", op: "change", value: "branchOne" },
+						{ field: "version", op: "change", value: "1b1" }
+					]
+				} );
 			} );
 		} );
 	} );
