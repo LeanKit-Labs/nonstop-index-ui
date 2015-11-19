@@ -29,7 +29,7 @@ export default React.createClass( {
 	renderConfig() {
 		return (
 			<li className="dropdown messages-menu">
-				<a onClick={ this.viewConfigurator } className="dropdown-toggle" data-toggle="dropdown">
+				<a ref="configLink" onClick={ this.viewConfigurator } className="dropdown-toggle" data-toggle="dropdown">
 					<i className="fa fa-cogs"></i> Configuration
 				</a>
 			</li>
