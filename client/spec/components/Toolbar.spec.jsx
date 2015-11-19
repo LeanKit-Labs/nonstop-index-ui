@@ -1,20 +1,26 @@
 import toolbarFactory from "inject!Toolbar";
 
 describe( "Toolbar", () => {
-	let component, dependencies, actions;
+	let component, dependencies, actions, featureOptions;
 
 	beforeEach( () => {
 		actions = {
-			viewHome: sinon.stub()
+			viewHome: sinon.stub(),
+			viewConfigurator: sinon.stub()
 		};
 
 		lux.customActionCreator( actions );
+
+		featureOptions = {
+			config: true
+		};
 
 		dependencies = {
 			Logo: getMockReactComponent( "Logo" ),
 			"stores/layoutStore": {
 				getState: sinon.stub().returns( {} )
-			}
+			},
+			"../../clientConfig": { featureOptions }
 		};
 
 		const Toolbar = toolbarFactory( dependencies );
@@ -47,6 +53,17 @@ describe( "Toolbar", () => {
 			const logo = ReactUtils.findRenderedComponentWithType( component, dependencies.Logo );
 			should.exist( logo );
 		} );
+
+		it( "should render configuration when feature is turned on", () => {
+			component.refs.configLink.textContent.should.contain( "Configuration" );
+		} );
+
+		it( "should not render configuration when feature is turned off", () => {
+			featureOptions.config = false;
+			component.forceUpdate();
+
+			should.equal( component.refs.configLink, undefined );
+		} );
 	} );
 
 	describe( "when handling store changes", () => {
@@ -64,6 +81,11 @@ describe( "Toolbar", () => {
 			const logo = ReactUtils.findRenderedDOMComponentWithClass( component, "logo" );
 			ReactUtils.Simulate.click( logo );
 			lux.actions.viewHome.should.be.calledOnce;
+		} );
+
+		it( "should trigger viewConfigurator on configuration link", () => {
+			ReactUtils.Simulate.click( component.refs.configLink );
+			lux.actions.viewConfigurator.should.be.calledOnce;
 		} );
 	} );
 } );
