@@ -38,11 +38,11 @@ export default new lux.Store( {
 			const host = find( this.getState().hosts, { name } );
 			if ( host ) {
 				host.status = {
-					serviceUptime:  _get( status, [ "uptime", "service" ], "" ),
+					serviceUptime: _get( status, [ "uptime", "service" ], "" ),
 					hostUptime: _get( status, [ "uptime", "host" ], "" ),
 					slug: _get( status.activity, [ "running", "slug" ], "" ),
 					version: _get( status.activity, [ "running", "version" ], "" )
-				}
+				};
 			}
 		}
 	},

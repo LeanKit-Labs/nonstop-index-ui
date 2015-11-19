@@ -2,17 +2,22 @@ import lux from "lux.js";
 import { merge, set as _set, get as _get, each, all } from "lodash";
 import projectStore from "./projectStore";
 
-function mergeState( store, newState ) {
-	const state = store.getState();
-	store.setState( merge( state, newState ) );
+function updateSelections( store, updatedSelections ) {
+	const { selections: currentSelections, tree } = store.getState();
+	const mergedSelections = merge( currentSelections, updatedSelections );
+
+	store.setState( {
+		selections: getSelections( mergedSelections, tree )
+	} );
 }
 
+// use current value or fallback to a default using the first legal value
 function getSelections( current, tree ) {
-	const project = current.project || Object.keys( tree ).sort()[0] || [];
-	const owner = current.owner || Object.keys( _get( tree, [ project ], [] ) ).sort()[0];
-	const branch = current.branch || Object.keys( _get( tree, [ project, owner ], [] ) ).sort()[0];
-	const version = current.version || Object.keys( _get( tree, [ project, owner, branch ], [] ) ).sort()[0];
-	const host = current.host || projectStore.getHosts()[0];
+	const project = current.project || Object.keys( tree ).sort()[ 0 ];
+	const owner = current.owner || Object.keys( _get( tree, [ project ], [] ) ).sort()[ 0 ];
+	const branch = current.branch || Object.keys( _get( tree, [ project, owner ], [] ) ).sort()[ 0 ];
+	const version = current.version || Object.keys( _get( tree, [ project, owner, branch ], [] ) ).sort()[ 0 ];
+	const host = current.host || projectStore.getHosts()[ 0 ];
 	return {
 		project,
 		owner,
@@ -45,44 +50,34 @@ export default new lux.Store( {
 			this.setState( { packages, tree, selections } );
 		},
 		selectProject( project ) {
-			mergeState( this, {
-				selections: {
-					project: project,
-					owner: undefined,
-					branch: undefined,
-					version: undefined
-				}
+			updateSelections( this, {
+				project: project,
+				owner: null,
+				branch: null,
+				version: null
 			} );
 		},
 		selectOwner( owner ) {
-			mergeState( this, {
-				selections: {
-					owner: owner,
-					branch: undefined,
-					version: undefined
-				}
+			updateSelections( this, {
+				owner: owner,
+				branch: null,
+				version: null
 			} );
 		},
 		selectBranch( branch ) {
-			mergeState( this, {
-				selections: {
-					branch: branch,
-					version: undefined
-				}
+			updateSelections( this, {
+				branch: branch,
+				version: null
 			} );
 		},
 		selectVersion( version ) {
-			mergeState( this, {
-				selections: {
-					version: version
-				}
+			updateSelections( this, {
+				version: version
 			} );
 		},
 		selectHost( host ) {
-			mergeState( this, {
-				selections: {
-					host: host
-				}
+			updateSelections( this, {
+				host: host
 			} );
 		},
 		applySettings() {
@@ -100,16 +95,12 @@ export default new lux.Store( {
 		const tree = state.tree;
 		const selectedProject = state.selections.project;
 		const projects = Object.keys( tree ).sort();
-
 		const owners = Object.keys( _get( tree, [ selectedProject ], [] ) ).sort();
 		const selectedOwner = state.selections.owner;
-
 		const branches = Object.keys( _get( tree, [ selectedProject, selectedOwner ], [] ) ).sort();
 		const selectedBranch = state.selections.branch;
-
 		const versions = Object.keys( _get( tree, [ selectedProject, selectedOwner, selectedBranch ], [] ) ).sort();
 		const selectedVersion = state.selections.version;
-
 		const hosts = projectStore.getHosts();
 		const selectedHost = state.selections.host;
 		return {
