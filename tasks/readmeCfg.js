@@ -3,6 +3,9 @@ var _ = require( "lodash" );
 var fs = require( "fs" );
 var path = require( "path" );
 var opsTerms = [
+	"NS__AUTH__GITHUB__CLIENT_ID",
+	"NS__AUTH__GITHUB__CLIENT_SECRET",
+	"NS__AUTH__GITHUB__CALLBACK_URL",
 	"NS__HOST__PORT",
 	"NS__LOGGING__ADAPTERS__STD_OUT__LEVEL",
 	"NS_RABBIT_USER",

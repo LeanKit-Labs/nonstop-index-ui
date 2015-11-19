@@ -44,6 +44,10 @@ describe( "ProjectList", () => {
 
 			items.should.have.lengthOf( 3 );
 
+			items[0].getAttribute( "href" ).should.equal( "/nonstop/project/project-one/owner-one/branch-one" );
+			items[1].getAttribute( "href" ).should.equal( "/nonstop/project/project-two/owner-two/branch-two" );
+			items[2].getAttribute( "href" ).should.equal( "/nonstop/project/project-three/owner-three/branch-three" );
+
 			headings[0].getDOMNode().textContent.should.equal( "project-one" );
 			headings[1].getDOMNode().textContent.should.equal( "project-two" );
 			headings[2].getDOMNode().textContent.should.equal( "project-three" );

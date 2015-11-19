@@ -4,6 +4,7 @@ import $ from "jquery";
 import window from "window";
 import config from "../clientConfig";
 import configurationStore from "stores/configurationStore";
+import when from "when";
 
 var nsAPI = window.nsAPI = halon( {
 	root: `${ config.nonstopIndexApi }`,
@@ -39,6 +40,14 @@ function loadHosts() {
 		);
 }
 
+function loadUser() {
+	return $.getJSON( "/nonstop/user/me" )
+		.then(
+			( data ) => lux.publishAction( "loadUserSuccess", data ),
+			( data ) => lux.publishAction( "loadUserFailure", data )
+		);
+}
+
 export default lux.mixin( {
 	getActions: [
 		"pageInitialized"
@@ -46,10 +55,14 @@ export default lux.mixin( {
 	namespace: "api",
 	handlers: {
 		initializePage() {
-			loadProjects().then( loadHosts );
+			when.join(
+				loadProjects().then( loadHosts ),
+				loadUser()
+			);
 		},
 		loadProjects,
 		loadHosts,
+		loadUser,
 		loadHostStatus( host ) {
 			nsAPI.host.status( { name: host } ).then(
 				( data ) => lux.publishAction( "loadHostStatusSuccess", {

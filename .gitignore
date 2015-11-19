@@ -25,7 +25,7 @@ report/
 bower/
 public/css
 public/js
-public/index.html
+public/*.html
 public/images
 server/log
 _spec-tmp

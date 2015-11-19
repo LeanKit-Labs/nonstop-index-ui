@@ -1,4 +1,13 @@
 {
+	"auth": {
+		"loginEndpoint": "/nonstop/auth/login",
+		"authEndpoint": "/nonstop/auth/github",
+		"github": {
+			"clientId": "YOUR_CLIENT_ID_HERE",
+			"clientSecret": "YOUR_CLIENT_SECRET_HERE",
+			"callbackUrl": "http://localhost:8048/nonstop/auth/github/callback"
+		}
+	},
 	"client" : {
 		"luxAutohost": {
 			"filter": {
@@ -31,7 +40,7 @@
 		"port": 8048,
 		"socketIO": false,
 		"noOptions": true,
-		"anonymous": [ "/_status", "/project", "/images", "/js", "/css", "/fonts" ],
+		"anonymous": [ "/nonstop/_status", "/nonstop/auth/login", "/nonstop/images", "/nonstop/js", "/nonstop/css", "/nonstop/fonts" ],
 		"modules": [ "autohost-logging-collector", "autohost-metrics-collector", "autohost-pubsub" ],
 		"apiPrefix": "",
 		"static": {
