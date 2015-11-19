@@ -107,6 +107,30 @@ describe( "navigation store", () => {
 			} );
 		} );
 
+		describe( "when handling viewConfigurator", () => {
+			let state;
+
+			beforeEach( () => {
+				state = navigationStore.getState();
+				state.lastChangeFromBrowser = true;
+				lux.publishAction( "viewConfigurator" );
+			} );
+			it( "should set the path and direction", () => {
+				state.path.should.equal( "nonstop/host/configure" );
+				state.direction.should.equal( "forward" );
+			} );
+			it( "should update history", () => {
+				state.history.should.have.lengthOf( 2 );
+				state.history[ 1 ].should.contain( { path: "nonstop/host/configure" } );
+			} );
+			it( "should update the current history", () => {
+				state.currentHistory.should.equal( 1 );
+			} );
+			it( "should mark the request as not from the browser", () => {
+				state.lastChangeFromBrowser.should.be.false;
+			} );
+		} );
+
 		describe( "when handling navigateBack", () => {
 			let state;
 			beforeEach( () => {
