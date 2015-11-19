@@ -1,8 +1,10 @@
 {
 	"auth": {
+		"sessionMessages": true,
 		"loginEndpoint": "/nonstop/auth/login",
 		"authEndpoint": "/nonstop/auth/github",
 		"github": {
+			"organization": "YOUR_GITHUB_ORG",
 			"clientId": "YOUR_CLIENT_ID_HERE",
 			"clientSecret": "YOUR_CLIENT_SECRET_HERE",
 			"callbackUrl": "http://localhost:8048/nonstop/auth/github/callback"
