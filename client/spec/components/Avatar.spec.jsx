@@ -22,7 +22,8 @@ describe( "Avatar", () => {
 		it( "should have default props", () => {
 			component.props.should.eql( {
 				owner: "anonymous",
-				size: 16
+				size: 16,
+				className: "avatar"
 			} );
 		} );
 	} );
@@ -33,11 +34,13 @@ describe( "Avatar", () => {
 
 			component.setProps( {
 				owner: "LeanKit-Labs",
-				size: 20
+				size: 20,
+				className: "new-class"
 			} );
 
 			node.nodeName.toLowerCase().should.equal( "img" );
 			node.src.should.equal( "https://avatars.githubusercontent.com/LeanKit-Labs?s=20" );
+			node.className.should.equal( "new-class" );
 		} );
 	} );
 } );

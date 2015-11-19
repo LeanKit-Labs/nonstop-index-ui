@@ -1,3 +1,6 @@
+var fs = require( "fs" );
+var path = require( "path" );
+
 export default function( host ) {
 	return {
 		name: "auth",
@@ -27,8 +30,25 @@ export default function( host ) {
 				method: "GET",
 				handle: ( env ) => {
 					return {
-						status: 200,
-						data: "<!doctype html><a href='/nonstop/auth/github'>Login with GitHub</a>"
+						statusCode: 200,
+						headers: {
+							"Content-Type": "text/html; charset=utf-8"
+						},
+						data: fs.readFileSync( path.resolve( __dirname, "../../../public/login.html" ) )
+					};
+				}
+			},
+			logout: {
+				url: "/auth/logout",
+				hidden: true,
+				method: "GET",
+				handle: ( env ) => {
+					env._original.req.logout();
+					return {
+						redirect: {
+							status: 302,
+							url: "/nonstop/auth/login"
+						}
 					};
 				}
 			}

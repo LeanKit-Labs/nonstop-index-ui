@@ -41,3 +41,48 @@ html, body {
   vertical-align: top;
   border-top: 1px solid #dddddd;
 }
+
+.login-page,
+.login-page body {
+	background: @color-dark;
+	min-height: 500px;
+}
+
+.loginLogo {
+	position: absolute;
+	left: 3em;
+	top: 8em;
+	bottom: 3em;
+	width: 50%;
+	max-width: 400px;
+
+	& > a {
+		position: absolute;
+		max-height: 100%;
+		left: 0;
+		bottom: 0;
+		width: 100%;
+	}
+
+	.ns-logo-index {
+		fill: @color-logo-index;
+	}
+	.ns-logo-nonstop {
+		fill: @color-logo-nonstop;
+	}
+}
+
+.loginButtons {
+	padding: 2em;
+	text-align: center;
+	background: darken( @color-dark, 5% );
+}
+
+.loginButton {
+	font-size: 2em;
+	color: @color-medium;
+
+	&:hover {
+		color: @color-primary;
+	}
+}

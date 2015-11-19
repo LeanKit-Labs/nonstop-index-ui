@@ -30,7 +30,7 @@ gulp.task( "build-all-themes", [ "clean-public", "clean-themes" ], function( nex
 } );
 
 gulp.task( "clean-public", function() {
-	return del( "public/{css,images,js,index.html}" );
+	return del( "public/{css,images,js,*.html}" );
 } );
 
 gulp.task( "clean-themes", function() {

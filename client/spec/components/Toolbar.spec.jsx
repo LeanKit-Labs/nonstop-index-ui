@@ -1,7 +1,7 @@
 import toolbarFactory from "inject!Toolbar";
 
 describe( "Toolbar", () => {
-	let component, dependencies, actions, featureOptions;
+	let component, dependencies, actions, featureOptions, components;
 
 	beforeEach( () => {
 		actions = {
@@ -15,10 +15,25 @@ describe( "Toolbar", () => {
 			config: true
 		};
 
+		let Dropdown = getMockReactComponent( "Dropdown" );
+		Dropdown.Toggle = getMockReactComponent( "Dropdown.Toggle" );
+		Dropdown.Menu = getMockReactComponent( "Dropdown.Menu" );
+
+		components = {
+			Dropdown: Dropdown,
+			MenuItem: getMockReactComponent( "MenuItem" )
+		};
+
 		dependencies = {
 			Logo: getMockReactComponent( "Logo" ),
+			"react-bootstrap/lib/Dropdown": components.Dropdown,
 			"stores/layoutStore": {
 				getState: sinon.stub().returns( {} )
+			},
+			"stores/userStore": {
+				getUser: sinon.stub().returns( {
+					displayName: "User Name"
+				} )
 			},
 			"../../clientConfig": { featureOptions }
 		};
@@ -44,7 +59,11 @@ describe( "Toolbar", () => {
 
 	describe( "when handling state", () => {
 		it( "should have initial state", () => {
-			component.state.should.eql( {} );
+			component.state.should.eql( {
+				user: {
+					displayName: "User Name"
+				}
+			} );
 		} );
 	} );
 
@@ -64,14 +83,23 @@ describe( "Toolbar", () => {
 
 			should.equal( component.refs.configLink, undefined );
 		} );
+
+		it( "should render a user menu", () => {
+			const dropdown = ReactUtils.findRenderedComponentWithType( component, components.Dropdown );
+			ReactDOM.findDOMNode( dropdown ).textContent.should.contain( "User Name" );
+		} );
 	} );
 
 	describe( "when handling store changes", () => {
 		it( "should update state", () => {
 			dependencies[ "stores/layoutStore" ].getState.returns( { newState: true } );
+			dependencies[ "stores/userStore" ].getUser.returns( { username: "username" } );
 			postal.channel( "lux.store" ).publish( "layout.changed" );
 			component.state.should.eql( {
-				newState: true
+				newState: true,
+				user: {
+					username: "username"
+				}
 			} );
 		} );
 	} );

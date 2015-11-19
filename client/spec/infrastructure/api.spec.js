@@ -30,6 +30,9 @@ describe( "API", () => {
 				getChanges: sinon.stub()
 			},
 			jquery: {
+				getJSON: sinon.stub().resolves( {
+					username: "username"
+				} ),
 				ajaxSetup: sinon.stub()
 			}
 		};
@@ -62,6 +65,13 @@ describe( "API", () => {
 	} );
 
 	describe( "when handling initializePage", () => {
+		beforeEach( () => {
+			lux.customActionCreator( {
+				loadUserSuccess() {},
+				loadProjectsSuccess() {},
+				loadHostsSuccess() {}
+			} );
+		} );
 		it( "should call the package list endpoint and then the hosts list", ( done ) => {
 			lux.customActionCreator( {
 				loadProjectsSuccess() {
@@ -75,6 +85,35 @@ describe( "API", () => {
 			} );
 
 			lux.publishAction( "initializePage" );
+		} );
+		describe( "and loading the user", () => {
+			describe( "with successful response", () => {
+				it( "should call loadUserSuccess", done => {
+					lux.customActionCreator( {
+						loadUserSuccess( data ) {
+							data.should.eql( { username: "username" } );
+							done();
+						}
+					} );
+
+					lux.publishAction( "initializePage" );
+				} );
+			} );
+			describe( "with failed response", () => {
+				beforeEach( () => {
+					dependencies.jquery.getJSON.rejects( "something bad" );
+				} );
+				it( "should call the loadUserFailure", done => {
+					lux.customActionCreator( {
+						loadUserFailure( err ) {
+							err.message.should.eql( "something bad" );
+							done();
+						}
+					} );
+
+					lux.publishAction( "initializePage" );
+				} );
+			} );
 		} );
 	} );
 
