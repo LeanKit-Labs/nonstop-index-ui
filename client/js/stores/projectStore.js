@@ -41,7 +41,8 @@ export default new lux.Store( {
 					serviceUptime: _get( status, [ "uptime", "service" ], "" ),
 					hostUptime: _get( status, [ "uptime", "host" ], "" ),
 					slug: _get( status.activity, [ "running", "slug" ], "" ),
-					version: _get( status.activity, [ "running", "version" ], "" )
+					version: _get( status.activity, [ "running", "version" ], "" ),
+					fetchTime: new Date()
 				};
 			}
 		}

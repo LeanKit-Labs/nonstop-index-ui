@@ -29,23 +29,25 @@ export default React.createClass( {
 				<td><i className="fa text-purple fa-fw fa-server"></i> { host.hostName }</td>
 			</tr>,
 			<tr key={ `${host.name}-status-${i}` }>
-				<td>{ this.renderStatus( host ) }</td>
+				<td>
+					<i className="fa fa-fw fa-line-chart hostList-statusIcon"></i> <button className="btn btn-link hostList-statusButton u-alignBaseline" onClick={ this.loadHostStatus.bind( this, host.name ) }>
+						{ host.status ? "Refresh Status" : "Get Status" }
+					</button>
+					{ host.status ? this.renderStatus( host ) : null }
+				</td>
 			</tr>
 		] );
 	},
 	renderStatus( host ) {
-		if ( !host.status ) {
-			return <button className="btn btn-default btn-small" onClick={ this.loadHostStatus.bind( this, host.name ) }>Get Status</button>;
-		} else {
-			return (
-				<div className="hostList-status">
-					<strong>Host Uptime</strong> { host.status.hostUptime }<br />
-					<strong>Service Uptime</strong> { host.status.serviceUptime }<br />
-					<strong>Slug</strong> { host.status.slug }<br />
-					<strong>Version</strong> { host.status.version }
-				</div>
-			);
-		}
+		return (
+			<div className="hostList-status">
+				<i>Last Updated: { host.status.fetchTime.toLocaleTimeString() }</i><br />
+				<strong>Host Uptime</strong> { host.status.hostUptime }<br />
+				<strong>Service Uptime</strong> { host.status.serviceUptime }<br />
+				<strong>Slug</strong> { host.status.slug }<br />
+				<strong>Version</strong> { host.status.version }
+			</div>
+		);
 	},
 	renderHosts() {
 		return (
