@@ -4,6 +4,8 @@ const packagesResponse = require( "../data/packagesResponse" );
 const projectsParsed = require( "../data/projectsParsed" );
 const hostsResponse = require( "../data/hostsResponse" );
 const projectsWithHostsParsed = require( "../data/projectsWithHostsParsed" );
+const hostsWithStatus = require( "../data/hostsWithStatus" );
+const statusResponse = require( "../data/statusResponse" );
 
 describe( "project store", () => {
 	let projectStore;
@@ -41,6 +43,34 @@ describe( "project store", () => {
 				state.projects = projectsParsed.projects;
 				lux.publishAction( "loadHostsSuccess", hostsResponse );
 				state.projects.should.eql( projectsWithHostsParsed );
+			} );
+
+			it( "should handle when a host project is absent", () => {
+				lux.publishAction.bind( lux, "loadHostsSuccess", hostsResponse )
+					.should.not.throw();
+			} );
+		} );
+
+		describe( "when handling loadHostStatusSuccess", () => {
+			it( "should add status to projects", () => {
+				const state = projectStore.getState();
+				state.hosts = projectsWithHostsParsed["nonstop-index-ui"].hosts;
+				const clock = sinon.useFakeTimers( new Date( 2015, 11, 25, 0, 0, 0 ).getTime() );
+				lux.publishAction( "loadHostStatusSuccess", {
+					name: "core-blu",
+					status: statusResponse
+				} );
+				clock.restore();
+				projectStore.getState().hosts.should.eql( hostsWithStatus );
+			} );
+
+			it( "should not add status if host is not found", () => {
+				const state = projectStore.getState();
+				state.hosts = projectsWithHostsParsed["nonstop-index-ui"].hosts;
+				lux.publishAction.bind( lux, "loadHostStatusSuccess", {
+					name: "host-not-found",
+					status: statusResponse
+				} ).should.not.throw();
 			} );
 		} );
 	} );
@@ -99,6 +129,21 @@ describe( "project store", () => {
 				build10.packages[ 0 ].should.be.an( "object" );
 				build11.packages.should.have.lengthOf( 1 );
 				build11.packages[ 0 ].should.be.an( "object" );
+			} );
+		} );
+
+		describe( "getHosts", () => {
+			it( "should return an array of hosts", () => {
+				const state = projectStore.getState();
+				state.projects = projectsParsed.projects;
+				lux.publishAction( "loadHostsSuccess", hostsResponse );
+				const hosts = projectStore.getHosts();
+
+				hosts.length.should.equal( 2 );
+				hosts.should.eql( [
+					{ name: "core-blu", projectName: "nonstop-index-ui", branch: "master", owner: "BanditSoftware", hostName: "lkapp.cloudapp.net", ip: "10.0.0.6" },
+					{ name: "littlebrudder", projectName: "nonstop-index-ui", branch: "master", owner: "arobson", hostName: "littelbrudder.hack.leankitdev.com", ip: "10.0.0.6" }
+				] );
 			} );
 		} );
 	} );

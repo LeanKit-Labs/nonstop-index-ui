@@ -33,6 +33,12 @@ describe( "user store", () => {
 				} );
 			} );
 		} );
+
+		describe( "when handling loadUserFailure", () => {
+			it( "should not throw an exception", () => {
+				lux.publishAction.bind( lux, "loadUserFailure", {} ).should.not.throw();
+			} );
+		} );
 	} );
 
 	describe( "when calling getUser", () => {

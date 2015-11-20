@@ -26,7 +26,7 @@ export default new lux.Store( {
 		loadProjectsSuccess( { packages } ) {
 			this.setState( this.reduceProjects( packages ) );
 		},
-		loadHostsSuccess( { hosts = [] } ) {
+		loadHostsSuccess( { hosts } ) {
 			const mappedHosts = hosts.map( getHostDetails );
 
 			this.setState( {
