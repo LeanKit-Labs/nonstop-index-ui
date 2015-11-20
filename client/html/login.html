@@ -23,6 +23,11 @@
 	</div><!-- /.login-logo -->
 
 	<div class="loginButtons">
+		<%= "\<% if ( errorMessage ) { %\>" %>
+			<div class="callout callout-danger">
+				<p><%= "\<%- errorMessage %\>" %></p>
+			</div>
+		<%= "\<% } %\>" %>
 		<a href="/nonstop/auth/github" class="loginButton">
 			<i class="fa fa-github"></i> Sign in using Github
 		</a>

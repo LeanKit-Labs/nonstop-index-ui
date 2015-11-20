@@ -43,11 +43,13 @@ To start the nonstop-index-ui, run `gulp dev`.
 | Group / Variable | Default |
 |-------------|---------|
 | **auth** | |
+| NS__AUTH__SESSION_MESSAGES | `true` |
 | NS__AUTH__LOGIN_ENDPOINT | `"/nonstop/auth/login"` |
 | NS__AUTH__AUTH_ENDPOINT | `"/nonstop/auth/github"` |
-| NS__AUTH__GITHUB__CLIENT_ID | `"YOUR_CLIENT_ID_HERE"` |
-| NS__AUTH__GITHUB__CLIENT_SECRET | `"YOUR_CLIENT_SECRET_HERE"` |
-| NS__AUTH__GITHUB__CALLBACK_URL | `"http://localhost:8048/nonstop/auth/github/callback"` |
+| NS_AUTH_GITHUB_ORGANIZATION\* | `"YOUR_GITHUB_ORG"` |
+| NS__AUTH__GITHUB__CLIENT_ID\* | `"YOUR_CLIENT_ID_HERE"` |
+| NS__AUTH__GITHUB__CLIENT_SECRET\* | `"YOUR_CLIENT_SECRET_HERE"` |
+| NS__AUTH__GITHUB__CALLBACK_URL\* | `"http://localhost:8048/nonstop/auth/github/callback"` |
 | **client** | |
 | NS__CLIENT__LUX_AUTOHOST__FILTER__ACTIONS | `[]` |
 | NS__CLIENT__LUX_AUTOHOST__METRICS__TIMEOUT | `15000` |

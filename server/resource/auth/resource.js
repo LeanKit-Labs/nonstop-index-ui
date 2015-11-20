@@ -1,7 +1,10 @@
 var fs = require( "fs" );
 var path = require( "path" );
+var _ = require( "lodash" );
 
 export default function( host ) {
+	var loginTemplate = _.template( fs.readFileSync( path.resolve( __dirname, "../../../public/login.html" ), "utf-8" ) );
+
 	return {
 		name: "auth",
 		actions: {
@@ -29,12 +32,16 @@ export default function( host ) {
 				hidden: true,
 				method: "GET",
 				handle: ( env ) => {
+					var message = "";
+					if ( env.session.messages && env.session.messages.length ) {
+						message = env.session.messages.pop();
+					}
 					return {
 						statusCode: 200,
 						headers: {
 							"Content-Type": "text/html; charset=utf-8"
 						},
-						data: fs.readFileSync( path.resolve( __dirname, "../../../public/login.html" ) )
+						data: loginTemplate( { errorMessage: message } )
 					};
 				}
 			},
