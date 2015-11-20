@@ -1,9 +1,7 @@
 import React from "react";
+import lux from "lux.js";
 import { padLeft, map, flatten } from "lodash";
-import ButtonGroup from "react-bootstrap/lib/ButtonGroup";
-import Button from "react-bootstrap/lib/Button";
-import DropdownButton from "react-bootstrap/lib/DropdownButton";
-import MenuItem from "react-bootstrap/lib/MenuItem";
+import { ButtonGroup, Button, DropdownButton, MenuItem } from "react-bootstrap/lib";
 
 import "./VersionGroup.less";
 
@@ -36,6 +34,8 @@ function slug( { owner, project, slug } ) {
 }
 
 export default React.createClass( {
+	mixins: [ lux.reactMixin.actionCreator ],
+	getActions: [ "loadHostStatus" ],
 	propTypes: {
 		className: React.PropTypes.string,
 		hosts: React.PropTypes.array,
@@ -45,7 +45,7 @@ export default React.createClass( {
 	getDefaultProps() {
 		return {
 			className: "versionGroup",
-			hosts: null
+			hosts: []
 		};
 	},
 	renderBuildGroup( { packages }, build ) {
@@ -63,11 +63,19 @@ export default React.createClass( {
 		} ) );
 	},
 	handleOnDeploy( pkg, event, name ) {
+		console.log( this.props.hosts );
 		const data = [];
 		[ "project", "owner", "branch", "version" ].forEach( function( field ) {
 			data.push( { op: "change", field, value: pkg[ field ] } );
 		} );
-		this.props.onDeploy( { name, data } );
+		console.log(name);
+		//this.props.onRelease( { name, data } );
+		console.log( this.loadHostStatus( name ) );
+		this.setState( {
+			showModal: true,
+			selectedPackage: pkg,
+			selectedHost: { 'branch': 'puppy' }
+			});
 	},
 	renderActions( pkg ) {
 		return (
@@ -122,6 +130,8 @@ export default React.createClass( {
 			<section className={ this.props.className }>
 				{ map( this.props.versions, this.renderVersionGroup ) }
 			</section>
+
+
 		);
 	}
 } );

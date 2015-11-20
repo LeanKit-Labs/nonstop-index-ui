@@ -4,6 +4,7 @@ import VersionGroup from "VersionGroup";
 import lux from "lux.js";
 import projectStore from "stores/projectStore";
 import HostList from "HostList";
+import { Modal, Button } from "react-bootstrap/lib";
 
 import "./ProjectDetail.less";
 
@@ -11,7 +12,10 @@ function getState( { name, owner, branch } ) {
 	return Object.assign(
 		{},
 		projectStore.getProject( name, owner, branch ),
-		{ allHosts: projectStore.getHosts() }
+		{
+			allHosts: projectStore.getHosts(),
+			deployChoice: projectStore.getDeployChoice
+		}
 	);
 }
 
@@ -80,6 +84,25 @@ export default React.createClass( {
 							</div>
 						</div>
 					</section>
+					<Modal show={ this.state.showModal } onHide={ this.close }>
+					      <Modal.Header>
+					        <Modal.Title>Confirm Deployment</Modal.Title>
+					      </Modal.Header>
+
+					      <Modal.Body>
+					        <h3>Package to Deploy</h3>
+					        <span>{ this.state.selectedPackage.branch }</span> | <span>Build Number</span> | <span>{ this.state.selectedPackage.version }</span>
+					        <hr />
+					        <h3>Hosted Package</h3>
+					        <span>{ this.state.selectedHost.branch }</span> | <span>Build Number</span> | <span>Version</span>
+					      </Modal.Body>
+
+					      <Modal.Footer>
+					        <Button onClick={ this.modalClose }>Cancel</Button>
+					        <Button bsStyle="primary">Deploy</Button>
+					      </Modal.Footer>
+
+					    </Modal>
 			</div>
 		);
 	}

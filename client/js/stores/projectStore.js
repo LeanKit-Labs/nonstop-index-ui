@@ -20,7 +20,11 @@ export default new lux.Store( {
 	state: {
 		packages: {},
 		projects: {},
-		hosts: []
+		hosts: [],
+		deployChoice: {
+			'pkg': {},
+			'host': {}
+		}
 	},
 	handlers: {
 		loadProjectsSuccess( { packages } ) {
@@ -45,7 +49,7 @@ export default new lux.Store( {
 					fetchTime: new Date()
 				};
 			}
-		}
+		},
 	},
 	reduceProjects( packages ) {
 		return packages.reduce( ( memo, item ) => {
@@ -126,5 +130,15 @@ export default new lux.Store( {
 	},
 	getHosts() {
 		return this.getState().hosts;
-	}
+	},
+	getDeployChoice() {
+		const { deployChoice, hosts } = this.getState();
+		if (!deployChoice) {
+			return null
+		}
+		return {
+			pkg: deployChoice.pkg,
+			host: hosts.find( host => deployChoice.host === host.name )
+		 }
+	},
 } );
