@@ -1,46 +1,38 @@
-import avatarFactory from "inject!Avatar";
-import ReactDOM from "react-dom";
+import Avatar from "Avatar";
 
 describe( "Avatar", () => {
-	let component, dependencies;
+	let img, container;
 
 	beforeEach( () => {
-		dependencies = {};
-
-		const Avatar = avatarFactory( dependencies );
-
-		component = ReactUtils.renderIntoDocument( <Avatar /> );
+		container = document.createElement( "div" );
 	} );
 
-	afterEach( () => {
-		if ( component ) {
-			ReactDOM.unmountComponentAtNode( ReactDOM.findDOMNode( component ).parentNode );
-		}
-	} );
+	function render( props ) {
+		ReactDOM.render( <Avatar {...props} />, container );
+		img = container.children[ 0 ];
+	}
 
 	describe( "when handling props", () => {
 		it( "should have default props", () => {
-			component.props.should.eql( {
-				owner: "anonymous",
-				size: 16,
-				className: "avatar"
-			} );
+			render();
+
+			img.nodeName.toLowerCase().should.equal( "img" );
+			img.src.should.equal( "https://avatars.githubusercontent.com/anonymous?s=16" );
+			img.className.should.equal( "avatar" );
 		} );
 	} );
 
 	describe( "when rendering", () => {
 		it( "should render properly", () => {
-			const node = component.getDOMNode();
-
-			component.setProps( {
+			render( {
 				owner: "LeanKit-Labs",
 				size: 20,
 				className: "new-class"
 			} );
 
-			node.nodeName.toLowerCase().should.equal( "img" );
-			node.src.should.equal( "https://avatars.githubusercontent.com/LeanKit-Labs?s=20" );
-			node.className.should.equal( "new-class" );
+			img.nodeName.toLowerCase().should.equal( "img" );
+			img.src.should.equal( "https://avatars.githubusercontent.com/LeanKit-Labs?s=20" );
+			img.className.should.equal( "new-class" );
 		} );
 	} );
 } );
