@@ -43,6 +43,7 @@ To start the nonstop-index-ui, run `gulp dev`.
 | Group / Variable | Default |
 |-------------|---------|
 | **auth** | |
+| NS_AUTH_ENABLED | `true` |
 | NS__AUTH__SESSION_MESSAGES | `true` |
 | NS__AUTH__LOGIN_ENDPOINT | `"/nonstop/auth/login"` |
 | NS__AUTH__AUTH_ENDPOINT | `"/nonstop/auth/github"` |
