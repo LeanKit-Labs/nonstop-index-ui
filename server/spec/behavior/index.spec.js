@@ -1,17 +1,21 @@
 require( "../setup" );
 var fount = require( "fount" );
+var path = require( "path" );
 
 describe( "Server Index", function() {
-	var registerSpy;
+	var registerSpy, dependecies;
 	before( function() {
+		dependecies = {
+			"./init": sinon.stub()
+		};
 		registerSpy = sinon.spy( fount, "register" );
-		return require( "../../index" );
+		return proxyquire( path.resolve( __dirname, "../../index" ), dependecies );
 	} );
 	after( function() {
 		registerSpy.restore();
 	} );
-	it( "should register metrics", function() {
-		registerSpy.should.be.calledWith( "metrics" );
+	it( "should invoke the init factory", function() {
+		dependecies[ "./init" ].should.be.calledOnce;
 	} );
 	it( "should register postal", function() {
 		registerSpy.should.be.calledWith( "postal" );
