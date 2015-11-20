@@ -13,9 +13,6 @@ describe( "Server Index", function() {
 	it( "should register metrics", function() {
 		registerSpy.should.be.calledWith( "metrics" );
 	} );
-	it( "should register redis", function() {
-		registerSpy.should.be.calledWith( "redis" );
-	} );
 	it( "should register postal", function() {
 		registerSpy.should.be.calledWith( "postal" );
 	} );

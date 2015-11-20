@@ -67,10 +67,6 @@
 		"fanout": "metronic.all.ex",
 		"topic": "metronic.topic.ex"
 	},
-	"redis": {
-		"host": "localhost",
-		"port": 6379
-	},
 	"session": {
 		"config": {
 			"name": "nonstop-index-ui.sid",
