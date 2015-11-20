@@ -1,7 +1,7 @@
 import appFactory from "inject!App";
 
 describe( "App Component", () => {
-	let component, initializePageStub, dependencies, windowStub;
+	let component, initializePageStub, dependencies, windowStub, container, App;
 
 	beforeEach( () => {
 		initializePageStub = sinon.stub();
@@ -29,14 +29,15 @@ describe( "App Component", () => {
 			}
 		};
 
-		const App = appFactory( dependencies );
+		App = appFactory( dependencies );
 
 		const props = {
 			params: { id: "123" },
 			query: { boardId: "456" }
 		};
 
-		component = ReactUtils.renderIntoDocument( <App { ...props } /> );
+		container = document.createElement( "div" );
+		component = ReactDOM.render( <App { ...props } />, container );
 	} );
 
 	afterEach( () => {
@@ -59,9 +60,7 @@ describe( "App Component", () => {
 	} );
 
 	it( "should update the document title to reflect the current project", () => {
-		component.setProps( {
-			params: { name: "core-blu" }
-		} );
+		ReactDOM.render( <App params={ { name: "core-blu" } } />, container );
 		windowStub.document.title.should.equal( "core-blu - Nonstop Index" );
 	} );
 

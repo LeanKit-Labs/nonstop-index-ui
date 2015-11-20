@@ -1,25 +1,22 @@
-import avatarFactory from "inject!Avatar";
-import ReactDOM from "react-dom";
+import Avatar from "Avatar";
 
 describe( "Avatar", () => {
-	let component, dependencies;
+	let component;
 
-	beforeEach( () => {
-		dependencies = {};
-
-		const Avatar = avatarFactory( dependencies );
-
-		component = ReactUtils.renderIntoDocument( <Avatar /> );
-	} );
+	function render( props ) {
+		component = ReactUtils.renderIntoDocument( <Avatar {...props} /> );
+	}
 
 	afterEach( () => {
 		if ( component ) {
 			ReactDOM.unmountComponentAtNode( ReactDOM.findDOMNode( component ).parentNode );
+			component = null;
 		}
 	} );
 
 	describe( "when handling props", () => {
 		it( "should have default props", () => {
+			render();
 			component.props.should.eql( {
 				owner: "anonymous",
 				size: 16,
@@ -30,13 +27,13 @@ describe( "Avatar", () => {
 
 	describe( "when rendering", () => {
 		it( "should render properly", () => {
-			const node = component.getDOMNode();
-
-			component.setProps( {
+			render( {
 				owner: "LeanKit-Labs",
 				size: 20,
 				className: "new-class"
 			} );
+
+			const node = ReactDOM.findDOMNode( component );
 
 			node.nodeName.toLowerCase().should.equal( "img" );
 			node.src.should.equal( "https://avatars.githubusercontent.com/LeanKit-Labs?s=20" );

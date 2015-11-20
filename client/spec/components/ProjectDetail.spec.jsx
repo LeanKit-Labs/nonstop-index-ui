@@ -1,7 +1,7 @@
 import projectDetailFactory from "inject!ProjectDetail";
 
 describe( "ProjectDetail Component", () => {
-	let component, dependencies, actions, ProjectDetail;
+	let component, dependencies, actions, ProjectDetail, container;
 
 	beforeEach( () => {
 		actions = {
@@ -23,13 +23,14 @@ describe( "ProjectDetail Component", () => {
 			}
 		};
 		ProjectDetail = projectDetailFactory( dependencies );
+		container = document.createElement( "div" );
 	} );
 
 	function createComponent( props = {} ) {
 		if ( !props.params ) {
 			props.params = { name: "project", owner: "owner", branch: "branch" };
 		}
-		component = ReactUtils.renderIntoDocument( <ProjectDetail {...props} /> );
+		component = ReactDOM.render( <ProjectDetail {...props} />, container );
 	}
 
 	afterEach( () => {
@@ -72,9 +73,10 @@ describe( "ProjectDetail Component", () => {
 					owners: [],
 					versions: {}
 				} );
-				component.setProps( {
-					params: { name: "new-project", owner: "new-owner", branch: "branch" }
-				} );
+				ReactDOM.render(
+					<ProjectDetail params={ { name: "new-project", owner: "new-owner", branch: "branch" } } />,
+					container
+				);
 			} );
 
 			it( "should update state when receiving new props", () => {

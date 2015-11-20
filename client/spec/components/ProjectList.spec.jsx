@@ -1,23 +1,28 @@
 import projectListFactory from "inject!ProjectList";
 
 describe( "ProjectList", () => {
-	let component, dependencies, selectStub;
+	let component, dependencies, selectStub, ProjectList;
 
 	beforeEach( () => {
 		dependencies = {};
-		const ProjectList = projectListFactory( dependencies );
+		ProjectList = projectListFactory( dependencies );
 		selectStub = sinon.stub();
-		component = ReactUtils.renderIntoDocument( <ProjectList projects={ [] } onSelectProject={ selectStub } /> );
 	} );
+
+	function render( props = {} ) {
+		component = ReactUtils.renderIntoDocument( <ProjectList projects={ [] } onSelectProject={ selectStub } {...props} /> );
+	}
 
 	afterEach( () => {
 		if ( component ) {
 			ReactDOM.unmountComponentAtNode( ReactDOM.findDOMNode( component ).parentNode );
+			component = null;
 		}
 	} );
 
 	describe( "when handling props", () => {
 		it( "should have default props", () => {
+			render();
 			component.props.should.contain( {
 				title: "Projects"
 			} );
@@ -26,11 +31,12 @@ describe( "ProjectList", () => {
 
 	describe( "when rendering", () => {
 		it( "should render a title", () => {
+			render();
 			const title = ReactUtils.findRenderedDOMComponentWithClass( component, "box-title" );
-			title.getDOMNode().textContent.trim().should.equal( "Projects" );
+			title.textContent.trim().should.equal( "Projects" );
 		} );
 		it( "should render projects", () => {
-			component.setProps( {
+			render( {
 				projects: [
 					{ name: "project-one", owner: "owner-one", branch: "branch-one" },
 					{ name: "project-two", owner: "owner-two", branch: "branch-two" },
@@ -48,13 +54,13 @@ describe( "ProjectList", () => {
 			items[1].getAttribute( "href" ).should.equal( "/nonstop/project/project-two/owner-two/branch-two" );
 			items[2].getAttribute( "href" ).should.equal( "/nonstop/project/project-three/owner-three/branch-three" );
 
-			headings[0].getDOMNode().textContent.should.equal( "project-one" );
-			headings[1].getDOMNode().textContent.should.equal( "project-two" );
-			headings[2].getDOMNode().textContent.should.equal( "project-three" );
+			headings[0].textContent.should.equal( "project-one" );
+			headings[1].textContent.should.equal( "project-two" );
+			headings[2].textContent.should.equal( "project-three" );
 
-			details[0].getDOMNode().textContent.trim().should.equal( "owner-one/branch-one" );
-			details[1].getDOMNode().textContent.trim().should.equal( "owner-two/branch-two" );
-			details[2].getDOMNode().textContent.trim().should.equal( "owner-three/branch-three" );
+			details[0].textContent.trim().should.equal( "owner-one/branch-one" );
+			details[1].textContent.trim().should.equal( "owner-two/branch-two" );
+			details[2].textContent.trim().should.equal( "owner-three/branch-three" );
 		} );
 	} );
 
@@ -67,12 +73,12 @@ describe( "ProjectList", () => {
 				{ name: "project-two", owner: "owner", branch: "master" },
 				{ name: "project-three", owner: "owner", branch: "master" }
 			];
-			component.setProps( { projects } );
+			render( { projects } );
 		} );
 		it( "should trigger onSelectProject with the project name", () => {
 			let items = ReactUtils.scryRenderedDOMComponentsWithClass( component, "list-group-item" );
 
-			ReactUtils.Simulate.click( items[ 1 ].getDOMNode() );
+			ReactUtils.Simulate.click( items[ 1 ] );
 
 			selectStub.should.be.calledOnce.and.calledWith( projects[ 1 ] );
 		} );
