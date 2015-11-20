@@ -3,7 +3,9 @@
     "_": false,
     "logAdapter": false,
     "setupLog": false,
-    "should": false
+    "should": false,
+    "sinon": false,
+    "proxyquire": false
   },
 
   "env": {
