@@ -8,6 +8,7 @@ module.exports = {
 		hostUptime: "hostUptime",
 		serviceUptime: "serviceUptime",
 		slug: "slug",
-		version: "version"
+		version: "version",
+		fetchTime: new Date( 2015, 11, 25, 0, 0, 0 )
 	}
 };

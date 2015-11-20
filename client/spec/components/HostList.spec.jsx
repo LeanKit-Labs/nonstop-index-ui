@@ -53,6 +53,12 @@ describe( "HostList", () => {
 			should.exist( hostList );
 		} );
 
+		it( "should render last updated time", () => {
+			createComponent( { hosts: [ HOST ] } );
+			const status = ReactUtils.findRenderedDOMComponentWithClass( component, "hostList-status" ).textContent;
+			status.should.include( "Last Updated: 12:00:00 AM" );
+		} );
+
 		it( "should render fields for a host", () => {
 			createComponent( { hosts: [ HOST ] } );
 			const hostList = ReactUtils.findRenderedDOMComponentWithClass( component, "hostList" );
@@ -72,6 +78,13 @@ describe( "HostList", () => {
 			createComponent( { hosts: [ host ] } );
 			const button = ReactDOM.findDOMNode( component ).querySelector( "button" );
 			button.textContent.should.equal( "Get Status" );
+		} );
+
+		it( "should render update status button if status available", () => {
+			const host = Object.assign( {}, HOST );
+			createComponent( { hosts: [ host ] } );
+			const button = ReactDOM.findDOMNode( component ).querySelector( "button" );
+			button.textContent.should.equal( "Refresh Status" );
 		} );
 
 		it( "should render status if available", () => {
