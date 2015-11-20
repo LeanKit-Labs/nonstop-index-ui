@@ -10,7 +10,7 @@ global.sinon = require( "sinon" );
 var sap = require( "sinon-as-promised" );
 chai.use( require( "sinon-chai" ) );
 /*eslint-enable */
-global.proxyquire = require( "proxyquire" ).noPreserveCache();
+global.proxyquire = require( "proxyquire" ).noPreserveCache().noCallThru();
 
 chai.Assertion.addMethod( "returnError", function( message ) {
 	var obj = this._obj;
