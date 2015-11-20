@@ -8,6 +8,7 @@ global.fs = require( "fs" );
 global.sinon = require( "sinon" );
 /*eslint-disable */
 var sap = require( "sinon-as-promised" );
+chai.use( require( "sinon-chai" ) );
 /*eslint-enable */
 global.proxyquire = require( "proxyquire" ).noPreserveCache();
 
