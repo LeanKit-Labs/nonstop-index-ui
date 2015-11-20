@@ -37,7 +37,7 @@ describe( "VersionGroup", () => {
 		it( "should have default props", () => {
 			createComponent();
 			component.props.should.contain( {
-				className: ""
+				className: "versionGroup"
 			} );
 		} );
 	} );
