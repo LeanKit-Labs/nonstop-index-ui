@@ -1,5 +1,6 @@
 {
 	"auth": {
+		"enabled": true,
 		"sessionMessages": true,
 		"loginEndpoint": "/nonstop/auth/login",
 		"authEndpoint": "/nonstop/auth/github",
