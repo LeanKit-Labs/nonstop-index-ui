@@ -1,27 +1,24 @@
 import Avatar from "Avatar";
 
 describe( "Avatar", () => {
-	let component;
+	let component, container;
+
+	beforeEach( () => {
+		container = document.createElement( "div" );
+	} );
 
 	function render( props ) {
-		component = ReactUtils.renderIntoDocument( <Avatar {...props} /> );
+		ReactDOM.render( <Avatar {...props} />, container );
+		component = container.children[ 0 ];
 	}
-
-	afterEach( () => {
-		if ( component ) {
-			ReactDOM.unmountComponentAtNode( ReactDOM.findDOMNode( component ).parentNode );
-			component = null;
-		}
-	} );
 
 	describe( "when handling props", () => {
 		it( "should have default props", () => {
 			render();
-			component.props.should.eql( {
-				owner: "anonymous",
-				size: 16,
-				className: "avatar"
-			} );
+
+			component.nodeName.toLowerCase().should.equal( "img" );
+			component.src.should.equal( "https://avatars.githubusercontent.com/anonymous?s=16" );
+			component.className.should.equal( "avatar" );
 		} );
 	} );
 
@@ -33,11 +30,9 @@ describe( "Avatar", () => {
 				className: "new-class"
 			} );
 
-			const node = ReactDOM.findDOMNode( component );
-
-			node.nodeName.toLowerCase().should.equal( "img" );
-			node.src.should.equal( "https://avatars.githubusercontent.com/LeanKit-Labs?s=20" );
-			node.className.should.equal( "new-class" );
+			component.nodeName.toLowerCase().should.equal( "img" );
+			component.src.should.equal( "https://avatars.githubusercontent.com/LeanKit-Labs?s=20" );
+			component.className.should.equal( "new-class" );
 		} );
 	} );
 } );
