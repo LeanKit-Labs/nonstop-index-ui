@@ -6,7 +6,8 @@ describe( "Server Index", function() {
 	var registerSpy, dependecies;
 	before( function() {
 		dependecies = {
-			"./init": sinon.stub()
+			"./init": sinon.stub(),
+			"babel/register": {}
 		};
 		registerSpy = sinon.spy( fount, "register" );
 		return proxyquire( path.resolve( __dirname, "../../index" ), dependecies );
