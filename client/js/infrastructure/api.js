@@ -24,6 +24,15 @@ function errorHandler( error ) {
 
 nsAPI.connect().catch( errorHandler );
 
+function applySettings( settings ) {
+	settings = settings || configurationStore.getChanges();
+	nsAPI.host.configure( settings )
+		.then(
+			( data ) => lux.publishAction( "applySettingsSuccess", data ),
+			( data ) => lux.publishAction( "applySettingsError", data )
+		);
+}
+
 function loadProjects() {
 	return nsAPI.package.list()
 		.then(
@@ -37,6 +46,17 @@ function loadHosts() {
 		.then(
 			( data ) => lux.publishAction( "loadHostsSuccess", data ),
 			( data ) => lux.publishAction( "loadHostsError", data )
+		);
+}
+
+function loadHostStatus( host ) {
+	return nsAPI.host.status( { name: host } )
+		.then(
+			( data ) => lux.publishAction( "loadHostStatusSuccess", {
+				name: host,
+				status: data
+			} ),
+			( data ) => lux.publishAction( "loadHostStatusError", data )
 		);
 }
 
@@ -63,18 +83,7 @@ export default lux.mixin( {
 		loadProjects,
 		loadHosts,
 		loadUser,
-		loadHostStatus( host ) {
-			nsAPI.host.status( { name: host } ).then(
-				( data ) => lux.publishAction( "loadHostStatusSuccess", {
-					name: host,
-					status: data
-				} ),
-				( data ) => lux.publishAction( "loadHostStatusError", data )
-			);
-		},
-		applySettings( settings ) {
-			settings = settings || configurationStore.getChanges();
-			nsAPI.host.configure( settings );
-		}
+		loadHostStatus,
+		applySettings
 	}
 }, lux.mixin.actionCreator, lux.mixin.actionListener );

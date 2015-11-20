@@ -1,6 +1,8 @@
 import apiFactory from "inject!infrastructure/api";
 import packagesResponse from "../data/packagesResponse";
 import hostsResponse from "../data/hostsResponse";
+import hostStatusResponse from "../data/hostStatusResponse";
+import hostConfigurationResponse from "../data/hostConfigurationResponse";
 
 describe( "API", () => {
 	let dependencies, halonStubs, jQueryAdapter, api, actions, errorLog;
@@ -13,7 +15,9 @@ describe( "API", () => {
 				list: sinon.stub().resolves( packagesResponse )
 			},
 			host: {
-				list: sinon.stub().resolves( hostsResponse )
+				list: sinon.stub().resolves( hostsResponse ),
+				status: sinon.stub().resolves( hostStatusResponse ),
+				configure: sinon.stub().resolves( hostConfigurationResponse )
 			},
 			connect: sinon.spy( () => {
 				return {
@@ -27,7 +31,14 @@ describe( "API", () => {
 		dependencies = {
 			halon: sinon.stub().returns( halonStubs ),
 			"stores/configurationStore": {
-				getChanges: sinon.stub()
+				getChanges: sinon.stub().returns( {
+					name: "littlebrudder",
+					data: [ {
+						op: "change",
+						field: "foo",
+						value: "bar"
+					} ]
+				} )
 			},
 			jquery: {
 				getJSON: sinon.stub().resolves( {
@@ -180,6 +191,76 @@ describe( "API", () => {
 					}
 				} );
 				lux.publishAction( "loadHosts" );
+			} );
+		} );
+	} );
+
+	describe( "when handling loadHostStatus", () => {
+		describe( "with successful response", () => {
+			it( "should invoke host status resource", () => {
+				lux.publishAction( "loadHostStatus", "littlebrudder" );
+				halonStubs.host.status.should.be.calledOnce
+					.and.calledWith( { name: "littlebrudder" } );
+			} );
+			it( "should publish loadHostStatusSuccess action", ( done ) => {
+				lux.customActionCreator( {
+					loadHostStatusSuccess( data ) {
+						data.should.eql( {
+							name: "littlebrudder",
+							status: hostStatusResponse
+						} );
+						done();
+					}
+				} );
+				lux.publishAction( "loadHostStatus", "littlebrudder" );
+			} );
+		} );
+		describe( "with failed response", () => {
+			it( "should publish loadHostStatusError action", ( done ) => {
+				halonStubs.host.status = sinon.stub().rejects( new Error( "OHSNAP" ) );
+				lux.customActionCreator( {
+					loadHostStatusError( err ) {
+						err.message.should.eql( "OHSNAP" );
+						done();
+					}
+				} );
+				lux.publishAction( "loadHostStatus", "littlebrudder" );
+			} );
+		} );
+	} );
+
+	describe( "when handling applySettings", () => {
+		describe( "with successful response", () => {
+			it( "should invoke host status resource", () => {
+				lux.publishAction( "applySettings" );
+				halonStubs.host.configure.should.be.calledOnce
+					.and.calledWith( {
+						name: "littlebrudder",
+						data: [ {
+							op: "change", field: "foo", value: "bar"
+						} ]
+					} );
+			} );
+			it( "should publish applySettingsSuccess action", ( done ) => {
+				lux.customActionCreator( {
+					applySettingsSuccess( data ) {
+						data.should.eql( hostConfigurationResponse );
+						done();
+					}
+				} );
+				lux.publishAction( "applySettings" );
+			} );
+		} );
+		describe( "with failed response", () => {
+			it( "should publish applySettingsError action", ( done ) => {
+				halonStubs.host.configure = sinon.stub().rejects( new Error( "OHSNAP" ) );
+				lux.customActionCreator( {
+					applySettingsError( err ) {
+						err.message.should.eql( "OHSNAP" );
+						done();
+					}
+				} );
+				lux.publishAction( "applySettings" );
 			} );
 		} );
 	} );
