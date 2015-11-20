@@ -4,6 +4,7 @@ html, body {
 
 .skin-blue .wrapper {
 	background: transparent;
+	overflow: visible;
 }
 
 .skin-blue .content-header {
@@ -13,7 +14,7 @@ html, body {
 }
 
 .bg-shaded {
-    background: lighten( @color-page-bg, 6% ) !important;
+	background: lighten( @color-page-bg, 6% ) !important;
 }
 
 .header-in-tab {
@@ -84,5 +85,11 @@ html, body {
 
 	&:hover {
 		color: @color-primary;
+	}
+}
+
+@media (max-width: @screen-sm-max) {
+	.btn-responsive {
+		padding: 4px 9px;
 	}
 }

@@ -42,7 +42,7 @@ export default React.createClass( {
 	},
 	getDefaultProps() {
 		return {
-			className: "",
+			className: "versionGroup",
 			hosts: null
 		};
 	},
@@ -68,7 +68,7 @@ export default React.createClass( {
 		this.props.onRelease( { name, data } );
 	},
 	renderRelease( pkg ) {
-		return <DropdownButton bsStyle="default" title="Deploy" id={ `dropdown-basic-${pkg.version}` } onSelect={ this.handleOnRelease.bind( this, pkg ) }>
+		return <DropdownButton bsStyle="default" className="btn-responsive" title="Deploy" id={ `dropdown-basic-${pkg.version}` } onSelect={ this.handleOnRelease.bind( this, pkg ) }>
 			{ this.props.hosts.map( host => <MenuItem key={ host.name } eventKey={ host.name }>{ host.name }</MenuItem> ) }
 		</DropdownButton>;
 	},
@@ -91,8 +91,8 @@ export default React.createClass( {
 								<thead>
 									<tr>
 										<th scope="col" width="10%">Build Number</th>
-										<th scope="col">Platform</th>
-										<th scope="col">Architecture</th>
+										<th scope="col">Plat&shy;form</th>
+										<th scope="col">Archi&shy;tecture</th>
 										<th scope="col">Slug</th>
 										<th scope="col">Actions</th>
 									</tr>
