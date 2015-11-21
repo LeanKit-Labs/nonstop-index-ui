@@ -11,6 +11,7 @@
 			"callbackUrl": "http://localhost:8048/nonstop/auth/github/callback"
 		}
 	},
+	"indexUrl": "http://nsindex.com:4444",
 	"client" : {
 		"luxAutohost": {
 			"filter": {
