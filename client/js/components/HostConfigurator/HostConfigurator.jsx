@@ -1,9 +1,8 @@
 import React from "react";
 import lux from "lux.js";
 import configurationStore from "stores/configurationStore";
+import OptionsDropdown from "OptionsDropdown";
 import "./HostConfigurator.less";
-import Dropdown from "react-bootstrap/lib/Dropdown";
-import MenuItem from "react-bootstrap/lib/MenuItem";
 
 function getState() {
 	return Object.assign( {}, configurationStore.getOptions(), { applyEnabled: configurationStore.getApplyEnabled() } );
@@ -18,108 +17,11 @@ export default React.createClass( {
 			this.setState( getState() );
 		}
 	},
-	getDefaultProps() {
-		return {};
-	},
 	getInitialState() {
 		return getState();
 	},
-	renderHostDropdown() {
-		const manyHosts = this.state.hosts.length > 1;
-		const selected = this.state.selectedHost;
-		return (
-			<div className="form-group">
-				<label className="hostConfiguration-dropdownLabel" htmlFor="hostDropdown">Host</label>
-				<Dropdown ref="hostDropdown" bsStyle="default" id="hostDropdown">
-					<Dropdown.Toggle disabled={ !manyHosts } noCaret={ !manyHosts }>
-						<i className="fa fa-book"></i> { selected && selected.name }
-					</Dropdown.Toggle>
-					<Dropdown.Menu>
-					{ this.state.hosts.map( host => {
-						return <MenuItem key={ host.name } onSelect={ this.selectHost.bind( this, host ) }>{ host.name }</MenuItem>;
-					} ) }
-					</Dropdown.Menu>
-				</Dropdown>
-			</div>
-		);
-	},
-	renderProjectDropdown() {
-		const manyProjects = this.state.projects.length > 1;
-		const selected = this.state.selectedProject;
-		return (
-			<div className="form-group">
-				<label className="hostConfiguration-dropdownLabel" htmlFor="projectDropdown">Project</label>
-				<Dropdown bsStyle="default" id="projectDropdown">
-					<Dropdown.Toggle disabled={ !manyProjects } noCaret={ !manyProjects }>
-						<i className="fa fa-book"></i> { selected }
-					</Dropdown.Toggle>
-					<Dropdown.Menu>
-					{ this.state.projects.map( project => {
-						return <MenuItem key={ project } onSelect={ this.selectProject.bind( this, project ) }>{ project }</MenuItem>;
-					} ) }
-					</Dropdown.Menu>
-				</Dropdown>
-			</div>
-		);
-	},
-	renderOwnerDropdown() {
-		const manyOwners = this.state.owners.length > 1;
-		const selected = this.state.selectedOwner;
-		return (
-			<div className="form-group">
-				<label className="hostConfiguration-dropdownLabel" htmlFor="ownerDropdown">Owner</label>
-				<Dropdown bsStyle="default" id="ownerDropdown">
-					<Dropdown.Toggle disabled={ !manyOwners } noCaret={ !manyOwners }>
-						<i className="fa fa-book"></i> { selected }
-					</Dropdown.Toggle>
-					<Dropdown.Menu>
-					{ this.state.owners.map( owner => {
-						return <MenuItem key={ owner } onSelect={ this.selectOwner.bind( this, owner ) }>{ owner }</MenuItem>;
-					} ) }
-					</Dropdown.Menu>
-				</Dropdown>
-			</div>
-		);
-	},
-	renderBranchDropdown() {
-		const manyBranches = this.state.branches.length > 1;
-		const selected = this.state.selectedBranch;
-		return (
-			<div className="form-group">
-				<label className="hostConfiguration-dropdownLabel" htmlFor="branchDropdown">Branch</label>
-				<Dropdown bsStyle="default" id="branchDropdown">
-					<Dropdown.Toggle disabled={ !manyBranches } noCaret={ !manyBranches }>
-						<i className="fa fa-book"></i> { selected }
-					</Dropdown.Toggle>
-					<Dropdown.Menu>
-					{ this.state.branches.map( branch => {
-						return <MenuItem key={ branch } onSelect={ this.selectBranch.bind( this, branch ) }>{ branch }</MenuItem>;
-					} ) }
-					</Dropdown.Menu>
-				</Dropdown>
-			</div>
-		);
-	},
-	renderVersionDropdown() {
-		const manyVersions = this.state.versions.length > 1;
-		const selected = this.state.selectedVersion;
-		return (
-			<div className="form-group">
-				<label className="hostConfiguration-dropdownLabel" htmlFor="versionDropdown">Version</label>
-				<Dropdown bsStyle="default" id="versionDropdown">
-					<Dropdown.Toggle disabled={ !manyVersions } noCaret={ !manyVersions }>
-						<i className="fa fa-book"></i> { selected }
-					</Dropdown.Toggle>
-					<Dropdown.Menu>
-					{ this.state.versions.map( version => {
-						return <MenuItem key={ version } onSelect={ this.selectVersion.bind( this, version ) }>{ version }</MenuItem>;
-					} ) }
-					</Dropdown.Menu>
-				</Dropdown>
-			</div>
-		);
-	},
 	render() {
+		const state = this.state;
 		return (
 			<div>
 				<section className="content-header">
@@ -136,11 +38,11 @@ export default React.createClass( {
 							<h3 className="box-title">Configuration Settings</h3>
 						</div>
 						<div className="box-body">
-						{ this.renderHostDropdown() }
-						{ this.renderProjectDropdown() }
-						{ this.renderOwnerDropdown() }
-						{ this.renderBranchDropdown() }
-						{ this.renderVersionDropdown() }
+							<OptionsDropdown name="host" selected={ state.selectedHost } options={ state.hosts } onSelect={ this.selectHost } />
+							<OptionsDropdown name="project" selected={ state.selectedProject } options={ state.projects } onSelect={ this.selectProject } />
+							<OptionsDropdown name="owner" selected={ state.selectedOwner } options={ state.owners } onSelect={ this.selectOwner } />
+							<OptionsDropdown name="branch" selected={ state.selectedBranch } options={ state.branches } onSelect={ this.selectBranch } />
+							<OptionsDropdown name="version" selected={ state.selectedVersion } options={ state.versions } onSelect={ this.selectVersion } />
 						</div>
 						<div className="box-footer">
 							<button disabled={ !this.state.applyEnabled } onClick={ this.applySettings.bind( this, null ) } type="submit" className="btn btn-primary">Apply Settings</button>
