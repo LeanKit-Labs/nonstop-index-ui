@@ -6,7 +6,8 @@ describe( "VersionGroup", () => {
 	beforeEach( () => {
 		components = {
 			DropdownButton: getMockReactComponent( "DropdownButton" ),
-			MenuItem: getMockReactComponent( "MenuItem" )
+			MenuItem: getMockReactComponent( "MenuItem" ),
+			ButtonGroup: getMockReactComponent( "ButtonGroup" )
 		};
 
 		dependencies = {
@@ -21,7 +22,7 @@ describe( "VersionGroup", () => {
 		_.defaults( props, {
 			versions: {},
 			hosts: [],
-			onRelease: _.noop
+			onDeploy: _.noop
 		} );
 		component = ReactUtils.renderIntoDocument( <VersionGroup {...props} /> );
 	}
@@ -77,10 +78,10 @@ describe( "VersionGroup", () => {
 		} );
 
 		describe( "builds and packages", () => {
-			let rows, onReleaseStub;
+			let rows, onDeployStub;
 
 			beforeEach( () => {
-				onReleaseStub = sinon.stub();
+				onDeployStub = sinon.stub();
 
 				createComponent( {
 					versions: {
@@ -100,7 +101,7 @@ describe( "VersionGroup", () => {
 						{ name: "hostOne" },
 						{ name: "hostTwo" }
 					],
-					onRelease: onReleaseStub
+					onDeploy: onDeployStub
 				} );
 				rows = ReactDOM.findDOMNode( component ).querySelectorAll( "tbody tr" );
 			} );
@@ -143,6 +144,11 @@ describe( "VersionGroup", () => {
 				toggles.should.have.lengthOf( 3 );
 			} );
 
+			it( "should render a Download button for each row", () => {
+				const downloadBtns = ReactUtils.scryRenderedDOMComponentsWithClass( component, "fa-cloud-download" );
+				downloadBtns.should.have.lengthOf( 3 );
+			} );
+
 			it( "should render the branch choices in the menu", () => {
 				const items = ReactUtils.scryRenderedComponentsWithType( component, components.MenuItem );
 				items.should.have.lengthOf( 6 );
@@ -154,12 +160,12 @@ describe( "VersionGroup", () => {
 				} );
 			} );
 
-			it( "should call the onRelease prop onSelect of Dropdown", () => {
+			it( "should call the onDeploy prop onSelect of Dropdown", () => {
 				const firstToggle = ReactUtils.scryRenderedComponentsWithType( component, components.DropdownButton )[ 0 ];
 
 				firstToggle.props.onSelect( {}, "hostOne" );
 
-				onReleaseStub.should.be.calledOnce.and.calledWith( {
+				onDeployStub.should.be.calledOnce.and.calledWith( {
 					name: "hostOne",
 					data: [
 						{ field: "project", op: "change", value: "projectOne" },

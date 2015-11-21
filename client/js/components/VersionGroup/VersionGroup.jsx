@@ -1,5 +1,7 @@
 import React from "react";
 import { padLeft, map, flatten } from "lodash";
+import ButtonGroup from "react-bootstrap/lib/ButtonGroup";
+import Button from "react-bootstrap/lib/Button";
 import DropdownButton from "react-bootstrap/lib/DropdownButton";
 import MenuItem from "react-bootstrap/lib/MenuItem";
 
@@ -37,7 +39,7 @@ export default React.createClass( {
 	propTypes: {
 		className: React.PropTypes.string,
 		hosts: React.PropTypes.array,
-		onRelease: React.PropTypes.func.isRequired,
+		onDeploy: React.PropTypes.func.isRequired,
 		versions: React.PropTypes.object.isRequired
 	},
 	getDefaultProps() {
@@ -55,22 +57,30 @@ export default React.createClass( {
 					<td>{ platform( p.platform ) }</td>
 					<td>{ architecture( p.architecture ) }</td>
 					<td>{ slug( p ) }</td>
-					<td>{ this.renderRelease( p ) }</td>
+					<td>{ this.renderActions( p ) }</td>
 				</tr>
 			);
 		} ) );
 	},
-	handleOnRelease( pkg, event, name ) {
+	handleOnDeploy( pkg, event, name ) {
 		const data = [];
 		[ "project", "owner", "branch", "version" ].forEach( function( field ) {
 			data.push( { op: "change", field, value: pkg[ field ] } );
 		} );
-		this.props.onRelease( { name, data } );
+		this.props.onDeploy( { name, data } );
 	},
-	renderRelease( pkg ) {
-		return <DropdownButton bsStyle="default" className="btn-responsive" title="Deploy" id={ `dropdown-basic-${pkg.version}` } onSelect={ this.handleOnRelease.bind( this, pkg ) }>
-			{ this.props.hosts.map( host => <MenuItem key={ host.name } eventKey={ host.name }>{ host.name }</MenuItem> ) }
-		</DropdownButton>;
+	renderActions( pkg ) {
+		return (
+			<ButtonGroup>
+				<DropdownButton bsStyle="default" className="btn-responsive" title="Deploy" id={ `dropdown-basic-${pkg.version}` } onSelect={ this.handleOnDeploy.bind( this, pkg ) }>
+					{ this.props.hosts.map( host => <MenuItem key={ host.name } eventKey={ host.name }>{ host.name }</MenuItem> ) }
+				</DropdownButton>
+				<Button componentClass="a" href={ `/nonstop/package/${pkg.relative}/${pkg.file}` } title="Download">
+					<i className="fa fa-cloud-download"></i>
+					<span className="u-hiddenVisually">Download</span>
+				</Button>
+			</ButtonGroup>
+		);
 	},
 	renderVersionGroup( { builds }, versionNumber ) {
 		const latestBuild = Object.keys( builds )[ 0 ];
