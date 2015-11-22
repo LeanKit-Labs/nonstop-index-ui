@@ -8,6 +8,7 @@ var postal = require( "postal" );
 var pubsub = postal.channel( "ahpubsub" );
 
 // note: order of registrations matter!
+fount.register( "config", config );
 fount.register( "postal", require( "postal" ) );
 fount.register( "loggingCollectorConfig", config.logging );
 fount.register( "ahpubsub", pubsub );

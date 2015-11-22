@@ -51,6 +51,8 @@ To start the nonstop-index-ui, run `gulp dev`.
 | NS__AUTH__GITHUB__CLIENT_ID\* | `"YOUR_CLIENT_ID_HERE"` |
 | NS__AUTH__GITHUB__CLIENT_SECRET\* | `"YOUR_CLIENT_SECRET_HERE"` |
 | NS__AUTH__GITHUB__CALLBACK_URL\* | `"http://localhost:8048/nonstop/auth/github/callback"` |
+| **indexUrl** | |
+| NS__INDEX_URL\* | `"http://nsindex.com:4444"` |
 | **client** | |
 | NS__CLIENT__LUX_AUTOHOST__FILTER__ACTIONS | `[]` |
 | NS__CLIENT__LUX_AUTOHOST__METRICS__TIMEOUT | `15000` |
@@ -88,9 +90,6 @@ To start the nonstop-index-ui, run `gulp dev`.
 | **metrics** | |
 | NS_METRICS_FANOUT | `"metronic.all.ex"` |
 | NS_METRICS_TOPIC | `"metronic.topic.ex"` |
-| **redis** | |
-| NS_REDIS_HOST\* | `"localhost"` |
-| NS_REDIS_PORT\* | `6379` |
 | **session** | |
 | NS_SESSION_CONFIG_NAME | `"nonstop-index-ui.sid"` |
 | NS_SESSION_CONFIG_SECRET | `"I eat my peas with honey, I've done it all my life"` |

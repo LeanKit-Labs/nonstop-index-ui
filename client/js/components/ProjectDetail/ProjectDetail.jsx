@@ -73,7 +73,7 @@ export default React.createClass( {
 								<VersionGroup
 									versions={ this.state.versions }
 									hosts={ this.state.allHosts }
-									onRelease={ this.applySettings } />
+									onDeploy={ this.applySettings } />
 							</div>
 							<div className="col-md-4">
 								<HostList hosts={ this.state.hosts } onSelectHost={ this.viewHost } />

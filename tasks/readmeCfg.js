@@ -18,7 +18,8 @@ var opsTerms = [
 	"NS_REDIS_PORT",
 	"NS_SESSION_REDIS_HOST",
 	"NS_SESSION_REDIS_PORT",
-	"NS_SESSION_REDIS_PREFIX"
+	"NS_SESSION_REDIS_PREFIX",
+	"NS__INDEX_URL"
 ];
 
 function insertMarkers( str ) {
