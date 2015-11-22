@@ -1,6 +1,11 @@
 # nonstop-index-ui
 Web UI for the nonstop index
 
+## Nonstop/Drone CI Build Info
+| branch | status |
+|--------|--------|
+| master | [![Build Status](https://droned.leankitdev.com/api/badges/LeanKit-Labs/nonstop-index-ui/status.svg)](https://droned.leankitdev.com/LeanKit-Labs/nonstop-index-ui) |
+
 ## Getting Setup
 Clone this repo and run `npm install`.
 

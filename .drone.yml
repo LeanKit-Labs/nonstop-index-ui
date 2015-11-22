@@ -1,18 +1,20 @@
-image: 'arob/drone-nonstop-browser'
-script:
-  - 'ns --verbose'
+build:
+  image: 'arob/drone-nonstop-browser'
+  commands:
+    - 'ns --verbose'
 cache:
   mount:
     - node_modules
     - .git
 deploy:
-  bash:
-    command: 'ns upload --latest --index 10.0.0.4 --url /index/api --port 4444 --token lkdevtoken'
+  nonstop:
+    image: 'jgreat/drone-nonstop'
+    index: $$NONSTOP_INDEX_IP
+    url: '/index/api'
+    port: '4444'
+    token: $$NONSTOP_TOKEN
 notify:
   slack:
-    webhook_url: 'https://hooks.slack.com/services/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'
+    webhook_url: $$SLACK_WEBHOOK
     username: 'azurebuild'
     channel: '#hackbot'
-    on_started: true
-    on_success: true
-    on_failure: true
