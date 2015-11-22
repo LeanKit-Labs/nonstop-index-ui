@@ -9,7 +9,8 @@
     "should": false,
     "sinon": false,
     "when": false,
-    "getMockReactComponent": false
+    "getMockReactComponent": false,
+    "wrapStatelessComponent": false
   },
 
   "env": {

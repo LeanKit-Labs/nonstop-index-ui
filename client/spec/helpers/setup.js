@@ -23,3 +23,12 @@ global.getMockReactComponent = function( name ) {
 		}
 	} );
 };
+
+// easier testing of stateless components with ReactUtils
+global.wrapStatelessComponent = function( Component ) {
+	return React.createClass( {
+		render() {
+			return <Component { ...this.props } />;
+		}
+	} );
+};
