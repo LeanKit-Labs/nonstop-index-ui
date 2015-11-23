@@ -2,6 +2,23 @@ module.exports = {
 	packages: [
 		{
 			directory: "/usr/src/app/public/nonstop/package/core-blu-BanditSoftware-master",
+			fullPath: "/usr/src/app/public/nonstop/package/core-blu-BanditSoftware-master/core-blu~BanditSoftware~master~67bd1695~0.1.5~~linux~any~any~x64.tar.gz",
+			project: "core-blu",
+			owner: "BanditSoftware",
+			branch: "master",
+			slug: "67bd1695",
+			version: "0.1.5",
+			build: "",
+			platform: "linux",
+			osName: "any",
+			osVersion: "any",
+			architecture: "x64",
+			relative: "core-blu-BanditSoftware-master",
+			file: "core-blu~BanditSoftware~master~67bd1695~0.1.5~~linux~any~any~x64.tar.gz",
+			simpleVersion: "0.1.5"
+		},
+		{
+			directory: "/usr/src/app/public/nonstop/package/core-blu-BanditSoftware-master",
 			fullPath: "/usr/src/app/public/nonstop/package/core-blu-BanditSoftware-master/core-blu~BanditSoftware~master~67bd1695~0.1.5~11~linux~any~any~x64.tar.gz",
 			project: "core-blu",
 			owner: "BanditSoftware",
@@ -14,7 +31,8 @@ module.exports = {
 			osVersion: "any",
 			architecture: "x64",
 			relative: "core-blu-BanditSoftware-master",
-			file: "core-blu~BanditSoftware~master~67bd1695~0.1.5~11~linux~any~any~x64.tar.gz"
+			file: "core-blu~BanditSoftware~master~67bd1695~0.1.5~11~linux~any~any~x64.tar.gz",
+			simpleVersion: "0.1.5"
 		},
 		{
 			directory: "/usr/src/app/public/nonstop/package/core-blu-BanditSoftware-master",
@@ -31,7 +49,8 @@ module.exports = {
 			osVersion: "any",
 			architecture: "x64",
 			relative: "core-blu-BanditSoftware-master",
-			file: "core-blu~BanditSoftware~master~e367b2e9~0.1.5~10~linux~any~any~x64.tar.gz"
+			file: "core-blu~BanditSoftware~master~e367b2e9~0.1.5~10~linux~any~any~x64.tar.gz",
+			simpleVersion: "0.1.5"
 		},
 		{
 			directory: "/usr/src/app/public/nonstop/package/nonstop-index-ui-LeanKit-Labs-master",

@@ -37,6 +37,7 @@ export default React.createClass( {
 		className: React.PropTypes.string,
 		hosts: React.PropTypes.array,
 		onDeploy: React.PropTypes.func.isRequired,
+		onRelease: React.PropTypes.func.isRequired,
 		versions: React.PropTypes.object.isRequired
 	},
 	getDefaultProps() {
@@ -49,12 +50,19 @@ export default React.createClass( {
 		const packagesCount = packages.length;
 		return ( map( packages, ( p, index ) => {
 			return (
-				<tr key={ p.file }>
+				<tr key={ p.file } className={ p.released ? "success" : "" }>
 					{ index === 0 ? <td rowSpan={ packagesCount }>{ buildNumber( build ) }</td> : null }
 					<td>{ platform( p.platform ) }</td>
 					<td>{ architecture( p.architecture ) }</td>
 					<td>{ slug( p ) }</td>
 					<td>{ this.renderActions( p ) }</td>
+					<td>
+						{
+							p.releasable ? <Button componentClass="a" bsStyle="success" onClick={ this.props.onRelease.bind( this, p ) } title="Release">
+								<i className="fa fa-check-circle"></i> Release
+							</Button> : ( p.released ? "Released" : "Not Released" )
+						}
+					</td>
 				</tr>
 			);
 		} ) );
@@ -93,11 +101,12 @@ export default React.createClass( {
 							<table className="table table-striped no-padding">
 								<thead>
 									<tr>
-										<th scope="col" width="10%">Build Number</th>
+										<th scope="col" width="10%">Build #</th>
 										<th scope="col">Plat&shy;form</th>
 										<th scope="col">Archi&shy;tecture</th>
 										<th scope="col">Slug</th>
 										<th scope="col">Actions</th>
+										<th scope="col" className="versionGroup-columnHeader">Release</th>
 									</tr>
 								</thead>
 								<tbody>
@@ -115,7 +124,6 @@ export default React.createClass( {
 			<section className={ this.props.className }>
 				{ map( this.props.versions, this.renderVersionGroup ) }
 			</section>
-
 		);
 	}
 } );

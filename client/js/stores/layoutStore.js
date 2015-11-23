@@ -13,6 +13,18 @@ export default new lux.Store( {
 				message: "Successfully updated host"
 			} );
 		},
+		releasePackageSuccess() {
+			this.setState( {
+				type: "success",
+				message: "Package release successful."
+			} );
+		},
+		releasePackageError( data ) {
+			this.setState( {
+				type: "danger",
+				message: `Release was unsuccessful. Reason: ${data.message}`
+			} );
+		},
 		handleAlertClose() {
 			this.setState( {
 				message: ""

@@ -1,4 +1,5 @@
 import projectDetailFactory from "inject!ProjectDetail";
+import { noop } from "lodash";
 
 describe( "ProjectDetail Component", () => {
 	let component, dependencies, actions, ProjectDetail, container;
@@ -9,7 +10,10 @@ describe( "ProjectDetail Component", () => {
 			finalizeDeploy: sinon.stub(),
 			loadHostStatus: sinon.stub(),
 			triggerDeploy: sinon.stub(),
-			cancelDeploy: sinon.stub()
+			cancelDeploy: sinon.stub(),
+			confirmReleasePackage: sinon.stub(),
+			cancelReleasePackage: sinon.stub(),
+			releasePackage: sinon.stub()
 		};
 
 		lux.customActionCreator( actions );
@@ -23,7 +27,12 @@ describe( "ProjectDetail Component", () => {
 		dependencies = {
 			"react-bootstrap/lib": {
 				Modal,
-				Button: getMockReactComponent( "Button" )
+				Button: getMockReactComponent( "Button" ),
+				Table: React.createClass( {
+					render() {
+						return <table className="component-table"> table { this.props.children }</table>;
+					}
+				} )
 			},
 			ProjectDetailHeader: getMockReactComponent( "ProjectDetailHeader" ),
 			VersionGroup: getMockReactComponent( "VersionGroup" ),
@@ -34,7 +43,8 @@ describe( "ProjectDetail Component", () => {
 					versions: {}
 				} ),
 				getHosts: sinon.stub().returns( [] ),
-				getDeployChoice: sinon.stub().returns( null )
+				getDeployChoice: sinon.stub().returns( null ),
+				getReleaseChoice: sinon.stub().returns( null )
 			}
 		};
 		ProjectDetail = projectDetailFactory( dependencies );
@@ -45,6 +55,8 @@ describe( "ProjectDetail Component", () => {
 		if ( !props.params ) {
 			props.params = { name: "project", owner: "owner", branch: "branch" };
 		}
+		props.onRelease = props.onRelease || noop;
+		props.onDeploy = props.onDeploy || noop;
 		component = ReactDOM.render( <ProjectDetail {...props} />, container );
 	}
 
@@ -65,7 +77,8 @@ describe( "ProjectDetail Component", () => {
 				owners: [],
 				versions: {},
 				allHosts: [],
-				deployChoice: null
+				deployChoice: null,
+				releaseChoice: null
 			} );
 		} );
 
@@ -153,12 +166,12 @@ describe( "ProjectDetail Component", () => {
 					callout.should.be.empty;
 				} );
 				it( "should render the modal", () => {
-					const modal = ReactUtils.findRenderedComponentWithType( component, dependencies[ "react-bootstrap/lib" ].Modal );
-					should.exist( modal );
+					const modals = ReactUtils.scryRenderedComponentsWithType( component, dependencies[ "react-bootstrap/lib" ].Modal );
+					ReactDOM.findDOMNode( modals[ 0 ] ).textContent.should.contain( "Confirm Deployment to" );
 				} );
 				it( "should render the host in the title", () => {
-					const title = ReactUtils.findRenderedComponentWithType( component, dependencies[ "react-bootstrap/lib" ].Modal.Title );
-					ReactDOM.findDOMNode( title ).textContent.should.contain( "project-host" );
+					const titles = ReactUtils.scryRenderedComponentsWithType( component, dependencies[ "react-bootstrap/lib" ].Modal.Title );
+					ReactDOM.findDOMNode( titles[ 0 ] ).textContent.should.contain( "project-host" );
 				} );
 				it( "should show what changed", () => {
 					const body = ReactUtils.findRenderedComponentWithType( component, dependencies[ "react-bootstrap/lib" ].Modal.Body );
@@ -190,7 +203,7 @@ describe( "ProjectDetail Component", () => {
 					rows[ 3 ].children[ 2 ].textContent.should.equal( "1.2.0-14" );
 				} );
 				it( "should enable the deploy button", () => {
-					const footer = ReactUtils.findRenderedComponentWithType( component, dependencies[ "react-bootstrap/lib" ].Modal.Footer );
+					const footer = ReactUtils.scryRenderedComponentsWithType( component, dependencies[ "react-bootstrap/lib" ].Modal.Footer )[ 0 ];
 					const buttons = ReactUtils.scryRenderedComponentsWithType( footer, dependencies[ "react-bootstrap/lib" ].Button );
 					buttons[1].props.disabled.should.be.false;
 				} );
@@ -223,7 +236,7 @@ describe( "ProjectDetail Component", () => {
 					rows[ 3 ].children[ 1 ].textContent.should.equal( "..." );
 				} );
 				it( "should disable the deploy button", () => {
-					const footer = ReactUtils.findRenderedComponentWithType( component, dependencies[ "react-bootstrap/lib" ].Modal.Footer );
+					const footer = ReactUtils.scryRenderedComponentsWithType( component, dependencies[ "react-bootstrap/lib" ].Modal.Footer )[ 0 ];
 					const buttons = ReactUtils.scryRenderedComponentsWithType( footer, dependencies[ "react-bootstrap/lib" ].Button );
 					buttons[1].props.disabled.should.be.true;
 				} );
@@ -278,12 +291,12 @@ describe( "ProjectDetail Component", () => {
 		} );
 
 		it( "should cancel when its hidden", () => {
-			const modal = ReactUtils.findRenderedComponentWithType( component, dependencies[ "react-bootstrap/lib" ].Modal );
+			const modal = ReactUtils.scryRenderedComponentsWithType( component, dependencies[ "react-bootstrap/lib" ].Modal )[ 0 ];
 			modal.props.onHide();
 			actions.cancelDeploy.should.be.calledOnce;
 		} );
 		it( "should cancel when cancel is clicked", () => {
-			const footer = ReactUtils.findRenderedComponentWithType( component, dependencies[ "react-bootstrap/lib" ].Modal.Footer );
+			const footer = ReactUtils.scryRenderedComponentsWithType( component, dependencies[ "react-bootstrap/lib" ].Modal.Footer )[ 0 ];
 			const buttons = ReactUtils.scryRenderedComponentsWithType( footer, dependencies[ "react-bootstrap/lib" ].Button );
 			buttons[0].props.onClick();
 			actions.cancelDeploy.should.be.calledOnce;
@@ -302,10 +315,9 @@ describe( "ProjectDetail Component", () => {
 			createComponent();
 		} );
 		it( "should call finalizeDeploy when deploy is clicked", () => {
-			const footer = ReactUtils.findRenderedComponentWithType( component, dependencies[ "react-bootstrap/lib" ].Modal.Footer );
+			const footer = ReactUtils.scryRenderedComponentsWithType( component, dependencies[ "react-bootstrap/lib" ].Modal.Footer )[ 0 ];
 			const buttons = ReactUtils.scryRenderedComponentsWithType( footer, dependencies[ "react-bootstrap/lib" ].Button );
 			buttons[1].props.onClick();
-			actions.finalizeDeploy.should.be.calledOnce;
 			actions.finalizeDeploy.should.be.calledOnce;
 		} );
 	} );
@@ -322,6 +334,41 @@ describe( "ProjectDetail Component", () => {
 
 			actions.loadHostStatus.should.be.calledOnce.and.calledWith( "mah-host" );
 			actions.triggerDeploy.should.be.calledOnce.and.calledWith( { pkg: {}, host: "mah-host" } );
+		} );
+	} );
+
+	describe( "when starting a release", () => {
+		let vg;
+		beforeEach( () => {
+			createComponent();
+			vg = ReactUtils.findRenderedComponentWithType( component, dependencies.VersionGroup );
+		} );
+
+		it( "should call confirmReleasePackage", () => {
+			vg.props.onRelease( { pkg: {} } );
+			actions.confirmReleasePackage.should.be.calledOnce.and.calledWith( { pkg: {} } );
+		} );
+	} );
+
+	describe( "when confirming a release", () => {
+		beforeEach( () => {
+			dependencies[ "stores/projectStore" ].getReleaseChoice.returns( {
+				architecture: "architecture-value",
+				branch: "branch-value",
+				osName: "osName-value",
+				osVersion: "osVersion-value",
+				owner: "owner-value",
+				platform: "platform-value",
+				project: "project-value",
+				slug: "slug-value"
+			} );
+			createComponent();
+		} );
+		it( "should call releasePackage when release is clicked", () => {
+			const footer = ReactUtils.scryRenderedComponentsWithType( component, dependencies[ "react-bootstrap/lib" ].Modal.Footer )[ 1 ];
+			const buttons = ReactUtils.scryRenderedComponentsWithType( footer, dependencies[ "react-bootstrap/lib" ].Button );
+			buttons[ 1 ].props.onClick();
+			actions.releasePackage.should.be.calledOnce;
 		} );
 	} );
 

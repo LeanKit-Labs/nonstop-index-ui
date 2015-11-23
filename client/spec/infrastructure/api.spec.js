@@ -3,6 +3,7 @@ import packagesResponse from "../data/packagesResponse";
 import hostsResponse from "../data/hostsResponse";
 import hostStatusResponse from "../data/hostStatusResponse";
 import hostConfigurationResponse from "../data/hostConfigurationResponse";
+import pkgPromotionResponse from "../data/packagePromoteResponse";
 
 describe( "API", () => {
 	let dependencies, halonStubs, jQueryAdapter, api, actions, errorLog;
@@ -12,7 +13,8 @@ describe( "API", () => {
 		halonStubs = {
 			followResourceLink: sinon.stub(),
 			package: {
-				list: sinon.stub().resolves( packagesResponse )
+				list: sinon.stub().resolves( packagesResponse ),
+				promote: sinon.stub().resolves( pkgPromotionResponse )
 			},
 			host: {
 				list: sinon.stub().resolves( hostsResponse ),
@@ -89,19 +91,59 @@ describe( "API", () => {
 				loadHostsSuccess() {}
 			} );
 		} );
-		it( "should call the package list endpoint and then the hosts list", ( done ) => {
-			lux.customActionCreator( {
-				loadProjectsSuccess() {
-					halonStubs.package.list.should.be.calledOnce;
-					halonStubs.host.list.should.not.be.called;
-				},
-				loadHostsSuccess() {
-					halonStubs.package.list.should.be.calledOnce;
-					done();
-				}
+		describe( "and loading projects", () => {
+			describe( "with successful response", () => {
+				it( "should call loadProjectsSuccess", done => {
+					lux.customActionCreator( {
+						loadProjectsSuccess( data ) {
+							data.should.eql( packagesResponse );
+							done();
+						}
+					} );
+					lux.publishAction( "initializePage" );
+				} );
 			} );
-
-			lux.publishAction( "initializePage" );
+			describe( "with failed response", () => {
+				beforeEach( () => {
+					halonStubs.package.list = sinon.stub().rejects( "something bad" );
+				} );
+				it( "should call the loadProjectsError", done => {
+					lux.customActionCreator( {
+						loadProjectsError( err ) {
+							err.message.should.eql( "something bad" );
+							done();
+						}
+					} );
+					lux.publishAction( "initializePage" );
+				} );
+			} );
+		} );
+		describe( "and loading hosts", () => {
+			describe( "with successful response", () => {
+				it( "should call loadHostsSuccess", done => {
+					lux.customActionCreator( {
+						loadHostsSuccess( data ) {
+							data.should.eql( hostsResponse );
+							done();
+						}
+					} );
+					lux.publishAction( "initializePage" );
+				} );
+			} );
+			describe( "with failed response", () => {
+				beforeEach( () => {
+					halonStubs.host.list = sinon.stub().rejects( "something bad" );
+				} );
+				it( "should call the loadHostsError", done => {
+					lux.customActionCreator( {
+						loadHostsError( err ) {
+							err.message.should.eql( "something bad" );
+							done();
+						}
+					} );
+					lux.publishAction( "initializePage" );
+				} );
+			} );
 		} );
 		describe( "and loading the user", () => {
 			describe( "with successful response", () => {
@@ -270,6 +312,7 @@ describe( "API", () => {
 			} );
 		} );
 	} );
+
 	describe( "when handling finalizeDeploy", () => {
 		beforeEach( () => {
 			dependencies[ "stores/projectStore" ].getDeployChoiceSettings.returns( {
@@ -289,6 +332,47 @@ describe( "API", () => {
 							op: "change", field: "foo", value: "bar"
 						} ]
 					} );
+			} );
+		} );
+	} );
+
+	describe( "when handling releasePackage", () => {
+		var promoteActionMock = {
+			architecture: "x64",
+			branch: "master",
+			osName: "any",
+			osVersion: "any",
+			owner: "ifandelse",
+			platform: "linux",
+			project: "littlebrudder",
+			slug: "67bd1695"
+		};
+		describe( "with successful response", () => {
+			it( "should invoke package promote resource", () => {
+				lux.publishAction( "releasePackage", promoteActionMock );
+				halonStubs.package.promote.should.be.calledOnce
+					.and.calledWith( promoteActionMock );
+			} );
+			it( "should publish applySettingsSuccess action", ( done ) => {
+				lux.customActionCreator( {
+					releasePackageSuccess( data ) {
+						data.should.eql( pkgPromotionResponse );
+						done();
+					}
+				} );
+				lux.publishAction( "releasePackage", promoteActionMock );
+			} );
+		} );
+		describe( "with failed response", () => {
+			it( "should publish releasePackageError action", ( done ) => {
+				halonStubs.package.promote = sinon.stub().rejects( new Error( "OHSNAP" ) );
+				lux.customActionCreator( {
+					releasePackageError( err ) {
+						err.message.should.eql( "OHSNAP" );
+						done();
+					}
+				} );
+				lux.publishAction( "releasePackage", promoteActionMock );
 			} );
 		} );
 	} );

@@ -1,4 +1,5 @@
 import projectStoreFactory from "inject!stores/projectStore";
+import { cloneDeep } from "lodash";
 
 const packagesResponse = require( "../data/packagesResponse" );
 const projectsParsed = require( "../data/projectsParsed" );
@@ -6,6 +7,7 @@ const hostsResponse = require( "../data/hostsResponse" );
 const projectsWithHostsParsed = require( "../data/projectsWithHostsParsed" );
 const hostsWithStatus = require( "../data/hostsWithStatus" );
 const statusResponse = require( "../data/statusResponse" );
+const hostsParsed = require( "../data/hostsParsed" );
 
 describe( "project store", () => {
 	let projectStore;
@@ -24,7 +26,9 @@ describe( "project store", () => {
 				projects: {},
 				packages: {},
 				hosts: [],
-				deployChoice: null
+				hostByProject: {},
+				deployChoice: null,
+				releaseChoice: null
 			} );
 		} );
 	} );
@@ -39,11 +43,16 @@ describe( "project store", () => {
 		} );
 
 		describe( "when handling loadHostsSuccess", () => {
-			it( "should add hosts to projects", () => {
-				const state = projectStore.getState();
-				state.projects = projectsParsed.projects;
+			it( "should add hosts to state", () => {
 				lux.publishAction( "loadHostsSuccess", hostsResponse );
-				state.projects.should.eql( projectsWithHostsParsed );
+				projectStore.getState().hosts.should.eql( hostsParsed.hosts );
+			} );
+
+			it( "should create hostByProject state prop", () => {
+				lux.publishAction( "loadHostsSuccess", hostsResponse );
+				projectStore.getState().hostByProject.should.eql( {
+					"nonstop-index-ui": hostsParsed.hosts
+				} );
 			} );
 
 			it( "should handle when a host project is absent", () => {
@@ -53,9 +62,9 @@ describe( "project store", () => {
 		} );
 
 		describe( "when handling loadHostStatusSuccess", () => {
-			it( "should add status to projects", () => {
+			it( "should add status to hosts", () => {
 				const state = projectStore.getState();
-				state.hosts = _.cloneDeep( projectsWithHostsParsed["nonstop-index-ui"].hosts );
+				state.hosts = _.cloneDeep( hostsParsed.hosts );
 				const clock = sinon.useFakeTimers( new Date( 2015, 11, 25, 0, 0, 0 ).getTime() );
 				lux.publishAction( "loadHostStatusSuccess", {
 					name: "core-blu",
@@ -79,7 +88,7 @@ describe( "project store", () => {
 			let state;
 			beforeEach( () => {
 				state = projectStore.getState();
-				state.hosts = _.cloneDeep( projectsWithHostsParsed["nonstop-index-ui"].hosts );
+				state.hosts = _.cloneDeep( hostsParsed.hosts );
 				lux.publishAction( "triggerDeploy", { host: "core-blu", pkg: {} } );
 			} );
 			it( "should save the status to state", () => {
@@ -130,6 +139,36 @@ describe( "project store", () => {
 				should.equal( projectStore.getState().deployChoice, null );
 			} );
 		} );
+		describe( "when handling confirmReleasePackage", () => {
+			it( "should save the release choice to state", () => {
+				lux.publishAction( "confirmReleasePackage", packagesResponse.packages[ 0 ] );
+				projectStore.getState().releaseChoice.should.eql( packagesResponse.packages[ 0 ] );
+			} );
+		} );
+		describe( "when handling releasePackage", () => {
+			it( "should remove the release choice to state", () => {
+				lux.publishAction( "releasePackage" );
+				should.equal( projectStore.getState().releaseChoice, null );
+			} );
+		} );
+		describe( "when handling cancelReleasePackage", () => {
+			it( "should remove the release choice to state", () => {
+				lux.publishAction( "cancelReleasePackage" );
+				should.equal( projectStore.getState().releaseChoice, null );
+			} );
+		} );
+		describe( "when handling releasePackageSuccess", () => {
+			it( "should remove the release choice to state", () => {
+				lux.publishAction( "releasePackageSuccess" );
+				should.equal( projectStore.getState().releaseChoice, null );
+			} );
+		} );
+		describe( "when handling releasePackageError", () => {
+			it( "should remove the release choice to state", () => {
+				lux.publishAction( "releasePackageError" );
+				should.equal( projectStore.getState().releaseChoice, null );
+			} );
+		} );
 	} );
 
 	describe( "helper functions", () => {
@@ -159,7 +198,7 @@ describe( "project store", () => {
 			} );
 			it( "should return deployChoice with complete host", () => {
 				Object.assign( projectStore.getState(), {
-					hosts: _.cloneDeep( projectsWithHostsParsed["nonstop-index-ui"].hosts ),
+					hosts: _.cloneDeep( hostsParsed.hosts ),
 					deployChoice: {
 						pkg: {
 							project: "Heyo"
@@ -187,7 +226,7 @@ describe( "project store", () => {
 		describe( "getDeployChoiceSettings", () => {
 			beforeEach( () => {
 				Object.assign( projectStore.getState(), {
-					hosts: _.cloneDeep( projectsWithHostsParsed["nonstop-index-ui"].hosts ),
+					hosts: _.cloneDeep( hostsParsed.hosts ),
 					deployChoice: {
 						pkg: {
 							project: "heyo",
@@ -209,6 +248,19 @@ describe( "project store", () => {
 						{ op: "change", field: "version", value: "1.0.0-12" }
 					]
 				} );
+			} );
+		} );
+
+		describe( "getReleaseChoice", () => {
+			it( "should return null if not set", () => {
+				should.equal( projectStore.getReleaseChoice(), null );
+			} );
+			it( "should return releaseChoice if set", () => {
+				Object.assign( projectStore.getState(), {
+					releaseChoice: cloneDeep( packagesResponse.packages[ 0 ] )
+				} );
+
+				projectStore.getReleaseChoice().should.eql( packagesResponse.packages[ 0 ] );
 			} );
 		} );
 
