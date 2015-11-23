@@ -14,14 +14,14 @@ function getState( { name, owner, branch } ) {
 		projectStore.getProject( name, owner, branch ),
 		{
 			allHosts: projectStore.getHosts(),
-			deployChoice: projectStore.getDeployChoice
+			deployChoice: projectStore.getDeployChoice()
 		}
 	);
 }
 
 export default React.createClass( {
 	mixins: [ lux.reactMixin.actionCreator, lux.reactMixin.store ],
-	getActions: [ "viewProject", "viewHost", "applySettings" ],
+	getActions: [ "viewProject", "viewHost", "applySettings", "cancelDeploy" ],
 	stores: {
 		listenTo: [ "project" ],
 		onChange() {
@@ -61,6 +61,50 @@ export default React.createClass( {
 			branch: branch
 		} );
 	},
+	renderModal() {
+		const deployChoice = this.state.deployChoice || {} ;
+		const { pkg, host } = deployChoice;
+		return (
+			<Modal show={ !!this.state.deployChoice } onHide={ this.cancelDeploy }>
+			      <Modal.Header>
+			      	<Modal.Title>Confirm Deployment to <span className="projectDetail-modal-title-hostName">{ host ? host.name : "" }</span></Modal.Title>
+			      </Modal.Header>
+
+			      { this.state.deployChoice ? <Modal.Body>
+			        <table className="table">
+			        <thead>
+			        	<tr>
+			        		<th scope="col"></th>
+			        		<th scope="col">Hosted Package</th>
+			        		<th scope="col">Package to Deploy</th>
+			        	</tr>
+			        </thead>
+			        <tbody>
+				        { this.renderCompareRow( "Project", host.projectName, pkg.project ) }
+				        { this.renderCompareRow( "Owner", host.owner, pkg.owner ) }
+				        { this.renderCompareRow( "Branch", host.branch, pkg.branch ) }
+				        { this.renderCompareRow( "Version", host.status ? host.status.version : "...", pkg.version ) }
+			       </tbody>
+			       </table>
+			      </Modal.Body> : null }
+
+			      <Modal.Footer>
+			        <Button onClick={ this.cancelDeploy }>Cancel</Button>
+			        <Button bsStyle="primary" disabled={ !host || !host.status }>Deploy</Button>
+			      </Modal.Footer>
+		    </Modal>
+	    );
+	},
+	renderCompareRow( label, oldValue, newValue) {
+		const matches = oldValue === newValue;
+		return (
+			<tr>
+				<th scope="row">{ label }</th>
+				<td className={ matches ? "" : "bg-danger" }>{ oldValue }</td>
+				<td className={ matches ? "" : "bg-success" }>{ newValue }</td>
+			</tr>
+			);
+	},
 	render() {
 		return (
 			<div className="projectDetail">
@@ -84,25 +128,7 @@ export default React.createClass( {
 							</div>
 						</div>
 					</section>
-					<Modal show={ this.state.showModal } onHide={ this.close }>
-					      <Modal.Header>
-					        <Modal.Title>Confirm Deployment</Modal.Title>
-					      </Modal.Header>
-
-					      <Modal.Body>
-					        <h3>Package to Deploy</h3>
-					        <span>{ this.state.selectedPackage.branch }</span> | <span>Build Number</span> | <span>{ this.state.selectedPackage.version }</span>
-					        <hr />
-					        <h3>Hosted Package</h3>
-					        <span>{ this.state.selectedHost.branch }</span> | <span>Build Number</span> | <span>Version</span>
-					      </Modal.Body>
-
-					      <Modal.Footer>
-					        <Button onClick={ this.modalClose }>Cancel</Button>
-					        <Button bsStyle="primary">Deploy</Button>
-					      </Modal.Footer>
-
-					    </Modal>
+					{ this.renderModal() }
 			</div>
 		);
 	}

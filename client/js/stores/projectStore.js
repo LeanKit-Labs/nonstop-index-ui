@@ -21,10 +21,7 @@ export default new lux.Store( {
 		packages: {},
 		projects: {},
 		hosts: [],
-		deployChoice: {
-			'pkg': {},
-			'host': {}
-		}
+		deployChoice: null
 	},
 	handlers: {
 		loadProjectsSuccess( { packages } ) {
@@ -38,6 +35,14 @@ export default new lux.Store( {
 				hosts: mappedHosts
 			} );
 		},
+		triggerDeploy( { pkg, host } ) {
+			this.setState( { deployChoice: {
+				pkg, host }
+			} );
+		},
+		cancelDeploy() {
+			this.setState( { deployChoice: null } );
+		},
 		loadHostStatusSuccess( { name, status } ) {
 			const host = find( this.getState().hosts, { name } );
 			if ( host ) {
@@ -49,7 +54,7 @@ export default new lux.Store( {
 					fetchTime: new Date()
 				};
 			}
-		},
+		}
 	},
 	reduceProjects( packages ) {
 		return packages.reduce( ( memo, item ) => {
@@ -133,12 +138,12 @@ export default new lux.Store( {
 	},
 	getDeployChoice() {
 		const { deployChoice, hosts } = this.getState();
-		if (!deployChoice) {
-			return null
+		if ( !deployChoice ) {
+			return null;
 		}
 		return {
 			pkg: deployChoice.pkg,
 			host: hosts.find( host => deployChoice.host === host.name )
-		 }
-	},
+		 };
+	}
 } );

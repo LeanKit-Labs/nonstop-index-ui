@@ -15,7 +15,7 @@ define( [ "lux.js" ], function( lux ) {
 
 		// send to logging
 		//lux.publishAction( "error", logData );
-		console.log(logData);
+		console.log( logData );
 
 		/* istanbul ignore next only used for development */
 		if ( DEBUG ) {
