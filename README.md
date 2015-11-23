@@ -67,7 +67,7 @@ To start the nonstop-index-ui, run `gulp dev`.
 | NS__CLIENT__THEME_OPTIONS | `[]` |
 | NS__CLIENT__FEATURE_OPTIONS__CONFIG | `true` |
 | NS__CLIENT__NONSTOP_INDEX_API | `"http://nsindex.com:4444/api"` |
-| NS_CLIENT_HEADERS__AUTHORIZATION | `"Bearer SooPurSeekretTokin"` |
+| NS_CLIENT_HEADERS_AUTHORIZATION | `"Bearer SooPurSeekretTokin"` |
 | **name** | |
 | NS_NAME | `"nonstop-index-ui"` |
 | **environment** | |

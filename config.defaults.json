@@ -32,7 +32,7 @@
 		},
 		"nonstopIndexApi": "http://nsindex.com:4444/api",
 		"headers": {
-			"Authorization": "Bearer SooPurSeekretTokin"
+			"authorization": "Bearer SooPurSeekretTokin"
 		}
 	},
 	"name": "nonstop-index-ui",
