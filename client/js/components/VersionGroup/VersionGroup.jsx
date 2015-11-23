@@ -1,5 +1,4 @@
 import React from "react";
-import lux from "lux.js";
 import { padLeft, map, flatten } from "lodash";
 import { ButtonGroup, Button, DropdownButton, MenuItem } from "react-bootstrap/lib";
 
@@ -34,8 +33,6 @@ function slug( { owner, project, slug } ) {
 }
 
 export default React.createClass( {
-	mixins: [ lux.reactMixin.actionCreator ],
-	getActions: [ "loadHostStatus", "triggerDeploy", "cancelDeploy" ],
 	propTypes: {
 		className: React.PropTypes.string,
 		hosts: React.PropTypes.array,
@@ -63,13 +60,7 @@ export default React.createClass( {
 		} ) );
 	},
 	handleOnDeploy( pkg, event, host ) {
-		const data = [];
-		[ "project", "owner", "branch", "version" ].forEach( function( field ) {
-			data.push( { op: "change", field, value: pkg[ field ] } );
-		} );
-		//this.props.onRelease( { name, data } );
-		this.loadHostStatus( host );
-		this.triggerDeploy( { pkg, host } );
+		this.props.onDeploy( { host, pkg } );
 	},
 	renderActions( pkg ) {
 		return (

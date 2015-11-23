@@ -23,7 +23,8 @@ describe( "project store", () => {
 			projectStore.getState().should.eql( {
 				projects: {},
 				packages: {},
-				hosts: []
+				hosts: [],
+				deployChoice: null
 			} );
 		} );
 	} );
@@ -54,7 +55,7 @@ describe( "project store", () => {
 		describe( "when handling loadHostStatusSuccess", () => {
 			it( "should add status to projects", () => {
 				const state = projectStore.getState();
-				state.hosts = projectsWithHostsParsed["nonstop-index-ui"].hosts;
+				state.hosts = _.cloneDeep( projectsWithHostsParsed["nonstop-index-ui"].hosts );
 				const clock = sinon.useFakeTimers( new Date( 2015, 11, 25, 0, 0, 0 ).getTime() );
 				lux.publishAction( "loadHostStatusSuccess", {
 					name: "core-blu",
@@ -71,6 +72,62 @@ describe( "project store", () => {
 					name: "host-not-found",
 					status: statusResponse
 				} ).should.not.throw();
+			} );
+		} );
+
+		describe( "when handling triggerDeploy", () => {
+			let state;
+			beforeEach( () => {
+				state = projectStore.getState();
+				state.hosts = _.cloneDeep( projectsWithHostsParsed["nonstop-index-ui"].hosts );
+				lux.publishAction( "triggerDeploy", { host: "core-blu", pkg: {} } );
+			} );
+			it( "should save the status to state", () => {
+				state.deployChoice.should.eql( {
+					host: "core-blu",
+					pkg: {}
+				} );
+				should.equal( state.hosts[ 0 ].status, null );
+			} );
+			it( "should clear out host status", () => {
+				should.equal( state.hosts[ 0 ].status, null );
+			} );
+		} );
+		describe( "when handling finalizeDeploy", () => {
+			it( "should set saving to true", () => {
+				const state = projectStore.getState();
+				state.deployChoice = {};
+				lux.publishAction( "finalizeDeploy" );
+				state.deployChoice.saving.should.be.true;
+			} );
+		} );
+		describe( "when handling cancelDeploy", () => {
+			it( "should clear out deployChoice", () => {
+				const state = projectStore.getState();
+				state.deployChoice = {};
+				lux.publishAction( "cancelDeploy" );
+				should.equal( state.deployChoice, null );
+			} );
+		} );
+		describe( "when handling applySettingsSuccess", () => {
+			it( "should clear out deployChoice", () => {
+				const state = projectStore.getState();
+				state.deployChoice = {};
+				lux.publishAction( "applySettingsSuccess" );
+				should.equal( state.deployChoice, null );
+			} );
+		} );
+		describe( "when handling applySettingsError", () => {
+			it( "should save the error if deployChoice is present", () => {
+				const state = projectStore.getState();
+				state.deployChoice = {};
+				lux.publishAction( "applySettingsError" );
+				state.deployChoice.saving.should.be.false;
+				state.deployChoice.error.should.equal( "There was a problem deploying this package." );
+			} );
+			it( "should not save the error if deployChoice is missing", () => {
+				lux.publishAction( "applySettingsError" );
+				should.equal( projectStore.getState().deployChoice, null );
 			} );
 		} );
 	} );
@@ -92,6 +149,65 @@ describe( "project store", () => {
 					branches: [],
 					versions: {},
 					hosts: []
+				} );
+			} );
+		} );
+
+		describe( "getDeployChoice", () => {
+			it( "should return null if not set", () => {
+				should.equal( projectStore.getDeployChoice(), null );
+			} );
+			it( "should return deployChoice with complete host", () => {
+				Object.assign( projectStore.getState(), {
+					hosts: _.cloneDeep( projectsWithHostsParsed["nonstop-index-ui"].hosts ),
+					deployChoice: {
+						pkg: {
+							project: "Heyo"
+						},
+						host: "core-blu"
+					}
+				} );
+
+				projectStore.getDeployChoice().should.eql( {
+					host: {
+						branch: "master",
+						hostName: "lkapp.cloudapp.net",
+						ip: "10.0.0.6",
+						name: "core-blu",
+						owner: "BanditSoftware",
+						project: "nonstop-index-ui"
+					},
+					pkg: {
+						project: "Heyo"
+					}
+				} );
+			} );
+		} );
+
+		describe( "getDeployChoiceSettings", () => {
+			beforeEach( () => {
+				Object.assign( projectStore.getState(), {
+					hosts: _.cloneDeep( projectsWithHostsParsed["nonstop-index-ui"].hosts ),
+					deployChoice: {
+						pkg: {
+							project: "heyo",
+							owner: "mah",
+							branch: "master",
+							version: "1.0.0-12"
+						},
+						host: "core-blu"
+					}
+				} );
+			} );
+			it( "should prepare data for transit", () => {
+				projectStore.getDeployChoiceSettings().should.eql( {
+					name: "core-blu",
+					data: [
+						{ op: "change", field: "project", value: "heyo" },
+						{ op: "change", field: "owner", value: "mah" },
+						{ op: "change", field: "branch", value: "master" },
+						{ op: "change", field: "version", value: "1.0.0-12" }
+					]
 				} );
 			} );
 		} );
@@ -141,8 +257,8 @@ describe( "project store", () => {
 
 				hosts.length.should.equal( 2 );
 				hosts.should.eql( [
-					{ name: "core-blu", projectName: "nonstop-index-ui", branch: "master", owner: "BanditSoftware", hostName: "lkapp.cloudapp.net", ip: "10.0.0.6" },
-					{ name: "littlebrudder", projectName: "nonstop-index-ui", branch: "master", owner: "arobson", hostName: "littelbrudder.hack.leankitdev.com", ip: "10.0.0.6" }
+					{ name: "core-blu", project: "nonstop-index-ui", branch: "master", owner: "BanditSoftware", hostName: "lkapp.cloudapp.net", ip: "10.0.0.6" },
+					{ name: "littlebrudder", project: "nonstop-index-ui", branch: "master", owner: "arobson", hostName: "littelbrudder.hack.leankitdev.com", ip: "10.0.0.6" }
 				] );
 			} );
 		} );

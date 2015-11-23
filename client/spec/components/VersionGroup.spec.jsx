@@ -7,12 +7,17 @@ describe( "VersionGroup", () => {
 		components = {
 			DropdownButton: getMockReactComponent( "DropdownButton" ),
 			MenuItem: getMockReactComponent( "MenuItem" ),
-			ButtonGroup: getMockReactComponent( "ButtonGroup" )
+			ButtonGroup: getMockReactComponent( "ButtonGroup" ),
+			Button: getMockReactComponent( "Button" )
 		};
 
 		dependencies = {
-			"react-bootstrap/lib/DropdownButton": components.DropdownButton,
-			"react-bootstrap/lib/MenuItem": components.MenuItem
+			"react-bootstrap/lib": {
+				Button: components.Button,
+				ButtonGroup: components.ButtonGroup,
+				DropdownButton: components.DropdownButton,
+				MenuItem: components.MenuItem
+			}
 		};
 
 		VersionGroup = versionGroupFactory( dependencies );
@@ -166,13 +171,17 @@ describe( "VersionGroup", () => {
 				firstToggle.props.onSelect( {}, "hostOne" );
 
 				onDeployStub.should.be.calledOnce.and.calledWith( {
-					name: "hostOne",
-					data: [
-						{ field: "project", op: "change", value: "projectOne" },
-						{ field: "owner", op: "change", value: "ownerOne" },
-						{ field: "branch", op: "change", value: "branchOne" },
-						{ field: "version", op: "change", value: "1b1" }
-					]
+					host: "hostOne",
+					pkg: {
+						file: "p01",
+						architecture: "x86",
+						platform: "darwin",
+						slug: "123",
+						owner: "ownerOne",
+						project: "projectOne",
+						branch: "branchOne",
+						version: "1b1"
+					}
 				} );
 			} );
 		} );

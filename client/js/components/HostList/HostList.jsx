@@ -44,8 +44,8 @@ export default React.createClass( {
 				<i>Last Updated: { host.status.fetchTime.toLocaleTimeString() }</i><br />
 				<strong>Host Uptime</strong> { host.status.hostUptime }<br />
 				<strong>Service Uptime</strong> { host.status.serviceUptime }<br />
-				<strong>Slug</strong> { host.status.slug }<br />
-				<strong>Version</strong> { host.status.version }
+				<strong>Slug</strong> { host.slug }<br />
+				<strong>Version</strong> { host.version }
 			</div>
 		);
 	},

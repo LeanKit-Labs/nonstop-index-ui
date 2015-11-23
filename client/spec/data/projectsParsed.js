@@ -1,5 +1,6 @@
 const packagesResponse = require( "./packagesResponse" );
 module.exports = {
+	deployChoice: null,
 	hosts: [],
 	projects: {
 		"core-blu": {

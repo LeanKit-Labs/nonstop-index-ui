@@ -94,8 +94,8 @@ describe( "HostList", () => {
 			let status = ReactUtils.findRenderedDOMComponentWithClass( component, "hostList-status" ).textContent;
 			status.should.include( host.status.hostUptime );
 			status.should.include( host.status.serviceUptime );
-			status.should.include( host.status.slug );
-			status.should.include( host.status.version );
+			status.should.include( host.slug );
+			status.should.include( host.version );
 		} );
 
 		it( "should be able to render one host", () => {

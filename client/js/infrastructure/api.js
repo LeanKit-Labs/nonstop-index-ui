@@ -4,6 +4,7 @@ import $ from "jquery";
 import window from "window";
 import config from "../clientConfig";
 import configurationStore from "stores/configurationStore";
+import projectStore from "stores/projectStore";
 import when from "when";
 
 var nsAPI = window.nsAPI = halon( {
@@ -84,6 +85,9 @@ export default lux.mixin( {
 		loadHosts,
 		loadUser,
 		loadHostStatus,
+		finalizeDeploy() {
+			applySettings( projectStore.getDeployChoiceSettings() );
+		},
 		applySettings
 	}
 }, lux.mixin.actionCreator, lux.mixin.actionListener );

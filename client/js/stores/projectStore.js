@@ -36,21 +36,44 @@ export default new lux.Store( {
 			} );
 		},
 		triggerDeploy( { pkg, host } ) {
-			this.setState( { deployChoice: {
-				pkg, host }
+			const hostRef = find( this.getState().hosts, { name: host } );
+			hostRef.status = null;
+			this.setState( {
+				deployChoice: {
+					pkg, host
+				}
 			} );
+		},
+		finalizeDeploy() {
+			const { deployChoice } = this.getState();
+			deployChoice.saving = true;
+			this.setState( { deployChoice } );
 		},
 		cancelDeploy() {
 			this.setState( { deployChoice: null } );
 		},
+		applySettingsSuccess() {
+			this.setState( { deployChoice: null } );
+		},
+		applySettingsError( e ) {
+			const { deployChoice } = this.getState();
+			if ( deployChoice ) {
+				deployChoice.saving = false;
+				deployChoice.error = "There was a problem deploying this package.";
+				this.setState( { deployChoice } );
+			}
+		},
 		loadHostStatusSuccess( { name, status } ) {
 			const host = find( this.getState().hosts, { name } );
 			if ( host ) {
+				host.owner = _get( status.activity, "running.owner", host.owner );
+				host.project = _get( status.activity, "running.project", host.project );
+				host.branch = _get( status.activity, "running.branch", host.branch );
+				host.slug = _get( status.activity, "running.slug", host.slug );
+				host.version = _get( status.activity, "running.version", host.version ),
 				host.status = {
-					serviceUptime: _get( status, [ "uptime", "service" ], "" ),
-					hostUptime: _get( status, [ "uptime", "host" ], "" ),
-					slug: _get( status.activity, [ "running", "slug" ], "" ),
-					version: _get( status.activity, [ "running", "version" ], "" ),
+					serviceUptime: _get( status, "uptime.service", "" ),
+					hostUptime: _get( status, "uptime.host", "" ),
 					fetchTime: new Date()
 				};
 			}
@@ -141,9 +164,19 @@ export default new lux.Store( {
 		if ( !deployChoice ) {
 			return null;
 		}
-		return {
-			pkg: deployChoice.pkg,
+		return Object.assign( {}, deployChoice, {
 			host: hosts.find( host => deployChoice.host === host.name )
-		 };
+		} );
+	},
+	getDeployChoiceSettings() {
+		const { pkg, host } = this.getDeployChoice();
+		const data = [];
+		[ "project", "owner", "branch", "version" ].forEach( function( field ) {
+			data.push( { op: "change", field, value: pkg[ field ] } );
+		} );
+		return {
+			name: host.name,
+			data
+		};
 	}
 } );

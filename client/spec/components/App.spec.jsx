@@ -24,8 +24,8 @@ describe( "App Component", () => {
 					}
 				} )
 			},
-			"stores/cardStore": {
-				isInitialized: sinon.stub().returns( true )
+			"stores/layoutStore": {
+				getAlert: sinon.stub().returns( null )
 			}
 		};
 

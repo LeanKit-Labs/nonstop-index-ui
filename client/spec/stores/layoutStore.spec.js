@@ -13,23 +13,44 @@ describe( "layout store", () => {
 
 	describe( "when initializing", () => {
 		it( "should add default state", () => {
-			layoutStore.getState().should.eql( { } );
+			layoutStore.getState().should.eql( {
+				type: "success",
+				message: ""
+			} );
 		} );
 	} );
 
 	describe( "handlers", () => {
-		describe( "when handling noop", () => {
-			it( "should not edit the state", () => {
-				lux.publishAction( "noop" );
-				const state = layoutStore.getState();
-				state.should.be.empty;
+		describe( "when handling applySettingsSuccess", () => {
+			it( "should set the correct message and type", () => {
+				lux.publishAction( "applySettingsSuccess" );
+				layoutStore.getState().should.contain( {
+					type: "success",
+					message: "Successfully updated host"
+				} );
+			} );
+		} );
+		describe( "when handling handleAlertClose", () => {
+			it( "should clear out the message", () => {
+				layoutStore.getState().message = "Yo dog";
+				lux.publishAction( "handleAlertClose" );
+				layoutStore.getState().message.should.be.empty;
 			} );
 		} );
 	} );
 
 	describe( "helper functions", () => {
-		it( "should provide an example getter", () => {
-			layoutStore.getExample().should.be.empty;
+		describe( "getAlert", () => {
+			it( "should return an alert object if message is present", () => {
+				layoutStore.getState().message = "Yo dog";
+				layoutStore.getAlert().should.eql( {
+					message: "Yo dog",
+					type: "success"
+				} );
+			} );
+			it( "should return null if no message is present", () => {
+				should.equal( layoutStore.getAlert(), null );
+			} );
 		} );
 	} );
 } );

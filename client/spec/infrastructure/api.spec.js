@@ -30,6 +30,12 @@ describe( "API", () => {
 
 		dependencies = {
 			halon: sinon.stub().returns( halonStubs ),
+			"stores/projectStore": {
+				getDeployChoiceSettings: sinon.stub().returns( {
+					name: "mah-host",
+					data: []
+				} )
+			},
 			"stores/configurationStore": {
 				getChanges: sinon.stub().returns( {
 					name: "littlebrudder",
