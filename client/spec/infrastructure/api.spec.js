@@ -270,4 +270,26 @@ describe( "API", () => {
 			} );
 		} );
 	} );
+	describe( "when handling finalizeDeploy", () => {
+		beforeEach( () => {
+			dependencies[ "stores/projectStore" ].getDeployChoiceSettings.returns( {
+				name: "littlebrudder",
+				data: [ {
+					op: "change", field: "foo", value: "bar"
+				} ]
+			} );
+		} );
+		describe( "with successful response", () => {
+			it( "should invoke host status resource", () => {
+				lux.publishAction( "finalizeDeploy" );
+				halonStubs.host.configure.should.be.calledOnce
+					.and.calledWith( {
+						name: "littlebrudder",
+						data: [ {
+							op: "change", field: "foo", value: "bar"
+						} ]
+					} );
+			} );
+		} );
+	} );
 } );
