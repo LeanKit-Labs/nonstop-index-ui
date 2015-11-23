@@ -74,7 +74,7 @@ module.exports = {
 			ip: "10.0.0.6",
 			name: "core-blu",
 			owner: "BanditSoftware",
-			projectName: "nonstop-index-ui"
+			project: "nonstop-index-ui"
 		},
 		project: "core-blu",
 		owner: "BanditSoftware",

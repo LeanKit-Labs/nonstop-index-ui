@@ -20,7 +20,7 @@ export default React.createClass( {
 		return ( [
 			<tr key={ `${host.name}-${i}` }>
 				<td rowSpan="4" ><strong>{ host.name }</strong><br />{ host.ip }</td>
-				<td><i className="fa text-primary fa-fw fa-bookmark"></i> { host.projectName }</td>
+				<td><i className="fa text-primary fa-fw fa-bookmark"></i> { host.project }</td>
 			</tr>,
 			<tr key={ `${host.name}-branch-${i}` }>
 				<td><i className="fa text-green fa-fw fa-code-fork"></i> { host.owner }/{ host.branch }</td>

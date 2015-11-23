@@ -8,7 +8,7 @@ module.exports = {
 		running: {
 			branch: "master",
 			owner: "LeanKit-Labs",
-			project: "/usr/src/app/downloads/nonstop-index-ui",
+			project: "nonstop-index-ui",
 			slug: "f9638e2f",
 			version: "0.2.1-34"
 		}

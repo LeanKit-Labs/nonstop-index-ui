@@ -1,7 +1,7 @@
 module.exports = [
 	{
 		name: "core-blu",
-		projectName: "nonstop-index-ui",
+		project: "nonstop-index-ui",
 		branch: "master",
 		owner: "BanditSoftware",
 		hostName: "lkapp.cloudapp.net",
@@ -16,7 +16,7 @@ module.exports = [
 	},
 	{
 		name: "littlebrudder",
-		projectName: "nonstop-index-ui",
+		project: "nonstop-index-ui",
 		branch: "master",
 		owner: "arobson",
 		hostName: "littelbrudder.hack.leankitdev.com",

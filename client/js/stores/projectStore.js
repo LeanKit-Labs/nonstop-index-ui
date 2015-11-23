@@ -2,12 +2,12 @@ import lux from "lux.js";
 import { map, reduce, get as _get, set as _set, find } from "lodash";
 
 function getHostDetails( host ) {
-	const { project: projectName, branch, owner } = host.package;
+	const { project, branch, owner } = host.package;
 	const { name: hostName, ip } = host.serviceHost.host;
 
 	return {
 		name: host.name,
-		projectName,
+		project,
 		branch,
 		owner,
 		hostName,
@@ -73,7 +73,7 @@ export default new lux.Store( {
 	},
 	addHostsToProjects( hosts ) {
 		return reduce( hosts, ( memo, host ) => {
-			const project = memo[ host.projectName ];
+			const project = memo[ host.project ];
 
 			if ( project ) {
 				project.hosts = project.hosts || [];
