@@ -2,12 +2,12 @@ import lux from "lux.js";
 import { map, reduce, get as _get, set as _set, find } from "lodash";
 
 function getHostDetails( host ) {
-	const { project: projectName, branch, owner } = host.package;
+	const { project, branch, owner } = host.package;
 	const { name: hostName, ip } = host.serviceHost.host;
 
 	return {
 		name: host.name,
-		projectName,
+		project,
 		branch,
 		owner,
 		hostName,
@@ -20,7 +20,8 @@ export default new lux.Store( {
 	state: {
 		packages: {},
 		projects: {},
-		hosts: []
+		hosts: [],
+		deployChoice: null
 	},
 	handlers: {
 		loadProjectsSuccess( { packages } ) {
@@ -34,14 +35,45 @@ export default new lux.Store( {
 				hosts: mappedHosts
 			} );
 		},
+		triggerDeploy( { pkg, host } ) {
+			const hostRef = find( this.getState().hosts, { name: host } );
+			hostRef.status = null;
+			this.setState( {
+				deployChoice: {
+					pkg, host
+				}
+			} );
+		},
+		finalizeDeploy() {
+			const { deployChoice } = this.getState();
+			deployChoice.saving = true;
+			this.setState( { deployChoice } );
+		},
+		cancelDeploy() {
+			this.setState( { deployChoice: null } );
+		},
+		applySettingsSuccess() {
+			this.setState( { deployChoice: null } );
+		},
+		applySettingsError( e ) {
+			const { deployChoice } = this.getState();
+			if ( deployChoice ) {
+				deployChoice.saving = false;
+				deployChoice.error = "There was a problem deploying this package.";
+				this.setState( { deployChoice } );
+			}
+		},
 		loadHostStatusSuccess( { name, status } ) {
 			const host = find( this.getState().hosts, { name } );
 			if ( host ) {
+				host.owner = _get( status.activity, "running.owner", host.owner );
+				host.project = _get( status.activity, "running.project", host.project );
+				host.branch = _get( status.activity, "running.branch", host.branch );
+				host.slug = _get( status.activity, "running.slug", host.slug );
+				host.version = _get( status.activity, "running.version", host.version ),
 				host.status = {
-					serviceUptime: _get( status, [ "uptime", "service" ], "" ),
-					hostUptime: _get( status, [ "uptime", "host" ], "" ),
-					slug: _get( status.activity, [ "running", "slug" ], "" ),
-					version: _get( status.activity, [ "running", "version" ], "" ),
+					serviceUptime: _get( status, "uptime.service", "" ),
+					hostUptime: _get( status, "uptime.host", "" ),
 					fetchTime: new Date()
 				};
 			}
@@ -64,7 +96,7 @@ export default new lux.Store( {
 	},
 	addHostsToProjects( hosts ) {
 		return reduce( hosts, ( memo, host ) => {
-			const project = memo[ host.projectName ];
+			const project = memo[ host.project ];
 
 			if ( project ) {
 				project.hosts = project.hosts || [];
@@ -126,5 +158,25 @@ export default new lux.Store( {
 	},
 	getHosts() {
 		return this.getState().hosts;
+	},
+	getDeployChoice() {
+		const { deployChoice, hosts } = this.getState();
+		if ( !deployChoice ) {
+			return null;
+		}
+		return Object.assign( {}, deployChoice, {
+			host: hosts.find( host => deployChoice.host === host.name )
+		} );
+	},
+	getDeployChoiceSettings() {
+		const { pkg, host } = this.getDeployChoice();
+		const data = [];
+		[ "project", "owner", "branch", "version" ].forEach( function( field ) {
+			data.push( { op: "change", field, value: pkg[ field ] } );
+		} );
+		return {
+			name: host.name,
+			data
+		};
 	}
 } );

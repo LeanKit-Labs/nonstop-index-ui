@@ -4,6 +4,7 @@ import VersionGroup from "VersionGroup";
 import lux from "lux.js";
 import projectStore from "stores/projectStore";
 import HostList from "HostList";
+import { Modal, Button } from "react-bootstrap/lib";
 
 import "./ProjectDetail.less";
 
@@ -11,13 +12,16 @@ function getState( { name, owner, branch } ) {
 	return Object.assign(
 		{},
 		projectStore.getProject( name, owner, branch ),
-		{ allHosts: projectStore.getHosts() }
+		{
+			allHosts: projectStore.getHosts(),
+			deployChoice: projectStore.getDeployChoice()
+		}
 	);
 }
 
 export default React.createClass( {
 	mixins: [ lux.reactMixin.actionCreator, lux.reactMixin.store ],
-	getActions: [ "viewProject", "viewHost", "applySettings" ],
+	getActions: [ "viewProject", "viewHost", "finalizeDeploy", "loadHostStatus", "triggerDeploy", "cancelDeploy" ],
 	stores: {
 		listenTo: [ "project" ],
 		onChange() {
@@ -57,6 +61,57 @@ export default React.createClass( {
 			branch: branch
 		} );
 	},
+	onDeploy( { pkg, host } ) {
+		this.loadHostStatus( host );
+		this.triggerDeploy( { pkg, host } );
+	},
+	renderModal() {
+		const deployChoice = this.state.deployChoice || {} ;
+		const { pkg, host } = deployChoice;
+		return (
+			<Modal show={ !!this.state.deployChoice } onHide={ this.cancelDeploy }>
+				<Modal.Header>
+					<Modal.Title>Confirm Deployment to <span className="projectDetail-modal-title-hostName">{ host ? host.name : "" }</span></Modal.Title>
+				</Modal.Header>
+
+				{ this.state.deployChoice ? <Modal.Body>
+					{ this.state.deployChoice.error ? <div className="callout callout-danger">
+						<p>{ this.state.deployChoice.error }</p>
+					</div> : null }
+					<table className="table">
+						<thead>
+							<tr>
+								<th scope="col"></th>
+								<th scope="col">Hosted Package</th>
+								<th scope="col">Package to Deploy</th>
+							</tr>
+						</thead>
+						<tbody>
+							{ this.renderCompareRow( "Project", host.project, pkg.project ) }
+							{ this.renderCompareRow( "Owner", host.owner, pkg.owner ) }
+							{ this.renderCompareRow( "Branch", host.branch, pkg.branch ) }
+							{ this.renderCompareRow( "Version", host.version ? host.version : "...", pkg.version ) }
+						</tbody>
+					</table>
+				</Modal.Body> : null }
+
+				<Modal.Footer>
+					<Button onClick={ this.cancelDeploy }>Cancel</Button>
+					<Button bsStyle="primary" disabled={ !host || !host.status } onClick={ this.finalizeDeploy }>Deploy</Button>
+				</Modal.Footer>
+			</Modal>
+		);
+	},
+	renderCompareRow( label, oldValue, newValue ) {
+		const matches = oldValue === newValue;
+		return (
+			<tr>
+				<th scope="row">{ label }</th>
+				<td className={ matches ? "" : "bg-danger" }>{ oldValue }</td>
+				<td className={ matches ? "" : "bg-success" }>{ newValue }</td>
+			</tr>
+			);
+	},
 	render() {
 		return (
 			<div className="projectDetail">
@@ -73,13 +128,14 @@ export default React.createClass( {
 								<VersionGroup
 									versions={ this.state.versions }
 									hosts={ this.state.allHosts }
-									onDeploy={ this.applySettings } />
+									onDeploy={ this.onDeploy } />
 							</div>
 							<div className="col-md-4">
 								<HostList hosts={ this.state.hosts } onSelectHost={ this.viewHost } />
 							</div>
 						</div>
 					</section>
+					{ this.renderModal() }
 			</div>
 		);
 	}

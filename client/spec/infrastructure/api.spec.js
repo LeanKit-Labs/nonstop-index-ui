@@ -30,6 +30,12 @@ describe( "API", () => {
 
 		dependencies = {
 			halon: sinon.stub().returns( halonStubs ),
+			"stores/projectStore": {
+				getDeployChoiceSettings: sinon.stub().returns( {
+					name: "mah-host",
+					data: []
+				} )
+			},
 			"stores/configurationStore": {
 				getChanges: sinon.stub().returns( {
 					name: "littlebrudder",
@@ -261,6 +267,28 @@ describe( "API", () => {
 					}
 				} );
 				lux.publishAction( "applySettings" );
+			} );
+		} );
+	} );
+	describe( "when handling finalizeDeploy", () => {
+		beforeEach( () => {
+			dependencies[ "stores/projectStore" ].getDeployChoiceSettings.returns( {
+				name: "littlebrudder",
+				data: [ {
+					op: "change", field: "foo", value: "bar"
+				} ]
+			} );
+		} );
+		describe( "with successful response", () => {
+			it( "should invoke host status resource", () => {
+				lux.publishAction( "finalizeDeploy" );
+				halonStubs.host.configure.should.be.calledOnce
+					.and.calledWith( {
+						name: "littlebrudder",
+						data: [ {
+							op: "change", field: "foo", value: "bar"
+						} ]
+					} );
 			} );
 		} );
 	} );

@@ -66,7 +66,7 @@ describe( "HostList", () => {
 			const projectRow = hostList.querySelector( "tbody tr:nth-child(1)" ).textContent;
 			projectRow.should.include( host.name );
 			projectRow.should.include( host.ip );
-			projectRow.should.include( host.projectName );
+			projectRow.should.include( host.project );
 			const ownerRow = hostList.querySelector( "tbody tr:nth-child(2)" ).textContent;
 			ownerRow.should.include( host.owner );
 			const hostRow = hostList.querySelector( "tbody tr:nth-child(3)" ).textContent;
@@ -94,8 +94,8 @@ describe( "HostList", () => {
 			let status = ReactUtils.findRenderedDOMComponentWithClass( component, "hostList-status" ).textContent;
 			status.should.include( host.status.hostUptime );
 			status.should.include( host.status.serviceUptime );
-			status.should.include( host.status.slug );
-			status.should.include( host.status.version );
+			status.should.include( host.slug );
+			status.should.include( host.version );
 		} );
 
 		it( "should be able to render one host", () => {
@@ -105,7 +105,7 @@ describe( "HostList", () => {
 			const rowContent = hostList.querySelector( "tbody tr" ).textContent;
 			rowContent.should.include( host.name );
 			rowContent.should.include( host.ip );
-			rowContent.should.include( host.projectName );
+			rowContent.should.include( host.project );
 		} );
 
 		it( "should be able to render multiple hosts", () => {

@@ -1,9 +1,6 @@
 import React from "react";
 import { padLeft, map, flatten } from "lodash";
-import ButtonGroup from "react-bootstrap/lib/ButtonGroup";
-import Button from "react-bootstrap/lib/Button";
-import DropdownButton from "react-bootstrap/lib/DropdownButton";
-import MenuItem from "react-bootstrap/lib/MenuItem";
+import { ButtonGroup, Button, DropdownButton, MenuItem } from "react-bootstrap/lib";
 
 import "./VersionGroup.less";
 
@@ -45,7 +42,7 @@ export default React.createClass( {
 	getDefaultProps() {
 		return {
 			className: "versionGroup",
-			hosts: null
+			hosts: []
 		};
 	},
 	renderBuildGroup( { packages }, build ) {
@@ -62,12 +59,8 @@ export default React.createClass( {
 			);
 		} ) );
 	},
-	handleOnDeploy( pkg, event, name ) {
-		const data = [];
-		[ "project", "owner", "branch", "version" ].forEach( function( field ) {
-			data.push( { op: "change", field, value: pkg[ field ] } );
-		} );
-		this.props.onDeploy( { name, data } );
+	handleOnDeploy( pkg, event, host ) {
+		this.props.onDeploy( { host, pkg } );
 	},
 	renderActions( pkg ) {
 		return (
@@ -122,6 +115,7 @@ export default React.createClass( {
 			<section className={ this.props.className }>
 				{ map( this.props.versions, this.renderVersionGroup ) }
 			</section>
+
 		);
 	}
 } );

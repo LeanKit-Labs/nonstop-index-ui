@@ -5,16 +5,25 @@ import "./App.less";
 import Toolbar from "Toolbar";
 import { get as _get } from "lodash";
 import win from "window";
+import layoutStore from "stores/layoutStore";
+import Alert from "react-bootstrap/lib/Alert";
 
 function getState() {
 	return {
-		initialized: true
+		initialized: true,
+		alert: layoutStore.getAlert()
 	};
 }
 
 export default React.createClass( {
-	mixins: [ lux.reactMixin.actionCreator ],
-	getActions: [ "initializePage" ],
+	mixins: [ lux.reactMixin.actionCreator, lux.reactMixin.store ],
+	stores: {
+		listenTo: "layout",
+		onChange() {
+			this.setState( getState() );
+		}
+	},
+	getActions: [ "initializePage", "handleAlertClose" ],
 	getInitialState() {
 		return getState();
 	},
@@ -36,10 +45,19 @@ export default React.createClass( {
 			</div>
 		);
 	},
+	renderAlert() {
+		const alert = this.state.alert;
+		return (
+			<Alert className={ "app-alert u-textCenter" } bsStyle={ alert.type } onDismiss={ this.handleAlertClose } dismissAfter={ 5000 }>
+				<p>{ alert.message }</p>
+			</Alert>
+		);
+	},
 	render: function() {
 		if ( this.state.initialized ) {
 			return (
 				<div className="skin-blue">
+					{ this.state.alert ? this.renderAlert() : null }
 					<Toolbar />
 					<div className="wrapper">
 						<RouteHandler />
