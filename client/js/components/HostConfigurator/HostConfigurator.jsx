@@ -2,6 +2,9 @@ import React from "react";
 import lux from "lux.js";
 import configurationStore from "stores/configurationStore";
 import OptionsDropdown from "OptionsDropdown";
+import Switch from "react-bootstrap-switch";
+
+import "react-bootstrap-switch/src/less/bootstrap3/build.less";
 import "./HostConfigurator.less";
 
 function getState() {
@@ -10,7 +13,7 @@ function getState() {
 
 export default React.createClass( {
 	mixins: [ lux.reactMixin.actionCreator, lux.reactMixin.store ],
-	getActions: [ "configureHost", "selectProject", "selectOwner", "selectBranch", "selectVersion", "selectHost", "applySettings" ],
+	getActions: [ "applySettings", "configureHost", "selectProject", "selectOwner", "selectBranch", "selectVersion", "selectHost", "setReleaseOnly" ],
 	stores: {
 		listenTo: [ "configuration", "project" ],
 		onChange() {
@@ -43,6 +46,10 @@ export default React.createClass( {
 							<OptionsDropdown name="owner" selected={ state.selectedOwner } options={ state.owners } onSelect={ this.selectOwner } />
 							<OptionsDropdown name="branch" selected={ state.selectedBranch } options={ state.branches } onSelect={ this.selectBranch } />
 							<OptionsDropdown name="version" selected={ state.selectedVersion } options={ state.versions } onSelect={ this.selectVersion } />
+							<div className="form-group">
+								<label className="u-block">Release Only</label>
+								<Switch wrapperClass="hostConfigurator-releaseOnlySwitch" size="small" state={ state.releaseOnly } onChange={ this.setReleaseOnly } />
+							</div>
 						</div>
 						<div className="box-footer">
 							<button disabled={ !this.state.applyEnabled } onClick={ this.applySettings.bind( this, null ) } type="submit" className="btn btn-primary">Apply Settings</button>

@@ -11,7 +11,8 @@ describe( "HostConfigurator", () => {
 			selectBranch: sinon.stub(),
 			selectVersion: sinon.stub(),
 			selectHost: sinon.stub(),
-			applySettings: sinon.stub()
+			applySettings: sinon.stub(),
+			setReleaseOnly: sinon.stub()
 		};
 
 		lux.customActionCreator( actions );
@@ -22,6 +23,7 @@ describe( "HostConfigurator", () => {
 			selectedBranch: "branchA",
 			selectedVersion: "versionA",
 			selectedHost: { name: "hostA" },
+			releaseOnly: false,
 			projects: [ "projectA", "projectB" ],
 			owners: [ "ownerA", "ownerB" ],
 			branches: [ "branchA", "branchB" ],
@@ -36,7 +38,8 @@ describe( "HostConfigurator", () => {
 			"stores/configurationStore": {
 				getOptions: sinon.stub().returns( optionsData ),
 				getApplyEnabled: sinon.stub().returns( true )
-			}
+			},
+			"react-bootstrap-switch": getMockReactComponent( "Switch" )
 		};
 
 		const HostConfigurator = hostConfiguratorFactory( dependencies );
@@ -62,6 +65,7 @@ describe( "HostConfigurator", () => {
 				selectedHost: {
 					name: "hostA"
 				},
+				releaseOnly: false,
 				projects: [
 					"projectA",
 					"projectB"
@@ -137,8 +141,9 @@ describe( "HostConfigurator", () => {
 		} );
 
 		it( "should not be enabled when applyEnabled is false", () => {
-			component.state.applyEnabled = false;
-			component.forceUpdate();
+			component.setState( {
+				applyEnabled: false
+			} );
 
 			applyButton.disabled.should.be.true;
 		} );
@@ -148,6 +153,30 @@ describe( "HostConfigurator", () => {
 
 			// should specifically not pass settings as first arg
 			actions.applySettings.should.be.calledOnce.and.calledWith( null );
+		} );
+	} );
+
+	describe( "setting releaseOnly flag", () => {
+		let releaseOnlySwitch;
+
+		beforeEach( () => {
+			 releaseOnlySwitch = ReactUtils.findRenderedComponentWithType( component, dependencies[ "react-bootstrap-switch" ] );
+		} );
+
+		it( "should call the setReleaseOnly action with the appropriate value", () => {
+			releaseOnlySwitch.props.onChange( true );
+
+			actions.setReleaseOnly.should.be.calledOnce.and.calledWith( true );
+		} );
+
+		it( "should set the checkbox value based on the releaseOnly state", () => {
+			releaseOnlySwitch.props.state.should.be.false;
+
+			component.setState( {
+				releaseOnly: true
+			} );
+
+			releaseOnlySwitch.props.state.should.be.true;
 		} );
 	} );
 } );

@@ -55,7 +55,9 @@ describe( "configuration store", () => {
 			configurationStore.getState().should.eql( {
 				tree: {},
 				packages: [],
-				selections: {},
+				selections: {
+					releaseOnly: false
+				},
 				updateInProgress: false
 			} );
 		} );
@@ -83,7 +85,8 @@ describe( "configuration store", () => {
 					project: "projectB",
 					owner: "ownerB",
 					branch: "branchB",
-					version: "versionB"
+					version: "versionB",
+					releaseOnly: false
 				};
 			} );
 
@@ -95,7 +98,8 @@ describe( "configuration store", () => {
 					owner: "ownerA",
 					branch: "branchA",
 					version: "versionA",
-					host: defaultHost
+					host: defaultHost,
+					releaseOnly: false
 				} );
 			} );
 
@@ -108,7 +112,8 @@ describe( "configuration store", () => {
 					owner: "ownerB",
 					branch: "branchA",
 					version: "versionB",
-					host: defaultHost
+					host: defaultHost,
+					releaseOnly: false
 				} );
 			} );
 
@@ -125,7 +130,8 @@ describe( "configuration store", () => {
 					owner: "ownerA",
 					branch: "branchB",
 					version: "versionA",
-					host: defaultHost
+					host: defaultHost,
+					releaseOnly: false
 				} );
 			} );
 
@@ -143,7 +149,8 @@ describe( "configuration store", () => {
 					owner: "ownerA",
 					branch: "branchA",
 					version: "versionB",
-					host: defaultHost
+					host: defaultHost,
+					releaseOnly: false
 				} );
 			} );
 
@@ -157,8 +164,17 @@ describe( "configuration store", () => {
 					version: "versionB",
 					host: {
 						name: "five"
-					}
+					},
+					releaseOnly: false
 				} );
+			} );
+
+			it( "should update releaseOnly from setReleaseOnly action", () => {
+				lux.publishAction( "setReleaseOnly", true );
+				configurationStore.getState().selections.releaseOnly.should.be.true;
+
+				lux.publishAction( "setReleaseOnly", false );
+				configurationStore.getState().selections.releaseOnly.should.be.false;
 			} );
 		} );
 
@@ -217,7 +233,8 @@ describe( "configuration store", () => {
 				owners: [ "ownerA", "ownerB" ],
 				branches: [ "branchA", "branchB" ],
 				versions: [ "versionA", "versionB" ],
-				hosts: hostsParsed.hosts
+				hosts: hostsParsed.hosts,
+				releaseOnly: false
 			} );
 		} );
 
@@ -225,6 +242,7 @@ describe( "configuration store", () => {
 			configurationStore.getChanges().should.eql( {
 				name: "hostA",
 				data: [
+					{ op: "change", field: "releaseOnly", value: false },
 					{ op: "change", field: "project", value: "projectA" },
 					{ op: "change", field: "owner", value: "ownerA" },
 					{ op: "change", field: "branch", value: "branchA" },
@@ -245,7 +263,7 @@ describe( "configuration store", () => {
 				} );
 			} );
 
-			it( "should return false when all selections are not set", () => {
+			it( "should return false when all selections other than releaseOnly are not set", () => {
 				selections.project = null;
 				configurationStore.getState().updateInProgress = false;
 
@@ -257,7 +275,7 @@ describe( "configuration store", () => {
 				configurationStore.getApplyEnabled().should.be.false;
 			} );
 
-			it( "should return true when all selections are set and updateInProgress in true", () => {
+			it( "should return true when all selections are set and updateInProgress is true", () => {
 				configurationStore.getApplyEnabled().should.be.true;
 			} );
 		} );

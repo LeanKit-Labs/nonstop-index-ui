@@ -95,12 +95,14 @@ module.exports = {
 			ip: "10.0.0.6",
 			name: "core-blu",
 			owner: "BanditSoftware",
-			project: "nonstop-index-ui"
+			project: "nonstop-index-ui",
+			releaseOnly: false
 		},
 		project: "core-blu",
 		owner: "BanditSoftware",
 		branch: "master",
-		version: "0.1.5"
+		version: "0.1.5",
+		releaseOnly: false
 	},
 	updateInProgress: false
 };
