@@ -89,17 +89,55 @@ describe( "project store", () => {
 			beforeEach( () => {
 				state = projectStore.getState();
 				state.hosts = _.cloneDeep( hostsParsed.hosts );
-				lux.publishAction( "triggerDeploy", { host: "core-blu", pkg: {} } );
 			} );
-			it( "should save the status to state", () => {
-				state.deployChoice.should.eql( {
-					host: "core-blu",
-					pkg: {}
+			describe( "with a build", () => {
+				beforeEach( () => {
+					lux.publishAction( "triggerDeploy", { host: "core-blu", pkg: {
+						build: "1",
+						version: "1.0.0-1",
+						simpleVersion: "1.0.0",
+						released: false
+					} } );
 				} );
-				should.equal( state.hosts[ 0 ].status, null );
+				it( "should save the status to state", () => {
+					state.deployChoice.should.eql( {
+						host: "core-blu",
+						pkg: {
+							build: "1",
+							version: "1.0.0-1",
+							simpleVersion: "1.0.0",
+							released: false
+						}
+					} );
+				} );
+				it( "should clear out host status", () => {
+					should.equal( state.hosts[ 0 ].status, null );
+				} );
 			} );
-			it( "should clear out host status", () => {
-				should.equal( state.hosts[ 0 ].status, null );
+
+			describe( "with a release", () => {
+				beforeEach( () => {
+					lux.publishAction( "triggerDeploy", { host: "core-blu", pkg: {
+						build: "1",
+						version: "1.0.0-1",
+						simpleVersion: "1.0.0",
+						released: true
+					} } );
+				} );
+				it( "should save the status to state", () => {
+					state.deployChoice.should.eql( {
+						host: "core-blu",
+						pkg: {
+							build: "",
+							version: "1.0.0",
+							simpleVersion: "1.0.0",
+							released: true
+						}
+					} );
+				} );
+				it( "should clear out host status", () => {
+					should.equal( state.hosts[ 0 ].status, null );
+				} );
 			} );
 		} );
 		describe( "when handling finalizeDeploy", () => {
