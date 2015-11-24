@@ -1,5 +1,5 @@
 import lux from "lux.js";
-import { map, reduce, get as _get, set as _set, find } from "lodash";
+import { map, reduce, get as _get, set as _set, find, cloneDeep, groupBy } from "lodash";
 
 function getHostDetails( host ) {
 	const { project, branch, owner } = host.package;
@@ -21,17 +21,20 @@ export default new lux.Store( {
 		packages: {},
 		projects: {},
 		hosts: [],
-		deployChoice: null
+		hostByProject: {},
+		deployChoice: null,
+		releaseChoice: null
 	},
 	handlers: {
-		loadProjectsSuccess( { packages } ) {
+		loadProjectsSuccess( { packages: pkgs } ) {
+			const packages = cloneDeep( pkgs );
 			this.setState( this.reduceProjects( packages ) );
 		},
 		loadHostsSuccess( { hosts } ) {
 			const mappedHosts = hosts.map( getHostDetails );
 
 			this.setState( {
-				projects: this.addHostsToProjects( mappedHosts ),
+				hostByProject: groupBy( mappedHosts, "project" ),
 				hosts: mappedHosts
 			} );
 		},
@@ -77,34 +80,51 @@ export default new lux.Store( {
 					fetchTime: new Date()
 				};
 			}
+		},
+		confirmReleasePackage( pkg ) {
+			this.setState( { releaseChoice: pkg } );
+		},
+		releasePackage() {
+			this.setState( { releaseChoice: null } );
+		},
+		cancelReleasePackage() {
+			this.setState( { releaseChoice: null } );
+		},
+		releasePackageSuccess() {
+			this.setState( { releaseChoice: null } );
+		},
+		releasePackageError() {
+			this.setState( { releaseChoice: null } );
 		}
 	},
 	reduceProjects( packages ) {
+		const releases = packages.reduce( ( memo, item ) => {
+			if ( item.build ) {
+				return memo;
+			}
+			memo[ `${item.relative}-${item.architecture}-${item.platform}-${item.version}` ] = item.slug;
+			return memo;
+		}, {} );
 		return packages.reduce( ( memo, item ) => {
+			if ( !item.build ) {
+				return memo;
+			}
 			const versionPath = [ "projects", item.project, "owners", item.owner, "branches", item.branch ];
 			let versions = _get( memo, versionPath, [] );
 
 			versions.push( item.file );
 			_set( memo, versionPath, versions );
-			memo.packages[item.file] = item;
+			item.simpleVersion = item.simpleVersion || item.version.split( "-" )[ 0 ];
+			const releaseCheck = releases[ `${item.relative}-${item.architecture}-${item.platform}-${item.simpleVersion}` ];
+			item.released = releaseCheck === item.slug;
+			item.releasable = !releaseCheck;
+			memo.packages[ item.file ] = item;
 
 			return memo;
 		}, {
 			projects: {},
 			packages: {}
 		} );
-	},
-	addHostsToProjects( hosts ) {
-		return reduce( hosts, ( memo, host ) => {
-			const project = memo[ host.project ];
-
-			if ( project ) {
-				project.hosts = project.hosts || [];
-				project.hosts.push( host );
-			}
-
-			return memo;
-		}, this.getState().projects );
 	},
 	getProjects() {
 		let projects = this.getState().projects;
@@ -121,7 +141,7 @@ export default new lux.Store( {
 		}, [] );
 	},
 	getProject( name, owner, branch ) {
-		const { packages, projects } = this.getState();
+		const { packages, projects, hostByProject } = this.getState();
 		const currentProject = projects[name];
 
 		if ( !currentProject ) {
@@ -153,7 +173,7 @@ export default new lux.Store( {
 			} ),
 			branches: Object.keys( currentOwner.branches ),
 			versions,
-			hosts: currentProject.hosts || []
+			hosts: hostByProject[ name ] || []
 		};
 	},
 	getHosts() {
@@ -178,5 +198,9 @@ export default new lux.Store( {
 			name: host.name,
 			data
 		};
+	},
+	getReleaseChoice() {
+		const { releaseChoice } = this.getState();
+		return releaseChoice || null;
 	}
 } );

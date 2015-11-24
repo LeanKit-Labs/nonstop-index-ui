@@ -4,7 +4,7 @@ import VersionGroup from "VersionGroup";
 import lux from "lux.js";
 import projectStore from "stores/projectStore";
 import HostList from "HostList";
-import { Modal, Button } from "react-bootstrap/lib";
+import { Modal, Button, Table } from "react-bootstrap/lib";
 
 import "./ProjectDetail.less";
 
@@ -14,14 +14,25 @@ function getState( { name, owner, branch } ) {
 		projectStore.getProject( name, owner, branch ),
 		{
 			allHosts: projectStore.getHosts(),
-			deployChoice: projectStore.getDeployChoice()
+			deployChoice: projectStore.getDeployChoice(),
+			releaseChoice: projectStore.getReleaseChoice()
 		}
 	);
 }
 
 export default React.createClass( {
 	mixins: [ lux.reactMixin.actionCreator, lux.reactMixin.store ],
-	getActions: [ "viewProject", "viewHost", "finalizeDeploy", "loadHostStatus", "triggerDeploy", "cancelDeploy" ],
+	getActions: [
+		"viewProject",
+		"viewHost",
+		"finalizeDeploy",
+		"loadHostStatus",
+		"triggerDeploy",
+		"cancelDeploy",
+		"releasePackage",
+		"confirmReleasePackage",
+		"cancelReleasePackage"
+	],
 	stores: {
 		listenTo: [ "project" ],
 		onChange() {
@@ -65,11 +76,11 @@ export default React.createClass( {
 		this.loadHostStatus( host );
 		this.triggerDeploy( { pkg, host } );
 	},
-	renderModal() {
+	renderDeployModal() {
 		const deployChoice = this.state.deployChoice || {} ;
 		const { pkg, host } = deployChoice;
 		return (
-			<Modal show={ !!this.state.deployChoice } onHide={ this.cancelDeploy }>
+			<Modal key="deployModal" show={ !!this.state.deployChoice } onHide={ this.cancelDeploy }>
 				<Modal.Header>
 					<Modal.Title>Confirm Deployment to <span className="projectDetail-modal-title-hostName">{ host ? host.name : "" }</span></Modal.Title>
 				</Modal.Header>
@@ -102,6 +113,57 @@ export default React.createClass( {
 			</Modal>
 		);
 	},
+	renderReleaseModal() {
+		const releaseChoice = this.state.releaseChoice || {} ;
+		const { project, owner, branch, slug, architecture, platform, version } = releaseChoice;
+		return (
+			<Modal key="releaseModal" bsSize="small" keyboard show={ !!this.state.releaseChoice } onHide={ this.cancelReleasePackage }>
+				<Modal.Header>
+					<Modal.Title>Confirm Release</Modal.Title>
+				</Modal.Header>
+
+				{ this.state.releaseChoice ? <Modal.Body>
+					<Table striped condensed className="table">
+						<tbody>
+							<tr>
+								<th scope="row">Project</th>
+								<td>{ project }</td>
+							</tr>
+							<tr>
+								<th scope="row">Owner</th>
+								<td>{ owner }</td>
+							</tr>
+							<tr>
+								<th scope="row">Branch</th>
+								<td>{ branch }</td>
+							</tr>
+							<tr>
+								<th scope="row">Platform</th>
+								<td>{ platform }</td>
+							</tr>
+							<tr>
+								<th scope="row">Architecture</th>
+								<td>{ architecture }</td>
+							</tr>
+							<tr>
+								<th scope="row">Version</th>
+								<td>{ version }</td>
+							</tr>
+							<tr>
+								<th scope="row">Slug</th>
+								<td>{ slug }</td>
+							</tr>
+						</tbody>
+					</Table>
+				</Modal.Body> : null }
+
+				<Modal.Footer>
+					<Button onClick={ this.cancelReleasePackage }>Cancel</Button>
+					<Button bsStyle="primary" onClick={ this.releasePackage.bind( this, releaseChoice ) }>Release</Button>
+				</Modal.Footer>
+			</Modal>
+		);
+	},
 	renderCompareRow( label, oldValue, newValue ) {
 		const matches = oldValue === newValue;
 		return (
@@ -128,14 +190,16 @@ export default React.createClass( {
 								<VersionGroup
 									versions={ this.state.versions }
 									hosts={ this.state.allHosts }
-									onDeploy={ this.onDeploy } />
+									onDeploy={ this.onDeploy }
+									onRelease={ this.confirmReleasePackage } />
 							</div>
 							<div className="col-md-4">
 								<HostList hosts={ this.state.hosts } onSelectHost={ this.viewHost } />
 							</div>
 						</div>
 					</section>
-					{ this.renderModal() }
+					{ this.renderDeployModal() }
+					{ this.renderReleaseModal() }
 			</div>
 		);
 	}

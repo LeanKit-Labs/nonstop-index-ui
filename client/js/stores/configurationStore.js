@@ -1,5 +1,5 @@
 import lux from "lux.js";
-import { merge, set as _set, get as _get, each, all } from "lodash";
+import { merge, set as _set, get as _get, each, all, cloneDeep } from "lodash";
 import projectStore from "./projectStore";
 
 function updateSelections( store, updatedSelections ) {
@@ -41,10 +41,12 @@ export default new lux.Store( {
 		updateInProgress: false
 	},
 	handlers: {
-		loadProjectsSuccess( { packages } ) {
+		loadProjectsSuccess( { packages: pkgs } ) {
+			const packages = cloneDeep( pkgs );
 			const tree = {};
 			packages.forEach( function( pkg ) {
 				_set( tree, [ pkg.project, pkg.owner, pkg.branch, pkg.version ], true );
+				pkg.simpleVersion = pkg.simpleVersion || pkg.version.split( "-" )[ 0 ];
 			} );
 			const selections = getSelections( this.getState().selections, tree );
 			this.setState( { packages, tree, selections } );

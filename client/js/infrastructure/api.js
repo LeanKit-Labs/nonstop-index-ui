@@ -5,7 +5,6 @@ import window from "window";
 import config from "../clientConfig";
 import configurationStore from "stores/configurationStore";
 import projectStore from "stores/projectStore";
-import when from "when";
 
 var nsAPI = window.nsAPI = halon( {
 	root: `${ config.nonstopIndexApi }`,
@@ -69,6 +68,17 @@ function loadUser() {
 		);
 }
 
+function releasePackage( { architecture, branch, osName, osVersion, owner, platform, project, slug } ) {
+	return nsAPI.package.promote( { architecture, branch, osName, osVersion, owner, platform, project, slug } )
+		.then(
+			( data ) => {
+				lux.publishAction( "releasePackageSuccess", data );
+				loadProjects();
+			},
+			( data ) => lux.publishAction( "releasePackageError", data )
+		);
+}
+
 export default lux.mixin( {
 	getActions: [
 		"pageInitialized"
@@ -76,10 +86,9 @@ export default lux.mixin( {
 	namespace: "api",
 	handlers: {
 		initializePage() {
-			when.join(
-				loadProjects().then( loadHosts ),
-				loadUser()
-			);
+			loadProjects();
+			loadHosts();
+			loadUser();
 		},
 		loadProjects,
 		loadHosts,
@@ -88,6 +97,7 @@ export default lux.mixin( {
 		finalizeDeploy() {
 			applySettings( projectStore.getDeployChoiceSettings() );
 		},
-		applySettings
+		applySettings,
+		releasePackage
 	}
 }, lux.mixin.actionCreator, lux.mixin.actionListener );

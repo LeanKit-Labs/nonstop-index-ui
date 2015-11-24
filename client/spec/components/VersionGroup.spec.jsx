@@ -1,4 +1,5 @@
 import versionGroupFactory from "inject!VersionGroup";
+import { each, defaults, noop } from "lodash";
 
 describe( "VersionGroup", () => {
 	let component, components, dependencies, VersionGroup;
@@ -24,10 +25,11 @@ describe( "VersionGroup", () => {
 	} );
 
 	function createComponent( props = {} ) {
-		_.defaults( props, {
+		defaults( props, {
 			versions: {},
 			hosts: [],
-			onDeploy: _.noop
+			onDeploy: noop,
+			onRelease: noop
 		} );
 		component = ReactUtils.renderIntoDocument( <VersionGroup {...props} /> );
 	}
@@ -83,21 +85,22 @@ describe( "VersionGroup", () => {
 		} );
 
 		describe( "builds and packages", () => {
-			let rows, onDeployStub;
+			let rows, onDeployStub, onReleaseStub;
 
 			beforeEach( () => {
 				onDeployStub = sinon.stub();
+				onReleaseStub = sinon.stub();
 
 				createComponent( {
 					versions: {
 						1: {
 							builds: {
 								b1: { packages: [
-									{ file: "p01", architecture: "x86", platform: "darwin", slug: "123", owner: "ownerOne", project: "projectOne", branch: "branchOne", version: "1b1" },
-									{ file: "p02", architecture: "x64", platform: "linux", slug: "234", owner: "ownerOne", project: "projectTwo", branch: "branchTwo", version: "1b1" }
+									{ file: "p01", released: false, releasable: false, architecture: "x86", platform: "darwin", slug: "123", owner: "ownerOne", project: "projectOne", branch: "branchOne", version: "1b1" },
+									{ file: "p02", released: true, releasable: false, architecture: "x64", platform: "linux", slug: "234", owner: "ownerOne", project: "projectTwo", branch: "branchTwo", version: "1b1" }
 								] },
 								b2: { packages: [
-									{ file: "p03", architecture: "x128", platform: "amd", slug: "123", owner: "ownerOne", project: "projectOne", branch: "branchOne", version: "1b2" }
+									{ file: "p03", released: false, releasable: true, architecture: "x128", platform: "amd", slug: "123", owner: "ownerOne", project: "projectOne", branch: "branchOne", version: "1b2" }
 								] }
 							}
 						}
@@ -106,7 +109,8 @@ describe( "VersionGroup", () => {
 						{ name: "hostOne" },
 						{ name: "hostTwo" }
 					],
-					onDeploy: onDeployStub
+					onDeploy: onDeployStub,
+					onRelease: onReleaseStub
 				} );
 				rows = ReactDOM.findDOMNode( component ).querySelectorAll( "tbody tr" );
 			} );
@@ -154,13 +158,25 @@ describe( "VersionGroup", () => {
 				downloadBtns.should.have.lengthOf( 3 );
 			} );
 
+			it( "should render a Release button only for releasable packages", () => {
+				should.exist( ReactUtils.findRenderedDOMComponentWithClass( component, "fa-check-circle" ) );
+			} );
+
+			it( "should render \"Released\" for released packages", () => {
+				rows[ 1 ].textContent.should.contain( "Released" );
+			} );
+
+			it( "should render \"Not Released\" for releasable packages", () => {
+				rows[ 0 ].textContent.should.contain( "Not Released" );
+			} );
+
 			it( "should render the branch choices in the menu", () => {
 				const items = ReactUtils.scryRenderedComponentsWithType( component, components.MenuItem );
 				items.should.have.lengthOf( 6 );
 
 				const values = [ "hostOne", "hostTwo" ];
 
-				_.each( [ ...values, ...values, ...values ], ( value, index ) => {
+				each( [ ...values, ...values, ...values ], ( value, index ) => {
 					ReactDOM.findDOMNode( items[ index ] ).textContent.should.contain( value );
 				} );
 			} );
@@ -179,6 +195,8 @@ describe( "VersionGroup", () => {
 						slug: "123",
 						owner: "ownerOne",
 						project: "projectOne",
+						releasable: false,
+						released: false,
 						branch: "branchOne",
 						version: "1b1"
 					}

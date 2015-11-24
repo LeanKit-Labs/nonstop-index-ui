@@ -37,6 +37,24 @@ describe( "layout store", () => {
 				layoutStore.getState().message.should.be.empty;
 			} );
 		} );
+		describe( "when handling releasePackageSuccess", () => {
+			it( "should set the correct message and type", () => {
+				lux.publishAction( "releasePackageSuccess" );
+				layoutStore.getState().should.contain( {
+					type: "success",
+					message: "Package release successful."
+				} );
+			} );
+		} );
+		describe( "when handling releasePackageError", () => {
+			it( "should set the correct message and type", () => {
+				lux.publishAction( "releasePackageError", { message: "O NOES!" } );
+				layoutStore.getState().should.contain( {
+					type: "danger",
+					message: "Release was unsuccessful. Reason: O NOES!"
+				} );
+			} );
+		} );
 	} );
 
 	describe( "helper functions", () => {
