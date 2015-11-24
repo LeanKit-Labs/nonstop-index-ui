@@ -98,6 +98,11 @@ export default lux.mixin( {
 			applySettings( projectStore.getDeployChoiceSettings() );
 		},
 		applySettings,
-		releasePackage
+		releasePackage,
+		error( msg ) {
+			if ( DEBUG ) {
+				console.error( msg );
+			}
+		}
 	}
 }, lux.mixin.actionCreator, lux.mixin.actionListener );
