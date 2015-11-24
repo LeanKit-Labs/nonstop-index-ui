@@ -1,5 +1,6 @@
 import configurationStoreFactory from "inject!stores/configurationStore";
 import packagesResponse from "../data/packagesResponse";
+import hostsResponse from "../data/hostsResponse";
 import hostsParsed from "../data/hostsParsed";
 import packagesParsedForConfiguration from "../data/packagesParsedForConfiguration";
 
@@ -9,37 +10,56 @@ describe( "configuration store", () => {
 	beforeEach( () => {
 		configurationStore = configurationStoreFactory( {
 			"./projectStore": {
-				getHosts: sinon.stub().returns( hostsParsed.hosts )
+				getHosts: sinon.stub().returns( hostsParsed.hosts ),
+				mapHostDetails: sinon.stub().returns( {
+					name: "one",
+					project: "projectA",
+					owner: "ownerA",
+					branch: "branchA",
+					version: "versionA"
+				} )
 			}
 		} );
+
+		const mockPackages = [
+			{ project: "projectA", owner: "ownerA", branch: "branchA", version: "versionA", released: true },
+			{ project: "projectA", owner: "ownerA", branch: "branchA", version: "versionB" },
+			{ project: "projectA", owner: "ownerA", branch: "branchB", version: "versionA" },
+			{ project: "projectA", owner: "ownerA", branch: "branchB", version: "versionC" },
+			{ project: "projectA", owner: "ownerB", branch: "branchA", version: "versionA" },
+			{ project: "projectA", owner: "ownerB", branch: "branchA", version: "versionC" },
+			{ project: "projectA", owner: "ownerB", branch: "branchB", version: "versionA" },
+			{ project: "projectA", owner: "ownerB", branch: "branchB", version: "versionC" },
+			{ project: "projectB", owner: "ownerB", branch: "branchB", version: "versionB" }
+		];
 
 		mockTree = {
 			projectA: {
 				ownerA: {
 					branchA: {
-						versionA: true,
-						versionB: true
+						versionA: mockPackages[ 0 ],
+						versionB: mockPackages[ 1 ]
 					},
 					branchB: {
-						versionA: true,
-						versionC: true
+						versionA: mockPackages[ 2 ],
+						versionC: mockPackages[ 3 ]
 					}
 				},
 				ownerB: {
 					branchA: {
-						versionB: true,
-						versionC: true
+						versionB: mockPackages[ 4 ],
+						versionC: mockPackages[ 5 ]
 					},
 					branchC: {
-						versionA: true,
-						versionB: true
+						versionA: mockPackages[ 6 ],
+						versionB: mockPackages[ 7 ]
 					}
 				}
 			},
 			projectB: {
 				ownerB: {
 					branchB: {
-						versionB: true
+						versionB: mockPackages[ 8 ]
 					}
 				}
 			}
@@ -72,14 +92,48 @@ describe( "configuration store", () => {
 			} );
 		} );
 
+		describe( "when handling loadHostsSuccess", () => {
+			it( "should update selections with a default host", () => {
+				lux.publishAction( "loadHostsSuccess", hostsResponse );
+
+				const state = configurationStore.getState();
+
+				state.selections.should.eql( {
+					branch: "branchA",
+					owner: "ownerA",
+					project: "projectA",
+					releaseOnly: false,
+					version: "versionA",
+					host: {
+						branch: "branchA",
+						name: "one",
+						owner: "ownerA",
+						project: "projectA",
+						version: "versionA"
+					}
+				} );
+			} );
+
+			it( "should handle keep defaults for selections when no hosts are returned", () => {
+				lux.publishAction( "loadHostsSuccess", { hosts: [] } );
+
+				configurationStore.getState().selections.should.eql( {
+					branch: undefined,
+					host: undefined,
+					owner: undefined,
+					project: undefined,
+					releaseOnly: false,
+					version: undefined
+				} );
+			} );
+		} );
+
 		describe( "when handling selections", () => {
-			let state, defaultHost;
+			let state;
 
 			beforeEach( () => {
 				state = configurationStore.getState();
 				state.tree = mockTree;
-
-				defaultHost = hostsParsed.hosts[ 0 ];
 
 				state.selections = {
 					project: "projectB",
@@ -98,7 +152,7 @@ describe( "configuration store", () => {
 					owner: "ownerA",
 					branch: "branchA",
 					version: "versionA",
-					host: defaultHost,
+					host: undefined,
 					releaseOnly: false
 				} );
 			} );
@@ -112,7 +166,7 @@ describe( "configuration store", () => {
 					owner: "ownerB",
 					branch: "branchA",
 					version: "versionB",
-					host: defaultHost,
+					host: undefined,
 					releaseOnly: false
 				} );
 			} );
@@ -130,7 +184,7 @@ describe( "configuration store", () => {
 					owner: "ownerA",
 					branch: "branchB",
 					version: "versionA",
-					host: defaultHost,
+					host: undefined,
 					releaseOnly: false
 				} );
 			} );
@@ -149,23 +203,30 @@ describe( "configuration store", () => {
 					owner: "ownerA",
 					branch: "branchA",
 					version: "versionB",
-					host: defaultHost,
+					host: undefined,
 					releaseOnly: false
 				} );
 			} );
 
 			it( "should update the selections from selectHost", () => {
-				lux.publishAction( "selectHost", { name: "five" } );
+				const host = {
+					name: "five",
+					project: "projectA",
+					owner: "ownerA",
+					branch: "branchA",
+					version: "versionA",
+					releaseOnly: true
+				};
+
+				lux.publishAction( "selectHost", host );
 
 				state.selections.should.eql( {
-					project: "projectB",
-					owner: "ownerB",
-					branch: "branchB",
-					version: "versionB",
-					host: {
-						name: "five"
-					},
-					releaseOnly: false
+					project: "projectA",
+					owner: "ownerA",
+					branch: "branchA",
+					version: "versionA",
+					host,
+					releaseOnly: true
 				} );
 			} );
 
@@ -233,8 +294,27 @@ describe( "configuration store", () => {
 				owners: [ "ownerA", "ownerB" ],
 				branches: [ "branchA", "branchB" ],
 				versions: [ "versionA", "versionB" ],
-				hosts: hostsParsed.hosts,
 				releaseOnly: false
+			} );
+		} );
+
+		it( "should filter on released versions when releaseOnly is true", () => {
+			const state = configurationStore.getState();
+
+			state.tree = mockTree;
+			state.selections.releaseOnly = true;
+
+			configurationStore.getOptions().should.eql( {
+				selectedProject: "projectA",
+				selectedOwner: "ownerA",
+				selectedBranch: "branchA",
+				selectedVersion: "versionA",
+				selectedHost: { name: "hostA" },
+				projects: [ "projectA", "projectB" ],
+				owners: [ "ownerA", "ownerB" ],
+				branches: [ "branchA", "branchB" ],
+				versions: [ "versionA" ],
+				releaseOnly: true
 			} );
 		} );
 

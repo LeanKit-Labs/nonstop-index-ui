@@ -16,12 +16,12 @@ global.ReactUtils = require( "react-addons-test-utils" );
 global.postal = require( "postal" );
 global.lux = require( "lux.js" );
 
-global.getMockReactComponent = function( name ) {
-	return React.createClass( {
+global.getMockReactComponent = function( name, methods ) {
+	return React.createClass( Object.assign( {
 		render() {
 			return <div className={ `component-${name.toLowerCase()}` }> { name } { this.props.children }</div>;
 		}
-	} );
+	}, methods ) );
 };
 
 // easier testing of stateless components with ReactUtils
