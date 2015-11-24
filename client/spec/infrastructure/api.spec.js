@@ -376,4 +376,11 @@ describe( "API", () => {
 			} );
 		} );
 	} );
+
+	describe( "when handling error", () => {
+		it( "should invoke console.error", () => {
+			lux.publishAction( "error", "OH MY GOSH! WE'VE GOT GAUGES!" );
+			console.error.should.be.calledWith( "OH MY GOSH! WE'VE GOT GAUGES!" );
+		} );
+	} );
 } );
