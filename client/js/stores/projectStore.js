@@ -16,6 +16,36 @@ function getHostDetails( host ) {
 	};
 }
 
+function reduceProjects( packages ) {
+	const releases = packages.reduce( ( memo, item ) => {
+		if ( item.build ) {
+			return memo;
+		}
+		memo[ `${item.relative}-${item.architecture}-${item.platform}-${item.version}` ] = item.slug;
+		return memo;
+	}, {} );
+	return packages.reduce( ( memo, item ) => {
+		if ( !item.build ) {
+			return memo;
+		}
+		const versionPath = [ "projects", item.project, "owners", item.owner, "branches", item.branch ];
+		let versions = _get( memo, versionPath, [] );
+
+		versions.push( item.file );
+		_set( memo, versionPath, versions );
+		item.simpleVersion = item.simpleVersion || item.version.split( "-" )[ 0 ];
+		const releaseCheck = releases[ `${item.relative}-${item.architecture}-${item.platform}-${item.simpleVersion}` ];
+		item.released = releaseCheck === item.slug;
+		item.releasable = !releaseCheck;
+		memo.packages[ item.file ] = item;
+
+		return memo;
+	}, {
+		projects: {},
+		packages: {}
+	} );
+}
+
 export default new lux.Store( {
 	namespace: "project",
 	state: {
@@ -29,7 +59,7 @@ export default new lux.Store( {
 	handlers: {
 		loadProjectsSuccess( { packages: pkgs } ) {
 			const packages = cloneDeep( pkgs );
-			this.setState( this.reduceProjects( packages ) );
+			this.setState( reduceProjects( packages ) );
 		},
 		loadHostsSuccess( { hosts } ) {
 			const mappedHosts = hosts.map( getHostDetails );
@@ -97,35 +127,6 @@ export default new lux.Store( {
 		releasePackageError() {
 			this.setState( { releaseChoice: null } );
 		}
-	},
-	reduceProjects( packages ) {
-		const releases = packages.reduce( ( memo, item ) => {
-			if ( item.build ) {
-				return memo;
-			}
-			memo[ `${item.relative}-${item.architecture}-${item.platform}-${item.version}` ] = item.slug;
-			return memo;
-		}, {} );
-		return packages.reduce( ( memo, item ) => {
-			if ( !item.build ) {
-				return memo;
-			}
-			const versionPath = [ "projects", item.project, "owners", item.owner, "branches", item.branch ];
-			let versions = _get( memo, versionPath, [] );
-
-			versions.push( item.file );
-			_set( memo, versionPath, versions );
-			item.simpleVersion = item.simpleVersion || item.version.split( "-" )[ 0 ];
-			const releaseCheck = releases[ `${item.relative}-${item.architecture}-${item.platform}-${item.simpleVersion}` ];
-			item.released = releaseCheck === item.slug;
-			item.releasable = !releaseCheck;
-			memo.packages[ item.file ] = item;
-
-			return memo;
-		}, {
-			projects: {},
-			packages: {}
-		} );
 	},
 	getProjects() {
 		let projects = this.getState().projects;
