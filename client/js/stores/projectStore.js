@@ -1,5 +1,5 @@
 import lux from "lux.js";
-import { map, reduce, get as _get, set as _set, find, cloneDeep, groupBy } from "lodash";
+import { map, reduce, get as _get, set as _set, find, clone, cloneDeep, groupBy } from "lodash";
 
 function getHostDetails( host ) {
 	const { project, branch, owner, releaseOnly } = host.package;
@@ -69,9 +69,14 @@ export default new lux.Store( {
 				hosts: mappedHosts
 			} );
 		},
-		triggerDeploy( { pkg, host } ) {
+		triggerDeploy( { pkg: packageSource, host } ) {
 			const hostRef = find( this.getState().hosts, { name: host } );
 			hostRef.status = null;
+			const pkg = clone( packageSource );
+			if ( pkg.released ) {
+				pkg.version = pkg.simpleVersion;
+				pkg.build = "";
+			}
 			this.setState( {
 				deployChoice: {
 					pkg, host
