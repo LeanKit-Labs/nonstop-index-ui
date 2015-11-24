@@ -1,10 +1,10 @@
 import lux from "lux.js";
-import { merge, set as _set, get as _get, each, all, cloneDeep } from "lodash";
+import { extend, set as _set, get as _get, each, all, cloneDeep } from "lodash";
 import projectStore from "./projectStore";
 
 function updateSelections( store, updatedSelections ) {
 	const { selections: currentSelections, tree } = store.getState();
-	const mergedSelections = merge( currentSelections, updatedSelections );
+	const mergedSelections = extend( currentSelections, updatedSelections );
 
 	store.setState( {
 		selections: getSelections( mergedSelections, tree )
@@ -23,7 +23,8 @@ function getSelections( current, tree ) {
 		owner,
 		branch,
 		version,
-		host
+		host,
+		releaseOnly: current.releaseOnly
 	};
 }
 
@@ -36,7 +37,8 @@ export default new lux.Store( {
 			project: undefined,
 			owner: undefined,
 			branch: undefined,
-			version: undefined
+			version: undefined,
+			releaseOnly: false
 		},
 		updateInProgress: false
 	},
@@ -82,6 +84,12 @@ export default new lux.Store( {
 				host: host
 			} );
 		},
+		setReleaseOnly( value ) {
+			const state = this.getState();
+			state.selections.releaseOnly = value;
+
+			this.setState( state );
+		},
 		applySettings() {
 			this.setState( { updateInProgress: true } );
 		},
@@ -105,6 +113,8 @@ export default new lux.Store( {
 		const selectedVersion = state.selections.version;
 		const hosts = projectStore.getHosts();
 		const selectedHost = state.selections.host;
+		const releaseOnly = state.selections.releaseOnly;
+
 		return {
 			projects,
 			owners,
@@ -115,7 +125,8 @@ export default new lux.Store( {
 			selectedOwner,
 			selectedBranch,
 			selectedVersion,
-			selectedHost
+			selectedHost,
+			releaseOnly
 		};
 	},
 	getChanges() {
@@ -133,6 +144,10 @@ export default new lux.Store( {
 	},
 	getApplyEnabled() {
 		const state = this.getState();
-		return all( state.selections ) && !state.updateInProgress;
+		const allTrue = all( state.selections, ( value, key ) => {
+			return value || key === "releaseOnly";
+		} );
+
+		return allTrue && !state.updateInProgress;
 	}
 } );

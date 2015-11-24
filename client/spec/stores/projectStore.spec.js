@@ -214,7 +214,8 @@ describe( "project store", () => {
 						ip: "10.0.0.6",
 						name: "core-blu",
 						owner: "BanditSoftware",
-						project: "nonstop-index-ui"
+						project: "nonstop-index-ui",
+						releaseOnly: false
 					},
 					pkg: {
 						project: "Heyo"
@@ -309,8 +310,24 @@ describe( "project store", () => {
 
 				hosts.length.should.equal( 2 );
 				hosts.should.eql( [
-					{ name: "core-blu", project: "nonstop-index-ui", branch: "master", owner: "BanditSoftware", hostName: "lkapp.cloudapp.net", ip: "10.0.0.6" },
-					{ name: "littlebrudder", project: "nonstop-index-ui", branch: "master", owner: "arobson", hostName: "littelbrudder.hack.leankitdev.com", ip: "10.0.0.6" }
+					{
+						name: "core-blu",
+						project: "nonstop-index-ui",
+						branch: "master",
+						owner: "BanditSoftware",
+						hostName: "lkapp.cloudapp.net",
+						ip: "10.0.0.6",
+						releaseOnly: false
+					},
+					{
+						name: "littlebrudder",
+						project: "nonstop-index-ui",
+						branch: "master",
+						owner: "arobson",
+						hostName: "littelbrudder.hack.leankitdev.com",
+						ip: "10.0.0.6",
+						releaseOnly: true
+					}
 				] );
 			} );
 		} );

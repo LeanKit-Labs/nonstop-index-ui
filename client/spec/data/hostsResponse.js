@@ -21,7 +21,8 @@ module.exports = {
 				osVersion: "any",
 				osName: "any",
 				architecture: "x64",
-				platform: "linux"
+				platform: "linux",
+				releaseOnly: false
 			},
 			index: {
 				host: "10.0.0.4",
@@ -156,7 +157,8 @@ module.exports = {
 				osVersion: "any",
 				osName: "any",
 				architecture: "x64",
-				platform: "linux"
+				platform: "linux",
+				releaseOnly: true
 			},
 			index: {
 				host: "10.0.0.4",

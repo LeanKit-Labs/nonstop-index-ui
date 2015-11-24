@@ -6,7 +6,8 @@ module.exports = {
 			ip: "10.0.0.6",
 			name: "core-blu",
 			owner: "BanditSoftware",
-			project: "nonstop-index-ui"
+			project: "nonstop-index-ui",
+			releaseOnly: false
 		},
 		{
 			branch: "master",
@@ -14,7 +15,8 @@ module.exports = {
 			ip: "10.0.0.6",
 			name: "littlebrudder",
 			owner: "arobson",
-			project: "nonstop-index-ui"
+			project: "nonstop-index-ui",
+			releaseOnly: true
 		}
 	]
 };

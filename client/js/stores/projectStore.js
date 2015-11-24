@@ -2,7 +2,7 @@ import lux from "lux.js";
 import { map, reduce, get as _get, set as _set, find, cloneDeep, groupBy } from "lodash";
 
 function getHostDetails( host ) {
-	const { project, branch, owner } = host.package;
+	const { project, branch, owner, releaseOnly } = host.package;
 	const { name: hostName, ip } = host.serviceHost.host;
 
 	return {
@@ -11,7 +11,8 @@ function getHostDetails( host ) {
 		branch,
 		owner,
 		hostName,
-		ip
+		ip,
+		releaseOnly
 	};
 }
 
