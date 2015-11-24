@@ -1,10 +1,10 @@
 import lux from "lux.js";
-import { merge, set as _set, get as _get, each, all, cloneDeep } from "lodash";
+import { extend, set as _set, get as _get, each, all, cloneDeep } from "lodash";
 import projectStore from "./projectStore";
 
 function updateSelections( store, updatedSelections ) {
 	const { selections: currentSelections, tree } = store.getState();
-	const mergedSelections = merge( currentSelections, updatedSelections );
+	const mergedSelections = extend( currentSelections, updatedSelections );
 
 	store.setState( {
 		selections: getSelections( mergedSelections, tree )
