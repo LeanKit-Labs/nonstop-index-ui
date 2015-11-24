@@ -1,7 +1,8 @@
 import hostConfiguratorFactory from "inject!HostConfigurator";
+const hostsParsed = require( "../data/hostsParsed" );
 
 describe( "HostConfigurator", () => {
-	let actions, component, dependencies, optionsData;
+	let actions, component, dependencies, optionsData, valueStub;
 
 	beforeEach( () => {
 		actions = {
@@ -28,10 +29,10 @@ describe( "HostConfigurator", () => {
 			owners: [ "ownerA", "ownerB" ],
 			branches: [ "branchA", "branchB" ],
 			versions: [ "versionA", "versionB" ],
-			hosts: [
-				{ name: "hostOne" }
-			]
+			hosts: hostsParsed
 		};
+
+		valueStub = sinon.stub();
 
 		dependencies = {
 			OptionsDropdown: getMockReactComponent( "OptionsDropdown" ),
@@ -39,7 +40,12 @@ describe( "HostConfigurator", () => {
 				getOptions: sinon.stub().returns( optionsData ),
 				getApplyEnabled: sinon.stub().returns( true )
 			},
-			"react-bootstrap-switch": getMockReactComponent( "Switch" )
+			"stores/projectStore": {
+				getHosts: sinon.stub().returns( hostsParsed )
+			},
+			"react-bootstrap-switch": getMockReactComponent( "Switch", {
+				value: valueStub
+			} )
 		};
 
 		const HostConfigurator = hostConfiguratorFactory( dependencies );
@@ -82,9 +88,7 @@ describe( "HostConfigurator", () => {
 					"versionA",
 					"versionB"
 				],
-				hosts: [
-					{ name: "hostOne" }
-				],
+				hosts: hostsParsed,
 				applyEnabled: true
 			} );
 		} );
@@ -175,6 +179,8 @@ describe( "HostConfigurator", () => {
 			component.setState( {
 				releaseOnly: true
 			} );
+
+			valueStub.should.be.calledOnce.and.calledWith( true );
 
 			releaseOnlySwitch.props.state.should.be.true;
 		} );

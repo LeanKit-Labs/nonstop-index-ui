@@ -1,21 +1,6 @@
 import lux from "lux.js";
 import { map, reduce, get as _get, set as _set, find, clone, cloneDeep, groupBy } from "lodash";
 
-function getHostDetails( host ) {
-	const { project, branch, owner, releaseOnly } = host.package;
-	const { name: hostName, ip } = host.serviceHost.host;
-
-	return {
-		name: host.name,
-		project,
-		branch,
-		owner,
-		hostName,
-		ip,
-		releaseOnly
-	};
-}
-
 function reduceProjects( packages ) {
 	const releases = packages.reduce( ( memo, item ) => {
 		if ( item.build ) {
@@ -62,7 +47,7 @@ export default new lux.Store( {
 			this.setState( reduceProjects( packages ) );
 		},
 		loadHostsSuccess( { hosts } ) {
-			const mappedHosts = hosts.map( getHostDetails );
+			const mappedHosts = hosts.map( this.mapHostDetails );
 
 			this.setState( {
 				hostByProject: groupBy( mappedHosts, "project" ),
@@ -209,5 +194,19 @@ export default new lux.Store( {
 	getReleaseChoice() {
 		const { releaseChoice } = this.getState();
 		return releaseChoice || null;
+	},
+	mapHostDetails( host ) {
+		const { project, branch, owner, releaseOnly } = host.package;
+		const { name: hostName, ip } = host.serviceHost.host;
+
+		return {
+			name: host.name,
+			project,
+			branch,
+			owner,
+			hostName,
+			ip,
+			releaseOnly
+		};
 	}
 } );

@@ -1,6 +1,7 @@
 import React from "react";
 import lux from "lux.js";
 import configurationStore from "stores/configurationStore";
+import projectStore from "stores/projectStore";
 import OptionsDropdown from "OptionsDropdown";
 import Switch from "react-bootstrap-switch";
 
@@ -8,7 +9,10 @@ import "react-bootstrap-switch/src/less/bootstrap3/build.less";
 import "./HostConfigurator.less";
 
 function getState() {
-	return Object.assign( {}, configurationStore.getOptions(), { applyEnabled: configurationStore.getApplyEnabled() } );
+	return Object.assign( {}, configurationStore.getOptions(), {
+		applyEnabled: configurationStore.getApplyEnabled(),
+		hosts: projectStore.getHosts()
+	} );
 }
 
 export default React.createClass( {
@@ -22,6 +26,10 @@ export default React.createClass( {
 	},
 	getInitialState() {
 		return getState();
+	},
+	componentWillUpdate( props, state ) {
+		// react-bootstrap-switch does not change on props updates (state prop is just initial value)
+		this.refs.releaseOnlySwitch.value( state.releaseOnly );
 	},
 	render() {
 		const state = this.state;
@@ -48,7 +56,7 @@ export default React.createClass( {
 							<OptionsDropdown name="version" selected={ state.selectedVersion } options={ state.versions } onSelect={ this.selectVersion } />
 							<div className="form-group">
 								<label className="u-block">Release Only</label>
-								<Switch wrapperClass="hostConfigurator-releaseOnlySwitch" size="small" state={ state.releaseOnly } onChange={ this.setReleaseOnly } />
+								<Switch ref="releaseOnlySwitch" wrapperClass="hostConfigurator-releaseOnlySwitch" size="small" state={ state.releaseOnly } onChange={ this.setReleaseOnly } />
 							</div>
 						</div>
 						<div className="box-footer">
