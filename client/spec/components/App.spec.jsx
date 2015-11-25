@@ -1,14 +1,15 @@
 import appFactory from "inject!App";
 
 describe( "App Component", () => {
-	let component, initializePageStub, dependencies, windowStub, container, App;
+	let component, actions, dependencies, windowStub, container, App;
 
 	beforeEach( () => {
-		initializePageStub = sinon.stub();
+		actions = {
+			initializePage: sinon.stub(),
+			handleAlertClose: sinon.stub()
+		};
 
-		lux.customActionCreator( {
-			initializePage: initializePageStub
-		} );
+		lux.customActionCreator( actions );
 
 		windowStub = {
 			document: {}
@@ -17,6 +18,7 @@ describe( "App Component", () => {
 		dependencies = {
 			window: windowStub,
 			Toolbar: getMockReactComponent( "Toolbar" ),
+			"react-bootstrap/lib/Alert": getMockReactComponent( "Alert" ),
 			"react-router": {
 				RouteHandler: React.createClass( {
 					render: () => {
@@ -70,6 +72,55 @@ describe( "App Component", () => {
 	} );
 
 	it( "should call initialize page on componentMount", () => {
-		initializePageStub.should.be.calledOnce.and.calledWith( {} );
+		actions.initializePage.should.be.calledOnce.and.calledWith( {} );
+	} );
+
+	it( "should update on changes to the layout store", () => {
+		dependencies[ "stores/layoutStore" ].getAlert.returns( {
+			type: "success",
+			message: "hello"
+		} );
+
+		postal.channel( "lux.store" ).publish( "layout.changed" );
+
+		component.state.alert.should.eql( {
+			type: "success",
+			message: "hello"
+		} );
+	} );
+
+	describe( "when displaying alerts", () => {
+		let alert;
+
+		beforeEach( () => {
+			component.setState( {
+				alert: {
+					type: "success",
+					message: "hello"
+				}
+			} );
+
+			alert = ReactUtils.findRenderedComponentWithType( component, dependencies[ "react-bootstrap/lib/Alert" ] );
+		} );
+
+		it( "should display an alert when there is an alert in state", () => {
+			alert.props.bsStyle.should.equal( "success" );
+
+			const message = ReactUtils.findRenderedDOMComponentWithTag( alert, "p" );
+			message.textContent.should.equal( "hello" );
+		} );
+
+		it( "should call the handleAlertClose action on dismissal of the Alert", () => {
+			alert.props.onDismiss();
+
+			actions.handleAlertClose.should.be.calledOnce;
+		} );
+
+		it( "should not display an alert when there is no alert in state", () => {
+			component.setState( { alert: null } );
+			const alerts = ReactUtils.scryRenderedComponentsWithType( component, dependencies[ "react-bootstrap/lib/Alert" ] );
+
+			alerts.should.have.lengthOf( 0 );
+		} );
 	} );
 } );

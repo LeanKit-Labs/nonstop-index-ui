@@ -100,6 +100,7 @@ export default lux.mixin( {
 		applySettings,
 		releasePackage,
 		error( msg ) {
+			/* istanbul ignore else */
 			if ( DEBUG ) {
 				console.error( msg );
 			}
