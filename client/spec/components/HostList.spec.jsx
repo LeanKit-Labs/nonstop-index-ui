@@ -122,7 +122,7 @@ describe( "HostList", () => {
 			const host = Object.assign( {}, HOSTS[0] );
 			delete host.status;
 			createComponent( { hosts: [ host ] } );
-			const button = ReactUtils.findRenderedDOMComponentWithClass( component, "btn" );
+			const button = ReactUtils.scryRenderedDOMComponentsWithClass( component, "btn" )[ 0 ];
 			ReactUtils.Simulate.click( button );
 			lux.actions.loadHostStatus.should.be.calledOnce;
 		} );

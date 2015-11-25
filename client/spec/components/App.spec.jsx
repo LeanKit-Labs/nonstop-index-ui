@@ -18,6 +18,7 @@ describe( "App Component", () => {
 		dependencies = {
 			window: windowStub,
 			Toolbar: getMockReactComponent( "Toolbar" ),
+			EnvironmentVariables: getMockReactComponent( "EnvironmentVariables" ),
 			"react-bootstrap/lib/Alert": getMockReactComponent( "Alert" ),
 			"react-router": {
 				RouteHandler: React.createClass( {

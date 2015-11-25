@@ -79,6 +79,14 @@ function releasePackage( { architecture, branch, osName, osVersion, owner, platf
 		);
 }
 
+function loadEnvironmentForHost( options ) {
+	return nsAPI.host.getEnvironment( options )
+		.then(
+			( data ) => lux.publishAction( "loadEnvironmentForHostSuccess", data ),
+			( data ) => lux.publishAction( "loadEnvironmentForHostError", data )
+		);
+}
+
 export default lux.mixin( {
 	getActions: [
 		"pageInitialized"
@@ -90,20 +98,21 @@ export default lux.mixin( {
 			loadHosts();
 			loadUser();
 		},
-		loadProjects,
-		loadHosts,
-		loadUser,
-		loadHostStatus,
 		finalizeDeploy() {
 			applySettings( projectStore.getDeployChoiceSettings() );
 		},
-		applySettings,
-		releasePackage,
 		error( msg ) {
 			/* istanbul ignore else */
 			if ( DEBUG ) {
 				console.error( msg );
 			}
-		}
+		},
+		loadProjects,
+		loadHosts,
+		loadUser,
+		loadHostStatus,
+		loadEnvironmentForHost,
+		applySettings,
+		releasePackage
 	}
 }, lux.mixin.actionCreator, lux.mixin.actionListener );

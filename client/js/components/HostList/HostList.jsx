@@ -5,7 +5,7 @@ import "./HostList.less";
 
 export default React.createClass( {
 	mixins: [ lux.reactMixin.actionCreator ],
-	getActions: [ "loadHostStatus" ],
+	getActions: [ "loadHostStatus", "loadEnvironmentForHost" ],
 	propTypes: {
 		hosts: React.PropTypes.array.isRequired,
 		title: React.PropTypes.string
@@ -30,9 +30,14 @@ export default React.createClass( {
 			</tr>,
 			<tr key={ `${host.name}-status-${i}` }>
 				<td>
-					<i className="fa fa-fw fa-line-chart hostList-statusIcon"></i> <button className="btn btn-link hostList-statusButton u-alignBaseline" onClick={ this.loadHostStatus.bind( this, host.name ) }>
-						{ host.status ? "Refresh Status" : "Get Status" }
-					</button>
+					<div>
+						<i className="fa fa-fw fa-line-chart hostList-statusIcon"></i> <button className="btn btn-link hostList-statusButton u-alignBaseline" onClick={ this.loadHostStatus.bind( this, host.name ) }>
+							{ host.status ? "Refresh Status" : "Get Status" }
+						</button>
+						<i className="fa fa-terminal hostList-envIcon"></i> <button className="btn btn-link hostList-statusButton u-alignBaseline" onClick={ this.loadEnvironmentForHost.bind( this, { name: host.name } ) }>
+							Show Environment
+						</button>
+					</div>
 					{ host.status ? this.renderStatus( host ) : null }
 				</td>
 			</tr>

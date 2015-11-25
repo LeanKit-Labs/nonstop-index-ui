@@ -4,6 +4,7 @@ import hostsResponse from "../data/hostsResponse";
 import hostStatusResponse from "../data/hostStatusResponse";
 import hostConfigurationResponse from "../data/hostConfigurationResponse";
 import pkgPromotionResponse from "../data/packagePromoteResponse";
+import { envResponseBody, loadEnvironmentForHostActionState } from "../data/envVarRawState";
 
 describe( "API", () => {
 	let dependencies, halonStubs, jQueryAdapter, api, actions, errorLog;
@@ -19,7 +20,8 @@ describe( "API", () => {
 			host: {
 				list: sinon.stub().resolves( hostsResponse ),
 				status: sinon.stub().resolves( hostStatusResponse ),
-				configure: sinon.stub().resolves( hostConfigurationResponse )
+				configure: sinon.stub().resolves( hostConfigurationResponse ),
+				getEnvironment: sinon.stub().resolves( envResponseBody )
 			},
 			connect: sinon.spy( () => {
 				return {
@@ -381,6 +383,37 @@ describe( "API", () => {
 		it( "should invoke console.error", () => {
 			lux.publishAction( "error", "OH MY GOSH! WE'VE GOT GAUGES!" );
 			console.error.should.be.calledWith( "OH MY GOSH! WE'VE GOT GAUGES!" );
+		} );
+	} );
+
+	describe( "when handling loadEnvironmentForHost", () => {
+		describe( "with successful response", () => {
+			it( "should invoke host getEnvironment resource", () => {
+				lux.publishAction( "loadEnvironmentForHost", loadEnvironmentForHostActionState );
+				halonStubs.host.getEnvironment.should.be.calledOnce
+					.and.calledWith( loadEnvironmentForHostActionState );
+			} );
+			it( "should publish loadEnvironmentForHostSuccess action", ( done ) => {
+				lux.customActionCreator( {
+					loadEnvironmentForHostSuccess( data ) {
+						data.should.eql( envResponseBody );
+						done();
+					}
+				} );
+				lux.publishAction( "loadEnvironmentForHost", loadEnvironmentForHostActionState );
+			} );
+		} );
+		describe( "with failed response", () => {
+			it( "should publish loadEnvironmentForHostError action", ( done ) => {
+				halonStubs.host.getEnvironment = sinon.stub().rejects( new Error( "OHSNAP" ) );
+				lux.customActionCreator( {
+					loadEnvironmentForHostError( err ) {
+						err.message.should.eql( "OHSNAP" );
+						done();
+					}
+				} );
+				lux.publishAction( "loadEnvironmentForHost", loadEnvironmentForHostActionState );
+			} );
 		} );
 	} );
 } );

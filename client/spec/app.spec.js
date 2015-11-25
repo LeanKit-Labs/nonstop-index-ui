@@ -21,6 +21,7 @@ describe( "app", () => {
 			"stores/projectStore": {},
 			"stores/navigationStore": {},
 			"stores/configurationStore": {},
+			"stores/envVarStore": {},
 			"infrastructure/errorHandler": errorHandlerStub,
 			"infrastructure/api": {},
 			"infrastructure/router": {}

@@ -7,6 +7,7 @@ import { get as _get } from "lodash";
 import win from "window";
 import layoutStore from "stores/layoutStore";
 import Alert from "react-bootstrap/lib/Alert";
+import EnvironmentVariables from "EnvironmentVariables";
 
 function getState() {
 	return {
@@ -59,6 +60,7 @@ export default React.createClass( {
 				<div className="skin-blue">
 					{ this.state.alert ? this.renderAlert() : null }
 					<Toolbar />
+					<EnvironmentVariables />
 					<div className="wrapper">
 						<RouteHandler />
 					</div>
