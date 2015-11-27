@@ -47,7 +47,7 @@
   },
   "devDependencies": {
     "amd-inject-loader": "^0.2.1",
-    "autoprefixer-loader": "^2.0.0",
+    "autoprefixer-loader": "^3.0.0",
     "babel-core": "^5.6.15",
     "babel-loader": "^5.3.1",
     "babel-runtime": "^5.8.25",
@@ -56,7 +56,7 @@
     "chai-as-promised": "^5.0.0",
     "chai-properties": "^1.2.1",
     "chai-string": "^1.1.1",
-    "css-loader": "^0.15.6",
+    "css-loader": "^0.23.x",
     "debug": "^2.2.0",
     "del": "^2.0.2",
     "eslint": "~1.9.0",
