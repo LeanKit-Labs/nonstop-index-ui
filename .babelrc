@@ -1,0 +1,7 @@
+{
+	"auxiliaryCommentBefore": "istanbul ignore next - babel generated code",
+	"compact": false,
+	"blacklist": [ "strict" ],
+	"experimental": true,
+	"optional": "runtime"
+}
