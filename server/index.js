@@ -13,6 +13,10 @@ fount.register( "postal", require( "postal" ) );
 fount.register( "loggingCollectorConfig", config.logging );
 fount.register( "ahpubsub", pubsub );
 
+if ( fount.canResolve( [ "webpackCompiler" ] ) ) {
+	config.host.modules.push( "autohost-webpack-hot" );
+}
+
 module.exports = require( "./init" )( {
 	fount: fount,
 	pkg: pkg,

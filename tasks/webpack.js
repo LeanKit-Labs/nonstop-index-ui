@@ -4,20 +4,18 @@ var _ = require( "lodash" );
 var webpack = require( "webpack" );
 var gulpWebpack = require( "webpack-stream" );
 var webpackConfig = require( "./webpack/build.config.js" );
-var webpackDevConfig = require( "./webpack/dev.config.js" );
 var webpackTestConfig = require( "./webpack/test.config.js" );
 var webpackCoverageConfig = require( "./webpack/coverage.config.js" );
 var warningParser = require( "./tools/warning-parser.js" );
 var argv = require( "yargs" ).argv;
 
 gulp.task( "webpack:watch", function() {
-	webpackDevConfig.watch = true;
-	webpackDevConfig.watchDelay = 250;
 	webpackTestConfig.watch = true;
 	webpackTestConfig.watchDelay = 250;
 } );
 
 gulp.task( "webpack:build", [ "generate-config" ], function( done ) {
+	process.env.BABEL_ENV = "production";
 	gulp.src( "./client/js/boot.js" )
 		.pipe( gulpWebpack( webpackConfig, null, function( err, stats ) {
 			stats.compilation.warnings = warningParser( {
@@ -117,30 +115,10 @@ gulp.task( "webpack:build", [ "generate-config" ], function( done ) {
 		.on( "end", done );
 } );
 
-gulp.task( "webpack:dev", [ "format", "generate-config" ], function( done ) {
-	var doneOnce = false;
-
-	gulp.src( "./client/js/boot.js" )
-		.pipe( gulpWebpack( webpackDevConfig, null, function( err, stats ) {
-			gutil.log( stats.toString( {
-				version: false,
-				hash: false,
-				chunks: false,
-				colors: true
-			} ) );
-
-			// This statement keeps done from being called after
-			// webpack watch triggers a rebuild
-			if ( webpackDevConfig.watch !== true || doneOnce === false ) {
-				doneOnce = true;
-				done();
-			}
-		} ) )
-		.pipe( gulp.dest( "./public/js" ) );
-} );
-
 function webpackSpecBuild( config, done ) {
 	var doneOnce = false;
+
+	process.env.BABEL_ENV = "production";
 
 	webpack( config, function( err, stats ) {
 		// This statement keeps done from being called after

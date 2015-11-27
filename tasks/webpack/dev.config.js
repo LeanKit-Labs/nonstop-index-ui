@@ -3,14 +3,17 @@ var _ = require( "lodash" );
 var path = require( "path" );
 var shared = _.cloneDeep( require( "./shared.config" ) );
 var pathChunkingPlugin = require( "../tools/pathChunkingPlugin" );
-var sourceMapPath = path.join( "../..", appConfig.rootUrl, "/source/[resource-path]" );
 
 module.exports = _.merge( shared, {
 	debug: true,
-	entry: path.join( appConfig.root, "./client/js/boot.js" ),
+	entry: [
+		"webpack-hot-middleware/client?reload=true",
+		path.join( appConfig.root, "./client/js/boot.js" )
+	],
+	devtool: "cheap-module-eval-source-map",
 	output: {
 		path: path.join( appConfig.root, "./public/js" ),
-		publicPath: "./js/",
+		publicPath: appConfig.rootUrl + "/js/",
 		filename: "main.js"
 	},
 	module: {
@@ -22,15 +25,13 @@ module.exports = _.merge( shared, {
 		]
 	},
 	plugins: [
+		new webpack.HotModuleReplacementPlugin(),
+		new webpack.NoErrorsPlugin(),
 		new webpack.DefinePlugin( {
 			DEBUG: true,
 			BROWSER: true
 		} ),
 		new webpack.IgnorePlugin( /locale/ ),
-		new webpack.SourceMapDevToolPlugin(
-			null, null,
-			sourceMapPath, sourceMapPath
-		),
 		pathChunkingPlugin( {
 			name: "vendor",
 			filename: "vendor.js",

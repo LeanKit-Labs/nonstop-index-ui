@@ -25,7 +25,7 @@ module.exports = {
 			{
 				test: /\.jsx?$/,
 				loader: "babel",
-				include: path.join( appConfig.root, "./client/js" )
+				include: path.join( appConfig.root, "./client" )
 			},
 			{ test: /\.css$/, loader: "style-loader!css-loader!autoprefixer-loader?{browsers:[\"last 2 version\", \"ie >= 9\"]}" },
 			{ test: /\.less$/, loader: "style-loader!css-loader!autoprefixer-loader?{browsers:[\"last 2 version\", \"ie >= 9\"]}!less-loader" },
