@@ -16,7 +16,7 @@ publish:
   # Publish to Dev Index
   nonstop:
     image: 'jgreat/drone-nonstop'
-    index: $$NONSTOP_HOST_DEV
+    index: $$NONSTOP_INDEX_DEV
     url: '/api'
     port: '4444'
     secure: true
