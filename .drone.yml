@@ -1,20 +1,38 @@
+# NOTE: if you change anything in here you will need to regenrate .drone.sec
+# See Checksums at http://readme.drone.io/build/secrets.html
+# shasum -a 256 .drone.yml
+debug: true
+
 build:
-  image: 'arob/drone-nonstop-browser'
+  image: 'leankit/drone-nonstop-browser:0.2.0-node0.12'
   commands:
     - 'ns --verbose'
+
 cache:
   mount:
     - node_modules
     - .git
-deploy:
+
+publish:
+  # Publish to Dev Index
   nonstop:
     image: 'jgreat/drone-nonstop'
-    index: $$NONSTOP_INDEX_IP
-    url: '/index/api'
+    index: $$NONSTOP_INDEX_DEV
+    url: '/api'
     port: '4444'
-    token: $$NONSTOP_TOKEN
+    secure: true
+    token: $$NONSTOP_TOKEN_DEV
+  # Publish to Prd Index
+  nonstop:
+    image: 'jgreat/drone-nonstop'
+    index: $$NONSTOP_INDEX_PRD
+    url: '/api'
+    port: '4444'
+    secure: true
+    token: $$NONSTOP_TOKEN_PRD
+
 notify:
   slack:
     webhook_url: $$SLACK_WEBHOOK
-    username: 'azurebuild'
+    username: 'Drone'
     channel: '#hackbot'
