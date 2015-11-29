@@ -1,6 +1,7 @@
 # NOTE: if you change anything in here you will need to regenrate .drone.sec
 # See Checksums at http://readme.drone.io/build/secrets.html
 # shasum -a 256 .drone.yml
+debug: true
 
 build:
   image: 'leankit/drone-nonstop-browser:0.2.0-node0.12'
