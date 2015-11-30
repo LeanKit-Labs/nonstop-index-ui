@@ -21,7 +21,7 @@ gulp.task( "default", [ "build" ] );
 gulp.task( "build", [ "hashes" ] );
 
 // Development Build
-gulp.task( "dev", [ "images:copy", "index:dev", "css:dev", "format", "server" ], function() {
+gulp.task( "dev", [ "images:copy", "index:dev", "css:dev", "generate-config", "format", "server" ], function() {
 	livereload.listen();
 	gulp.watch( [ "client/less/**/*" ], [ "css:dev" ] );
 	gulp.watch( [ "public/{css,images}/**/*", "!**/*.less" ] )

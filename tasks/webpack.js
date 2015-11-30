@@ -118,7 +118,7 @@ gulp.task( "webpack:build", [ "generate-config" ], function( done ) {
 function webpackSpecBuild( config, done ) {
 	var doneOnce = false;
 
-	process.env.BABEL_ENV = "production";
+	process.env.BABEL_ENV = "test";
 
 	webpack( config, function( err, stats ) {
 		// This statement keeps done from being called after
