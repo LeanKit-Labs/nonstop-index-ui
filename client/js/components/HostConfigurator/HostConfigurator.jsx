@@ -27,13 +27,9 @@ export default React.createClass( {
 	getInitialState() {
 		return getState();
 	},
-	handlePullBuild( pullBuild ) {
-		this.setPull( pullBuild );
-		//this.setState({ pullBuild });
-	},
 	render() {
 		const state = this.state;
-		console.log(state);
+
 		return (
 			<div>
 				<section className="content-header">
@@ -58,9 +54,9 @@ export default React.createClass( {
 							<div className="form-group row">
 								<div className="col-sm-2">
 									<strong className="u-block">Pull Builds For:</strong>
-									<Input id="version" type="radio" label="Single Build" name="version" checked={ state.pullBuild === "SingleBuild" } onChange={ this.handlePullBuild.bind( this, "SingleBuild" ) } />
-									<Input type="radio" label="Latest Build" name="version" checked={ state.pullBuild === "LatestBuild" } onChange={ this.handlePullBuild.bind( this, "LatestBuild" ) } />
-									<Input type="radio" label="Release Only" name="version" checked={ state.pullBuild === "ReleaseOnly" } onChange={ this.handlePullBuild.bind( this, "ReleaseOnly" ) } />
+									<Input ref="SingleBuildRadio" type="radio" label="Single Build" name="version" checked={ state.pullBuild === "SingleBuild" } onChange={ this.setPull.bind( this, "SingleBuild" ) } />
+									<Input ref="LatestBuildRadio" type="radio" label="Latest Build" name="version" checked={ state.pullBuild === "LatestBuild" } onChange={ this.setPull.bind( this, "LatestBuild" ) } />
+									<Input ref="ReleaseOnlyRadio" type="radio" label="Release Only" name="version" checked={ state.pullBuild === "ReleaseOnly" } onChange={ this.setPull.bind( this, "ReleaseOnly" ) } />
 								</div>
 								<div className="col-sm-10">
 									<OptionsDropdown name="version" selected={ state.selectedVersion } options={ state.versions } onSelect={ this.selectVersion } />

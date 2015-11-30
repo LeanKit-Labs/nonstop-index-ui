@@ -32,13 +32,13 @@ function getSelections( current, tree ) {
 	const branch = current.branch || Object.keys( _get( tree, [ project, owner ], [] ) ).sort()[ 0 ];
 	// const version = current.version || Object.keys( _get( tree, [ project, owner, branch ], [] ) ).sort()[ 0 ];
 	const version = current.version ||
-		getVersions({
+		getVersions( {
 			tree,
 			selectedProject: project,
 			selectedOwner: owner,
 			selectedBranch: branch,
 			pullBuild: current.pullBuild
-		})[ 0 ];
+		} )[ 0 ];
 
 	return {
 		project,
@@ -50,20 +50,21 @@ function getSelections( current, tree ) {
 	};
 }
 
-function getVersions({ tree, selectedProject, selectedOwner, selectedBranch, pullBuild }) {
+function getVersions( { tree, selectedProject, selectedOwner, selectedBranch, pullBuild } ) {
 	let versions = _get( tree, [ selectedProject, selectedOwner, selectedBranch ], [] );
 
 	if ( pullBuild === "ReleaseOnly" ) {
 		versions = _pick( versions, pkg => pkg.released );
 	} else if ( pullBuild == "LatestBuild" ) {
-		versions = _reduce(versions, (memo, pkg) => {
+		versions = _reduce( versions, ( memo, pkg ) => {
 			memo[ `${pkg.simpleVersion}-*` ] = true;
 
 			return memo;
-		}, {});
+		}, {} );
 	}
 
 	versions = Object.keys( versions ).sort();
+	console.log( JSON.stringify( versions ) );
 
 	return versions;
 }
@@ -78,7 +79,7 @@ export default new lux.Store( {
 			owner: undefined,
 			branch: undefined,
 			version: undefined,
-			releaseOnly: false
+			pullBuild: "SingleBuild"
 		},
 		updateInProgress: false
 	},
@@ -160,7 +161,7 @@ export default new lux.Store( {
 		const branches = Object.keys( _get( tree, [ selectedProject, selectedOwner ], [] ) ).sort();
 		const selectedBranch = state.selections.branch;
 		const pullBuild = state.selections.pullBuild;
-		const versions = getVersions({ tree, selectedProject, selectedOwner, selectedBranch, pullBuild });
+		const versions = getVersions( { tree, selectedProject, selectedOwner, selectedBranch, pullBuild } );
 		const selectedVersion = state.selections.version;
 		const selectedHost = state.selections.host;
 
@@ -180,11 +181,21 @@ export default new lux.Store( {
 	getChanges() {
 		const changes = [];
 		const state = this.getState();
+
 		each( state.selections, function( value, field ) {
-			if ( field !== "host" ) {
+			if ( !~[ "host", "pullBuild" ].indexOf( field ) ) {
+				if ( field === "version" && state.selections.pullBuild === "LatestBuild" ) {
+					value = value.replace( "-*", "" );
+				}
 				changes.push( { op: "change", field, value } );
 			}
 		} );
+		changes.push( {
+			op: "change",
+			field: "releaseOnly",
+			value: state.selections.pullBuild === "ReleaseOnly"
+		} );
+
 		return {
 			name: state.selections.host.name,
 			data: changes
