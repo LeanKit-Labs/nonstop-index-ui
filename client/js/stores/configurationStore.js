@@ -30,7 +30,6 @@ function getSelections( current, tree ) {
 	const project = current.project || Object.keys( tree ).sort()[ 0 ];
 	const owner = current.owner || Object.keys( _get( tree, [ project ], [] ) ).sort()[ 0 ];
 	const branch = current.branch || Object.keys( _get( tree, [ project, owner ], [] ) ).sort()[ 0 ];
-	// const version = current.version || Object.keys( _get( tree, [ project, owner, branch ], [] ) ).sort()[ 0 ];
 	const version = current.version ||
 		getVersions( {
 			tree,
