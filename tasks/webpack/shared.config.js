@@ -23,15 +23,9 @@ module.exports = {
 		],
 		loaders: [
 			{
-				test: /(client|@lk).*\.(js|jsx)$/,
+				test: /\.jsx?$/,
 				loader: "babel",
-				query: {
-					auxiliaryCommentBefore: "istanbul ignore next - babel generated code",
-					compact: false,
-					blacklist: [ "strict" ],
-					experimental: true,
-					optional: "runtime"
-				}
+				include: path.join( appConfig.root, "./client" )
 			},
 			{ test: /\.css$/, loader: "style-loader!css-loader!autoprefixer-loader?{browsers:[\"last 2 version\", \"ie >= 9\"]}" },
 			{ test: /\.less$/, loader: "style-loader!css-loader!autoprefixer-loader?{browsers:[\"last 2 version\", \"ie >= 9\"]}!less-loader" },

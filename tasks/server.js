@@ -1,15 +1,13 @@
 var gulp = require( "gulp" );
 var gutil = require( "gulp-util" );
 var processHost = require( "processhost" );
-var os = require( "os" );
 
 gulp.task( "server", function() {
 	var processes = processHost();
-	var cmd = /^win/.test( os.platform() ) ? "npm.cmd" : "npm";
 	processes.start( "server", {
 		cwd: "./",
-		command: cmd,
-		args: [ "start" ],
+		command: "node",
+		args: [ "./tasks/tools/dev-server.js" ],
 		stdio: "pipe"
 	} );
 
