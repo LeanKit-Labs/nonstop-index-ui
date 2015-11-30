@@ -3,9 +3,8 @@ import lux from "lux.js";
 import configurationStore from "stores/configurationStore";
 import projectStore from "stores/projectStore";
 import OptionsDropdown from "OptionsDropdown";
-import Switch from "react-bootstrap-switch";
+import Input from "react-bootstrap/lib/Input";
 
-import "react-bootstrap-switch/src/less/bootstrap3/build.less";
 import "./HostConfigurator.less";
 
 function getState() {
@@ -17,7 +16,7 @@ function getState() {
 
 export default React.createClass( {
 	mixins: [ lux.reactMixin.actionCreator, lux.reactMixin.store ],
-	getActions: [ "applySettings", "configureHost", "selectProject", "selectOwner", "selectBranch", "selectVersion", "selectHost", "setReleaseOnly" ],
+	getActions: [ "applySettings", "configureHost", "selectProject", "selectOwner", "selectBranch", "selectVersion", "selectHost", "setPull" ],
 	stores: {
 		listenTo: [ "configuration", "project" ],
 		onChange() {
@@ -27,12 +26,9 @@ export default React.createClass( {
 	getInitialState() {
 		return getState();
 	},
-	componentWillUpdate( props, state ) {
-		// react-bootstrap-switch does not change on props updates (state prop is just initial value)
-		this.refs.releaseOnlySwitch.value( state.releaseOnly );
-	},
 	render() {
 		const state = this.state;
+
 		return (
 			<div>
 				<section className="content-header">
@@ -53,10 +49,17 @@ export default React.createClass( {
 							<OptionsDropdown name="project" selected={ state.selectedProject } options={ state.projects } onSelect={ this.selectProject } />
 							<OptionsDropdown name="owner" selected={ state.selectedOwner } options={ state.owners } onSelect={ this.selectOwner } />
 							<OptionsDropdown name="branch" selected={ state.selectedBranch } options={ state.branches } onSelect={ this.selectBranch } />
-							<OptionsDropdown name="version" selected={ state.selectedVersion } options={ state.versions } onSelect={ this.selectVersion } />
-							<div className="form-group">
-								<label className="u-block">Release Only</label>
-								<Switch ref="releaseOnlySwitch" wrapperClass="hostConfigurator-releaseOnlySwitch" size="small" state={ state.releaseOnly } onChange={ this.setReleaseOnly } />
+
+							<div className="form-group row">
+								<div className="col-sm-2">
+									<strong className="u-block">Pull Builds For:</strong>
+									<Input ref="SingleBuildRadio" type="radio" label="Single Build" name="version" checked={ state.pullBuild === "SingleBuild" } onChange={ this.setPull.bind( this, "SingleBuild" ) } />
+									<Input ref="LatestBuildRadio" type="radio" label="Latest Build" name="version" checked={ state.pullBuild === "LatestBuild" } onChange={ this.setPull.bind( this, "LatestBuild" ) } />
+									<Input ref="ReleaseOnlyRadio" type="radio" label="Release Only" name="version" checked={ state.pullBuild === "ReleaseOnly" } onChange={ this.setPull.bind( this, "ReleaseOnly" ) } />
+								</div>
+								<div className="col-sm-10">
+									<OptionsDropdown name="version" selected={ state.selectedVersion } options={ state.versions } onSelect={ this.selectVersion } />
+								</div>
 							</div>
 						</div>
 						<div className="box-footer">
