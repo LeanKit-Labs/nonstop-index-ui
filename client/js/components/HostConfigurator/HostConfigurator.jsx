@@ -5,7 +5,6 @@ import projectStore from "stores/projectStore";
 import OptionsDropdown from "OptionsDropdown";
 import Input from "react-bootstrap/lib/Input";
 
-import "react-bootstrap-switch/src/less/bootstrap3/build.less";
 import "./HostConfigurator.less";
 
 function getState() {
