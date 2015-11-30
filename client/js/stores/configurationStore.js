@@ -1,5 +1,5 @@
 import lux from "lux.js";
-import { extend, set as _set, get as _get, each, all, cloneDeep, pick as _pick, reduce as _reduce } from "lodash";
+import { extend, set as _set, get as _get, all, cloneDeep, pick as _pick, reduce as _reduce } from "lodash";
 import projectStore from "./projectStore";
 
 // overwrite existing selections with those provide - used to clear child values in cascading logic
@@ -63,6 +63,10 @@ function getVersions( { tree, selectedProject, selectedOwner, selectedBranch, pu
 	}
 
 	versions = Object.keys( versions ).sort();
+
+	if ( pullBuild !== "SingleBuild" ) {
+		versions.unshift( "Any" );
+	}
 
 	return versions;
 }
@@ -177,25 +181,37 @@ export default new lux.Store( {
 		};
 	},
 	getChanges() {
-		const changes = [];
-		const state = this.getState();
+		const { selections } = this.getState();
 
-		each( state.selections, function( value, field ) {
-			if ( !~[ "host", "pullBuild" ].indexOf( field ) ) {
-				if ( field === "version" && state.selections.pullBuild === "LatestBuild" ) {
-					value = value.replace( "-*", "" );
-				}
-				changes.push( { op: "change", field, value } );
+		const changes = [
+			{ op: "change", field: "project", value: selections.project },
+			{ op: "change", field: "owner", value: selections.owner },
+			{ op: "change", field: "branch", value: selections.branch },
+			{ op: "change", field: "releaseOnly", value: selections.pullBuild === "ReleaseOnly" }
+		];
+
+		if ( selections.version !== "Any" ) {
+			changes.push( {
+				op: "change",
+				field: "version",
+				value: selections.pullBuild === "LatestBuild" ? selections.version.replace( "-*", "" ) : selections.version
+			} );
+
+			if ( selections.pullBuild !== "SingleBuild" ) {
+				changes.push( {
+					op: "remove",
+					field: "build"
+				} );
 			}
-		} );
-		changes.push( {
-			op: "change",
-			field: "releaseOnly",
-			value: state.selections.pullBuild === "ReleaseOnly"
-		} );
+		} else {
+			changes.push(
+				{ op: "remove", field: "version" },
+				{ op: "remove", field: "build" }
+			);
+		}
 
 		return {
-			name: state.selections.host.name,
+			name: selections.host.name,
 			data: changes
 		};
 	},

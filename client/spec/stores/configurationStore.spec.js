@@ -245,11 +245,11 @@ describe( "configuration store", () => {
 
 				lux.publishAction( "setPull", "LatestBuild" );
 				configurationStore.getState().selections.pullBuild.should.equal( "LatestBuild" );
-				configurationStore.getState().selections.version.should.equal( "vA-*" );
+				configurationStore.getState().selections.version.should.equal( "Any" );
 
 				lux.publishAction( "setPull", "ReleaseOnly" );
 				configurationStore.getState().selections.pullBuild.should.equal( "ReleaseOnly" );
-				configurationStore.getState().selections.version.should.equal( "versionB" );
+				configurationStore.getState().selections.version.should.equal( "Any" );
 			} );
 		} );
 
@@ -328,7 +328,7 @@ describe( "configuration store", () => {
 					projects: [ "projectA", "projectB" ],
 					owners: [ "ownerA", "ownerB" ],
 					branches: [ "branchA", "branchB" ],
-					versions: [ "vA-*", "vB-*" ],
+					versions: [ "Any", "vA-*", "vB-*" ],
 					pullBuild: "LatestBuild"
 				} );
 			} );
@@ -348,7 +348,7 @@ describe( "configuration store", () => {
 					projects: [ "projectA", "projectB" ],
 					owners: [ "ownerA", "ownerB" ],
 					branches: [ "branchA", "branchB" ],
-					versions: [ "versionB" ],
+					versions: [ "Any", "versionB" ],
 					pullBuild: "ReleaseOnly"
 				} );
 			} );
@@ -362,8 +362,8 @@ describe( "configuration store", () => {
 						{ op: "change", field: "project", value: "projectA" },
 						{ op: "change", field: "owner", value: "ownerA" },
 						{ op: "change", field: "branch", value: "branchA" },
-						{ op: "change", field: "version", value: "versionA" },
-						{ op: "change", field: "releaseOnly", value: false }
+						{ op: "change", field: "releaseOnly", value: false },
+						{ op: "change", field: "version", value: "versionA" }
 					]
 				} );
 			} );
@@ -379,8 +379,9 @@ describe( "configuration store", () => {
 						{ op: "change", field: "project", value: "projectA" },
 						{ op: "change", field: "owner", value: "ownerA" },
 						{ op: "change", field: "branch", value: "branchA" },
+						{ op: "change", field: "releaseOnly", value: false },
 						{ op: "change", field: "version", value: "vA" },
-						{ op: "change", field: "releaseOnly", value: false }
+						{ op: "remove", field: "build" }
 					]
 				} );
 			} );
@@ -395,8 +396,45 @@ describe( "configuration store", () => {
 						{ op: "change", field: "project", value: "projectA" },
 						{ op: "change", field: "owner", value: "ownerA" },
 						{ op: "change", field: "branch", value: "branchA" },
+						{ op: "change", field: "releaseOnly", value: true },
 						{ op: "change", field: "version", value: "versionA" },
-						{ op: "change", field: "releaseOnly", value: true }
+						{ op: "remove", field: "build" }
+					]
+				} );
+			} );
+
+			it( "should send a removal for version when selecting Any version and ReleaseOnly", () => {
+				const selections = configurationStore.getState().selections;
+
+				selections.pullBuild = "ReleaseOnly";
+				selections.version = "Any";
+				configurationStore.getChanges().should.eql( {
+					name: "hostA",
+					data: [
+						{ op: "change", field: "project", value: "projectA" },
+						{ op: "change", field: "owner", value: "ownerA" },
+						{ op: "change", field: "branch", value: "branchA" },
+						{ op: "change", field: "releaseOnly", value: true },
+						{ op: "remove", field: "version" },
+						{ op: "remove", field: "build" }
+					]
+				} );
+			} );
+
+			it( "should send a removal for version when selecting Any version and LatestBuild", () => {
+				const selections = configurationStore.getState().selections;
+
+				selections.pullBuild = "LatestBuild";
+				selections.version = "Any";
+				configurationStore.getChanges().should.eql( {
+					name: "hostA",
+					data: [
+						{ op: "change", field: "project", value: "projectA" },
+						{ op: "change", field: "owner", value: "ownerA" },
+						{ op: "change", field: "branch", value: "branchA" },
+						{ op: "change", field: "releaseOnly", value: false },
+						{ op: "remove", field: "version" },
+						{ op: "remove", field: "build" }
 					]
 				} );
 			} );
