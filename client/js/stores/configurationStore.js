@@ -54,7 +54,7 @@ function getVersions( { tree, selectedProject, selectedOwner, selectedBranch, pu
 
 	if ( pullBuild === "ReleaseOnly" ) {
 		versions = _pick( versions, pkg => pkg.released );
-	} else if ( pullBuild == "LatestBuild" ) {
+	} else if ( pullBuild === "LatestBuild" ) {
 		versions = _reduce( versions, ( memo, pkg ) => {
 			memo[ `${pkg.simpleVersion}-*` ] = true;
 
