@@ -64,7 +64,6 @@ function getVersions( { tree, selectedProject, selectedOwner, selectedBranch, pu
 	}
 
 	versions = Object.keys( versions ).sort();
-	console.log( JSON.stringify( versions ) );
 
 	return versions;
 }
