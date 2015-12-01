@@ -99,7 +99,7 @@ module.exports = {
 		owner: "BanditSoftware",
 		branch: "master",
 		version: "0.1.5",
-		releaseOnly: false,
+		pullBuild: "SingleBuild",
 		host: undefined
 	},
 	updateInProgress: false

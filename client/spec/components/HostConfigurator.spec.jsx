@@ -1,8 +1,9 @@
 import hostConfiguratorFactory from "inject!HostConfigurator";
 const hostsParsed = require( "../data/hostsParsed" );
+const pullBuildValues = [ "SingleBuild", "LatestBuild", "ReleaseOnly" ];
 
 describe( "HostConfigurator", () => {
-	let actions, component, dependencies, optionsData, valueStub;
+	let actions, component, dependencies, optionsData;
 
 	beforeEach( () => {
 		actions = {
@@ -13,7 +14,7 @@ describe( "HostConfigurator", () => {
 			selectVersion: sinon.stub(),
 			selectHost: sinon.stub(),
 			applySettings: sinon.stub(),
-			setReleaseOnly: sinon.stub()
+			setPull: sinon.stub()
 		};
 
 		lux.customActionCreator( actions );
@@ -24,15 +25,13 @@ describe( "HostConfigurator", () => {
 			selectedBranch: "branchA",
 			selectedVersion: "versionA",
 			selectedHost: { name: "hostA" },
-			releaseOnly: false,
 			projects: [ "projectA", "projectB" ],
 			owners: [ "ownerA", "ownerB" ],
 			branches: [ "branchA", "branchB" ],
 			versions: [ "versionA", "versionB" ],
-			hosts: hostsParsed
+			hosts: hostsParsed,
+			pullBuild: "SingleBuild"
 		};
-
-		valueStub = sinon.stub();
 
 		dependencies = {
 			OptionsDropdown: getMockReactComponent( "OptionsDropdown" ),
@@ -43,9 +42,7 @@ describe( "HostConfigurator", () => {
 			"stores/projectStore": {
 				getHosts: sinon.stub().returns( hostsParsed )
 			},
-			"react-bootstrap-switch": getMockReactComponent( "Switch", {
-				value: valueStub
-			} )
+			"react-bootstrap/lib/Input": getMockReactComponent( "Input" )
 		};
 
 		const HostConfigurator = hostConfiguratorFactory( dependencies );
@@ -71,7 +68,7 @@ describe( "HostConfigurator", () => {
 				selectedHost: {
 					name: "hostA"
 				},
-				releaseOnly: false,
+				pullBuild: "SingleBuild",
 				projects: [
 					"projectA",
 					"projectB"
@@ -119,6 +116,17 @@ describe( "HostConfigurator", () => {
 				} );
 			} );
 		} );
+
+		describe( "when rendering pullBuild", () => {
+			pullBuildValues.forEach( value => {
+				it( `should select the appropriate radio for ${value}`, () => {
+					const input = component.refs[ `${value}Radio` ];
+					component.state.pullBuild = value;
+					component.forceUpdate();
+					input.props.checked.should.be.true;
+				} );
+			} );
+		} );
 	} );
 
 	describe( "when handling store changes", () => {
@@ -160,29 +168,13 @@ describe( "HostConfigurator", () => {
 		} );
 	} );
 
-	describe( "setting releaseOnly flag", () => {
-		let releaseOnlySwitch;
-
-		beforeEach( () => {
-			 releaseOnlySwitch = ReactUtils.findRenderedComponentWithType( component, dependencies[ "react-bootstrap-switch" ] );
-		} );
-
-		it( "should call the setReleaseOnly action with the appropriate value", () => {
-			releaseOnlySwitch.props.onChange( true );
-
-			actions.setReleaseOnly.should.be.calledOnce.and.calledWith( true );
-		} );
-
-		it( "should set the checkbox value based on the releaseOnly state", () => {
-			releaseOnlySwitch.props.state.should.be.false;
-
-			component.setState( {
-				releaseOnly: true
+	describe( "setting pullBuild value", () => {
+		pullBuildValues.forEach( value => {
+			it( `should call the setPull action with the ${value} value`, () => {
+				const input = component.refs[ `${value}Radio` ];
+				input.props.onChange();
+				actions.setPull.should.be.calledOnce.and.calledWith( value );
 			} );
-
-			valueStub.should.be.calledOnce.and.calledWith( true );
-
-			releaseOnlySwitch.props.state.should.be.true;
 		} );
 	} );
 } );

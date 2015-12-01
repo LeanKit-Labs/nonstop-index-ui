@@ -1,5 +1,5 @@
 import lux from "lux.js";
-import { extend, set as _set, get as _get, each, all, cloneDeep, pick as _pick } from "lodash";
+import { extend, set as _set, get as _get, all, cloneDeep, pick as _pick, reduce as _reduce } from "lodash";
 import projectStore from "./projectStore";
 
 // overwrite existing selections with those provide - used to clear child values in cascading logic
@@ -21,7 +21,7 @@ function getDefaultSelectionsFromHost( host ) {
 		owner,
 		branch,
 		version,
-		releaseOnly: !!releaseOnly
+		pullBuild: releaseOnly ? "ReleaseOnly" : "SingleBuild"
 	};
 }
 
@@ -30,7 +30,14 @@ function getSelections( current, tree ) {
 	const project = current.project || Object.keys( tree ).sort()[ 0 ];
 	const owner = current.owner || Object.keys( _get( tree, [ project ], [] ) ).sort()[ 0 ];
 	const branch = current.branch || Object.keys( _get( tree, [ project, owner ], [] ) ).sort()[ 0 ];
-	const version = current.version || Object.keys( _get( tree, [ project, owner, branch ], [] ) ).sort()[ 0 ];
+	const version = current.version ||
+		getVersions( {
+			tree,
+			selectedProject: project,
+			selectedOwner: owner,
+			selectedBranch: branch,
+			pullBuild: current.pullBuild
+		} )[ 0 ];
 
 	return {
 		project,
@@ -38,8 +45,30 @@ function getSelections( current, tree ) {
 		branch,
 		version,
 		host: current.host,
-		releaseOnly: current.releaseOnly
+		pullBuild: current.pullBuild
 	};
+}
+
+function getVersions( { tree, selectedProject, selectedOwner, selectedBranch, pullBuild } ) {
+	let versions = _get( tree, [ selectedProject, selectedOwner, selectedBranch ], [] );
+
+	if ( pullBuild === "ReleaseOnly" ) {
+		versions = _pick( versions, pkg => pkg.released );
+	} else if ( pullBuild === "LatestBuild" ) {
+		versions = _reduce( versions, ( memo, pkg ) => {
+			memo[ `${pkg.simpleVersion}-*` ] = true;
+
+			return memo;
+		}, {} );
+	}
+
+	versions = Object.keys( versions ).sort();
+
+	if ( pullBuild !== "SingleBuild" ) {
+		versions.unshift( "Any" );
+	}
+
+	return versions;
 }
 
 export default new lux.Store( {
@@ -52,7 +81,7 @@ export default new lux.Store( {
 			owner: undefined,
 			branch: undefined,
 			version: undefined,
-			releaseOnly: false
+			pullBuild: "SingleBuild"
 		},
 		updateInProgress: false
 	},
@@ -108,11 +137,11 @@ export default new lux.Store( {
 		selectHost( host ) {
 			updateSelections( this, getDefaultSelectionsFromHost( host ) );
 		},
-		setReleaseOnly( value ) {
-			const state = this.getState();
-			state.selections.releaseOnly = value;
-
-			this.setState( state );
+		setPull( value ) {
+			updateSelections( this, {
+				pullBuild: value,
+				version: null
+			} );
 		},
 		applySettings() {
 			this.setState( { updateInProgress: true } );
@@ -133,10 +162,8 @@ export default new lux.Store( {
 		const selectedOwner = state.selections.owner;
 		const branches = Object.keys( _get( tree, [ selectedProject, selectedOwner ], [] ) ).sort();
 		const selectedBranch = state.selections.branch;
-		const releaseOnly = state.selections.releaseOnly;
-		const versions = Object.keys( _pick( _get( tree, [ selectedProject, selectedOwner, selectedBranch ], [] ), pkg => {
-			return !releaseOnly || ( releaseOnly && pkg.released );
-		} ) ).sort();
+		const pullBuild = state.selections.pullBuild;
+		const versions = getVersions( { tree, selectedProject, selectedOwner, selectedBranch, pullBuild } );
 		const selectedVersion = state.selections.version;
 		const selectedHost = state.selections.host;
 
@@ -150,19 +177,41 @@ export default new lux.Store( {
 			selectedBranch,
 			selectedVersion,
 			selectedHost,
-			releaseOnly
+			pullBuild
 		};
 	},
 	getChanges() {
-		const changes = [];
-		const state = this.getState();
-		each( state.selections, function( value, field ) {
-			if ( field !== "host" ) {
-				changes.push( { op: "change", field, value } );
+		const { selections } = this.getState();
+
+		const changes = [
+			{ op: "change", field: "project", value: selections.project },
+			{ op: "change", field: "owner", value: selections.owner },
+			{ op: "change", field: "branch", value: selections.branch },
+			{ op: "change", field: "releaseOnly", value: selections.pullBuild === "ReleaseOnly" }
+		];
+
+		if ( selections.version !== "Any" ) {
+			changes.push( {
+				op: "change",
+				field: "version",
+				value: selections.pullBuild === "LatestBuild" ? selections.version.replace( "-*", "" ) : selections.version
+			} );
+
+			if ( selections.pullBuild !== "SingleBuild" ) {
+				changes.push( {
+					op: "remove",
+					field: "build"
+				} );
 			}
-		} );
+		} else {
+			changes.push(
+				{ op: "remove", field: "version" },
+				{ op: "remove", field: "build" }
+			);
+		}
+
 		return {
-			name: state.selections.host.name,
+			name: selections.host.name,
 			data: changes
 		};
 	},

@@ -22,15 +22,15 @@ describe( "configuration store", () => {
 		} );
 
 		const mockPackages = [
-			{ project: "projectA", owner: "ownerA", branch: "branchA", version: "versionA", released: true },
-			{ project: "projectA", owner: "ownerA", branch: "branchA", version: "versionB" },
-			{ project: "projectA", owner: "ownerA", branch: "branchB", version: "versionA" },
-			{ project: "projectA", owner: "ownerA", branch: "branchB", version: "versionC" },
-			{ project: "projectA", owner: "ownerB", branch: "branchA", version: "versionA" },
-			{ project: "projectA", owner: "ownerB", branch: "branchA", version: "versionC" },
-			{ project: "projectA", owner: "ownerB", branch: "branchB", version: "versionA" },
-			{ project: "projectA", owner: "ownerB", branch: "branchB", version: "versionC" },
-			{ project: "projectB", owner: "ownerB", branch: "branchB", version: "versionB" }
+			{ project: "projectA", owner: "ownerA", branch: "branchA", version: "versionA", simpleVersion: "vA" },
+			{ project: "projectA", owner: "ownerA", branch: "branchA", version: "versionB", simpleVersion: "vB", released: true },
+			{ project: "projectA", owner: "ownerA", branch: "branchB", version: "versionA", simpleVersion: "vA" },
+			{ project: "projectA", owner: "ownerA", branch: "branchB", version: "versionC", simpleVersion: "vC" },
+			{ project: "projectA", owner: "ownerB", branch: "branchA", version: "versionA", simpleVersion: "vA" },
+			{ project: "projectA", owner: "ownerB", branch: "branchA", version: "versionC", simpleVersion: "vC" },
+			{ project: "projectA", owner: "ownerB", branch: "branchB", version: "versionA", simpleVersion: "vA" },
+			{ project: "projectA", owner: "ownerB", branch: "branchB", version: "versionC", simpleVersion: "vC" },
+			{ project: "projectB", owner: "ownerB", branch: "branchB", version: "versionB", simpleVersion: "vB" }
 		];
 
 		mockTree = {
@@ -76,7 +76,7 @@ describe( "configuration store", () => {
 				tree: {},
 				packages: [],
 				selections: {
-					releaseOnly: false
+					pullBuild: "SingleBuild"
 				},
 				updateInProgress: false
 			} );
@@ -102,7 +102,7 @@ describe( "configuration store", () => {
 					branch: "branchA",
 					owner: "ownerA",
 					project: "projectA",
-					releaseOnly: false,
+					pullBuild: "SingleBuild",
 					version: "versionA",
 					host: {
 						branch: "branchA",
@@ -122,7 +122,7 @@ describe( "configuration store", () => {
 					host: undefined,
 					owner: undefined,
 					project: undefined,
-					releaseOnly: false,
+					pullBuild: "SingleBuild",
 					version: undefined
 				} );
 			} );
@@ -140,7 +140,7 @@ describe( "configuration store", () => {
 					owner: "ownerB",
 					branch: "branchB",
 					version: "versionB",
-					releaseOnly: false
+					pullBuild: "SingleBuild"
 				};
 			} );
 
@@ -153,7 +153,7 @@ describe( "configuration store", () => {
 					branch: "branchA",
 					version: "versionA",
 					host: undefined,
-					releaseOnly: false
+					pullBuild: "SingleBuild"
 				} );
 			} );
 
@@ -167,7 +167,7 @@ describe( "configuration store", () => {
 					branch: "branchA",
 					version: "versionB",
 					host: undefined,
-					releaseOnly: false
+					pullBuild: "SingleBuild"
 				} );
 			} );
 
@@ -185,7 +185,7 @@ describe( "configuration store", () => {
 					branch: "branchB",
 					version: "versionA",
 					host: undefined,
-					releaseOnly: false
+					pullBuild: "SingleBuild"
 				} );
 			} );
 
@@ -204,7 +204,7 @@ describe( "configuration store", () => {
 					branch: "branchA",
 					version: "versionB",
 					host: undefined,
-					releaseOnly: false
+					pullBuild: "SingleBuild"
 				} );
 			} );
 
@@ -226,16 +226,30 @@ describe( "configuration store", () => {
 					branch: "branchA",
 					version: "versionA",
 					host,
-					releaseOnly: true
+					pullBuild: "ReleaseOnly"
 				} );
 			} );
 
-			it( "should update releaseOnly from setReleaseOnly action", () => {
-				lux.publishAction( "setReleaseOnly", true );
-				configurationStore.getState().selections.releaseOnly.should.be.true;
+			it( "should update releaseOnly from setPull action", () => {
+				state.selections = {
+					project: "projectA",
+					owner: "ownerA",
+					branch: "branchA",
+					version: "versionA",
+					pullBuild: "SingleBuild"
+				};
 
-				lux.publishAction( "setReleaseOnly", false );
-				configurationStore.getState().selections.releaseOnly.should.be.false;
+				lux.publishAction( "setPull", "SingleBuild" );
+				configurationStore.getState().selections.pullBuild.should.equal( "SingleBuild" );
+				configurationStore.getState().selections.version.should.equal( "versionA" );
+
+				lux.publishAction( "setPull", "LatestBuild" );
+				configurationStore.getState().selections.pullBuild.should.equal( "LatestBuild" );
+				configurationStore.getState().selections.version.should.equal( "Any" );
+
+				lux.publishAction( "setPull", "ReleaseOnly" );
+				configurationStore.getState().selections.pullBuild.should.equal( "ReleaseOnly" );
+				configurationStore.getState().selections.version.should.equal( "Any" );
 			} );
 		} );
 
@@ -279,55 +293,150 @@ describe( "configuration store", () => {
 			} );
 		} );
 
-		it( "should provide a way to getOptions", () => {
-			const state = configurationStore.getState();
+		describe( "getOptions", () => {
+			it( "should provide a way to getOptions", () => {
+				const state = configurationStore.getState();
 
-			state.tree = mockTree;
+				state.tree = mockTree;
 
-			configurationStore.getOptions().should.eql( {
-				selectedProject: "projectA",
-				selectedOwner: "ownerA",
-				selectedBranch: "branchA",
-				selectedVersion: "versionA",
-				selectedHost: { name: "hostA" },
-				projects: [ "projectA", "projectB" ],
-				owners: [ "ownerA", "ownerB" ],
-				branches: [ "branchA", "branchB" ],
-				versions: [ "versionA", "versionB" ],
-				releaseOnly: false
+				configurationStore.getOptions().should.eql( {
+					selectedProject: "projectA",
+					selectedOwner: "ownerA",
+					selectedBranch: "branchA",
+					selectedVersion: "versionA",
+					selectedHost: { name: "hostA" },
+					projects: [ "projectA", "projectB" ],
+					owners: [ "ownerA", "ownerB" ],
+					branches: [ "branchA", "branchB" ],
+					versions: [ "versionA", "versionB" ],
+					pullBuild: "SingleBuild"
+				} );
+			} );
+
+			it( "should filter on latest versions when pullBuild is LatestBuild", () => {
+				const state = configurationStore.getState();
+
+				state.tree = mockTree;
+				state.selections.pullBuild = "LatestBuild";
+
+				configurationStore.getOptions().should.eql( {
+					selectedProject: "projectA",
+					selectedOwner: "ownerA",
+					selectedBranch: "branchA",
+					selectedVersion: "versionA",
+					selectedHost: { name: "hostA" },
+					projects: [ "projectA", "projectB" ],
+					owners: [ "ownerA", "ownerB" ],
+					branches: [ "branchA", "branchB" ],
+					versions: [ "Any", "vA-*", "vB-*" ],
+					pullBuild: "LatestBuild"
+				} );
+			} );
+
+			it( "should filter on released versions when pullBuild is ReleaseOnly", () => {
+				const state = configurationStore.getState();
+
+				state.tree = mockTree;
+				state.selections.pullBuild = "ReleaseOnly";
+
+				configurationStore.getOptions().should.eql( {
+					selectedProject: "projectA",
+					selectedOwner: "ownerA",
+					selectedBranch: "branchA",
+					selectedVersion: "versionA",
+					selectedHost: { name: "hostA" },
+					projects: [ "projectA", "projectB" ],
+					owners: [ "ownerA", "ownerB" ],
+					branches: [ "branchA", "branchB" ],
+					versions: [ "Any", "versionB" ],
+					pullBuild: "ReleaseOnly"
+				} );
 			} );
 		} );
 
-		it( "should filter on released versions when releaseOnly is true", () => {
-			const state = configurationStore.getState();
-
-			state.tree = mockTree;
-			state.selections.releaseOnly = true;
-
-			configurationStore.getOptions().should.eql( {
-				selectedProject: "projectA",
-				selectedOwner: "ownerA",
-				selectedBranch: "branchA",
-				selectedVersion: "versionA",
-				selectedHost: { name: "hostA" },
-				projects: [ "projectA", "projectB" ],
-				owners: [ "ownerA", "ownerB" ],
-				branches: [ "branchA", "branchB" ],
-				versions: [ "versionA" ],
-				releaseOnly: true
+		describe( "getChanges", () => {
+			it( "should provide a way to getChanges", () => {
+				configurationStore.getChanges().should.eql( {
+					name: "hostA",
+					data: [
+						{ op: "change", field: "project", value: "projectA" },
+						{ op: "change", field: "owner", value: "ownerA" },
+						{ op: "change", field: "branch", value: "branchA" },
+						{ op: "change", field: "releaseOnly", value: false },
+						{ op: "change", field: "version", value: "versionA" }
+					]
+				} );
 			} );
-		} );
 
-		it( "should provide a way to getChanges", () => {
-			configurationStore.getChanges().should.eql( {
-				name: "hostA",
-				data: [
-					{ op: "change", field: "releaseOnly", value: false },
-					{ op: "change", field: "project", value: "projectA" },
-					{ op: "change", field: "owner", value: "ownerA" },
-					{ op: "change", field: "branch", value: "branchA" },
-					{ op: "change", field: "version", value: "versionA" }
-				]
+			it( "should remove -* from LatestBuild version", () => {
+				const selections = configurationStore.getState().selections;
+
+				selections.pullBuild = "LatestBuild";
+				selections.version = "vA-*";
+				configurationStore.getChanges().should.eql( {
+					name: "hostA",
+					data: [
+						{ op: "change", field: "project", value: "projectA" },
+						{ op: "change", field: "owner", value: "ownerA" },
+						{ op: "change", field: "branch", value: "branchA" },
+						{ op: "change", field: "releaseOnly", value: false },
+						{ op: "change", field: "version", value: "vA" },
+						{ op: "remove", field: "build" }
+					]
+				} );
+			} );
+
+			it( "should set releaseOnly to true if pullBuild is ReleaseOnly", () => {
+				const selections = configurationStore.getState().selections;
+
+				selections.pullBuild = "ReleaseOnly";
+				configurationStore.getChanges().should.eql( {
+					name: "hostA",
+					data: [
+						{ op: "change", field: "project", value: "projectA" },
+						{ op: "change", field: "owner", value: "ownerA" },
+						{ op: "change", field: "branch", value: "branchA" },
+						{ op: "change", field: "releaseOnly", value: true },
+						{ op: "change", field: "version", value: "versionA" },
+						{ op: "remove", field: "build" }
+					]
+				} );
+			} );
+
+			it( "should send a removal for version when selecting Any version and ReleaseOnly", () => {
+				const selections = configurationStore.getState().selections;
+
+				selections.pullBuild = "ReleaseOnly";
+				selections.version = "Any";
+				configurationStore.getChanges().should.eql( {
+					name: "hostA",
+					data: [
+						{ op: "change", field: "project", value: "projectA" },
+						{ op: "change", field: "owner", value: "ownerA" },
+						{ op: "change", field: "branch", value: "branchA" },
+						{ op: "change", field: "releaseOnly", value: true },
+						{ op: "remove", field: "version" },
+						{ op: "remove", field: "build" }
+					]
+				} );
+			} );
+
+			it( "should send a removal for version when selecting Any version and LatestBuild", () => {
+				const selections = configurationStore.getState().selections;
+
+				selections.pullBuild = "LatestBuild";
+				selections.version = "Any";
+				configurationStore.getChanges().should.eql( {
+					name: "hostA",
+					data: [
+						{ op: "change", field: "project", value: "projectA" },
+						{ op: "change", field: "owner", value: "ownerA" },
+						{ op: "change", field: "branch", value: "branchA" },
+						{ op: "change", field: "releaseOnly", value: false },
+						{ op: "remove", field: "version" },
+						{ op: "remove", field: "build" }
+					]
+				} );
 			} );
 		} );
 
