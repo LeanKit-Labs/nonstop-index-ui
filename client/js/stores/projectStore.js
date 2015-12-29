@@ -1,5 +1,5 @@
 import lux from "lux.js";
-import { map, reduce, get as _get, set as _set, find, clone, cloneDeep, groupBy } from "lodash";
+import { map, reduce, get as _get, set as _set, find, clone, cloneDeep, groupBy, sortBy } from "lodash";
 
 function reduceProjects( packages ) {
 	const releases = packages.reduce( ( memo, item ) => {
@@ -47,7 +47,7 @@ export default new lux.Store( {
 			this.setState( reduceProjects( packages ) );
 		},
 		loadHostsSuccess( { hosts } ) {
-			const mappedHosts = hosts.map( this.mapHostDetails );
+			const mappedHosts = sortBy( hosts.map( this.mapHostDetails ), "name" );
 
 			this.setState( {
 				hostByProject: groupBy( mappedHosts, "project" ),
@@ -121,7 +121,7 @@ export default new lux.Store( {
 	getProjects() {
 		let projects = this.getState().projects;
 
-		return reduce( projects, ( memo, project, name ) => {
+		return sortBy( reduce( projects, ( memo, project, name ) => {
 			const owner = Object.keys( project.owners )[ 0 ];
 			const branch = Object.keys( project.owners[ owner ].branches )[ 0 ];
 			memo.push( {
@@ -130,7 +130,7 @@ export default new lux.Store( {
 				branch
 			} );
 			return memo;
-		}, [] );
+		}, [] ), "name" );
 	},
 	getProject( name, owner, branch ) {
 		const { packages, projects, hostByProject } = this.getState();

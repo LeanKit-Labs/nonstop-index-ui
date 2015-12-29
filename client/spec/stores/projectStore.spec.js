@@ -372,7 +372,7 @@ describe( "project store", () => {
 
 		describe( "mapHostDetails", () => {
 			it( "should return an internal representation of a host", () => {
-				projectStore.mapHostDetails( hostsResponse.hosts[ 0 ] ).should.eql( hostsParsed.hosts[ 0 ] );
+				projectStore.mapHostDetails( hostsResponse.hosts[ 0 ] ).should.eql( hostsParsed.hosts[ 1 ] );
 			} );
 		} );
 	} );
