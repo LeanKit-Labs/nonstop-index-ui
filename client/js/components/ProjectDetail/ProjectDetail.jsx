@@ -13,7 +13,6 @@ function getState( { name, owner, branch } ) {
 		{},
 		projectStore.getProject( name, owner, branch ),
 		{
-			allHosts: projectStore.getHosts(),
 			deployChoice: projectStore.getDeployChoice(),
 			releaseChoice: projectStore.getReleaseChoice()
 		}
@@ -189,7 +188,7 @@ export default React.createClass( {
 							<div className="col-md-8">
 								<VersionGroup
 									versions={ this.state.versions }
-									hosts={ this.state.allHosts }
+									hosts={ this.state.hosts }
 									onDeploy={ this.onDeploy }
 									onRelease={ this.confirmReleasePackage } />
 							</div>
