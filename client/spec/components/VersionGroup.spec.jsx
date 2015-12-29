@@ -153,6 +153,11 @@ describe( "VersionGroup", () => {
 				toggles.should.have.lengthOf( 3 );
 			} );
 
+			it( "should render a MenuItem for each server in the Deploy Dropdown for each row", () => {
+				const menuItems = ReactUtils.scryRenderedComponentsWithType( component, components.MenuItem );
+				menuItems.should.have.lengthOf( 6 );
+			} );
+
 			it( "should render a Download button for each row", () => {
 				const downloadBtns = ReactUtils.scryRenderedDOMComponentsWithClass( component, "fa-cloud-download" );
 				downloadBtns.should.have.lengthOf( 3 );
@@ -201,6 +206,29 @@ describe( "VersionGroup", () => {
 						version: "1b1"
 					}
 				} );
+			} );
+		} );
+		describe( "no hosts", () => {
+			beforeEach( () => {
+				createComponent( {
+					versions: {
+						1: {
+							builds: {
+								b2: { packages: [
+									{ file: "p03", released: false, releasable: true, architecture: "x128", platform: "amd", slug: "123", owner: "ownerOne", project: "projectOne", branch: "branchOne", version: "1b2" }
+								] }
+							}
+						}
+					},
+					hosts: [],
+					onDeploy: _.noop,
+					onRelease: _.noop
+				} );
+			} );
+
+			it( "should render a friendly message in the deploy dropdown", () => {
+				var dropdownButton = ReactUtils.findRenderedComponentWithType( component, components.DropdownButton );
+				ReactDOM.findDOMNode( dropdownButton ).textContent.should.contain( "No hosts are configured to run this project." );
 			} );
 		} );
 	} );

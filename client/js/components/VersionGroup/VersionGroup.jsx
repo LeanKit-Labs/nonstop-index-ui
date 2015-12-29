@@ -74,6 +74,7 @@ export default React.createClass( {
 		return (
 			<ButtonGroup>
 				<DropdownButton bsStyle="default" className="btn-responsive" title="Deploy" id={ `dropdown-basic-${pkg.version}` } onSelect={ this.handleOnDeploy.bind( this, pkg ) }>
+					{ this.props.hosts.length === 0 ? <span className="dropdown-header">No hosts are configured to run this project.</span> : null }
 					{ this.props.hosts.map( host => <MenuItem key={ host.name } eventKey={ host.name }>{ host.name }</MenuItem> ) }
 				</DropdownButton>
 				<Button componentClass="a" href={ `/nonstop/package/${pkg.relative}/${pkg.file}` } title="Download">
