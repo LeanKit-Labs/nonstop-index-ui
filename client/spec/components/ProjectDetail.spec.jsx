@@ -34,6 +34,7 @@ describe( "ProjectDetail Component", () => {
 					}
 				} )
 			},
+			HostList: getMockReactComponent( "HostList" ),
 			ProjectDetailHeader: getMockReactComponent( "ProjectDetailHeader" ),
 			VersionGroup: getMockReactComponent( "VersionGroup" ),
 			"stores/projectStore": {
@@ -139,6 +140,12 @@ describe( "ProjectDetail Component", () => {
 			const vg = ReactUtils.findRenderedComponentWithType( component, dependencies.VersionGroup );
 			should.exist( vg );
 			vg.props.hosts.should.equal( component.state.hosts );
+		} );
+		it( "should render a HostList", () => {
+			createComponent();
+			const hl = ReactUtils.findRenderedComponentWithType( component, dependencies.HostList );
+			should.exist( hl );
+			hl.props.noHostsMessage.should.equal( "No hosts are configured to run this project." );
 		} );
 		describe( "when a deploy is in progress", () => {
 			describe( "and the host status is present", () => {

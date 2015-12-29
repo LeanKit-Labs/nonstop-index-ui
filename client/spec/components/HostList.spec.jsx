@@ -34,7 +34,8 @@ describe( "HostList", () => {
 			createComponent();
 			component.props.should.eql( {
 				hosts: [],
-				title: "Hosts"
+				title: "Hosts",
+				noHostsMessage: "No hosts found."
 			} );
 		} );
 	} );
@@ -47,10 +48,15 @@ describe( "HostList", () => {
 	} );
 
 	describe( "when rendering", () => {
-		it( "should render the hostList section", () => {
-			createComponent();
+		it( "should render the hostList section when hosts are present", () => {
+			createComponent( { hosts: [ HOSTS[0] ] } );
 			const hostList = ReactUtils.findRenderedDOMComponentWithClass( component, "hostList" );
 			should.exist( hostList );
+		} );
+
+		it( "should render a hosts missing message when no hosts are present", () => {
+			createComponent( { hosts: [], noHostsMessage: "No hosts could be found" } );
+			ReactDOM.findDOMNode( component ).textContent.should.contain( "No hosts could be found" );
 		} );
 
 		it( "should render last updated time", () => {

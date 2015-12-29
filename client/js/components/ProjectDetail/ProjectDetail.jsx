@@ -193,7 +193,10 @@ export default React.createClass( {
 									onRelease={ this.confirmReleasePackage } />
 							</div>
 							<div className="col-md-4">
-								<HostList hosts={ this.state.hosts } onSelectHost={ this.viewHost } />
+								<HostList
+									noHostsMessage="No hosts are configured to run this project."
+									hosts={ this.state.hosts }
+									onSelectHost={ this.viewHost } />
 							</div>
 						</div>
 					</section>

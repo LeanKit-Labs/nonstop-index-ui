@@ -8,12 +8,14 @@ export default React.createClass( {
 	getActions: [ "loadHostStatus", "loadEnvironmentForHost" ],
 	propTypes: {
 		hosts: React.PropTypes.array.isRequired,
+		noHostsMessage: React.PropTypes.string,
 		title: React.PropTypes.string
 	},
 	getDefaultProps() {
 		return {
 			title: "Hosts",
-			hosts: []
+			hosts: [],
+			noHostsMessage: "No hosts found."
 		};
 	},
 	renderHost( host, i ) {
@@ -73,6 +75,13 @@ export default React.createClass( {
 			</div>
 		);
 	},
+	renderEmptyMessage() {
+		return (
+			<p className="lead u-textCenter hostList-emptyMessage">
+				<em>{ this.props.noHostsMessage }</em>
+			</p>
+		);
+	},
 	render() {
 		return (
 			<div className="box box-primary">
@@ -81,7 +90,7 @@ export default React.createClass( {
 				</div>
 				<div className="box-body no-padding">
 					<div className="list-group list-full-width">
-						{ this.renderHosts() }
+						{ this.props.hosts.length ? this.renderHosts() : this.renderEmptyMessage() }
 					</div>
 				</div>
 			</div>
