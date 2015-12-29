@@ -288,7 +288,8 @@ describe( "configuration store", () => {
 				branch: "branchA",
 				version: "versionA",
 				host: {
-					name: "hostA"
+					name: "hostA",
+					project: "projectA"
 				}
 			} );
 		} );
@@ -304,11 +305,49 @@ describe( "configuration store", () => {
 					selectedOwner: "ownerA",
 					selectedBranch: "branchA",
 					selectedVersion: "versionA",
-					selectedHost: { name: "hostA" },
-					projects: [ "projectA", "projectB" ],
+					selectedHost: { name: "hostA", project: "projectA" },
+					projects: [ "projectA" ],
 					owners: [ "ownerA", "ownerB" ],
 					branches: [ "branchA", "branchB" ],
 					versions: [ "versionA", "versionB" ],
+					pullBuild: "SingleBuild"
+				} );
+			} );
+
+			it( "should not populate projects and selectedProject when there is no selected host", () => {
+				const state = configurationStore.getState();
+				state.selections.host = undefined;
+				state.tree = mockTree;
+
+				configurationStore.getOptions().should.eql( {
+					selectedProject: undefined,
+					selectedOwner: undefined,
+					selectedBranch: undefined,
+					selectedVersion: undefined,
+					selectedHost: undefined,
+					projects: [],
+					owners: [],
+					branches: [],
+					versions: [],
+					pullBuild: "SingleBuild"
+				} );
+			} );
+
+			it( "should not populate projects and selectedProject when the selected host is not configured for a project", () => {
+				const state = configurationStore.getState();
+				state.selections.host = { name: "hostA" };
+				state.tree = mockTree;
+
+				configurationStore.getOptions().should.eql( {
+					selectedProject: undefined,
+					selectedOwner: undefined,
+					selectedBranch: undefined,
+					selectedVersion: undefined,
+					selectedHost: { name: "hostA" },
+					projects: [],
+					owners: [],
+					branches: [],
+					versions: [],
 					pullBuild: "SingleBuild"
 				} );
 			} );
@@ -324,8 +363,8 @@ describe( "configuration store", () => {
 					selectedOwner: "ownerA",
 					selectedBranch: "branchA",
 					selectedVersion: "versionA",
-					selectedHost: { name: "hostA" },
-					projects: [ "projectA", "projectB" ],
+					selectedHost: { name: "hostA", project: "projectA" },
+					projects: [ "projectA" ],
 					owners: [ "ownerA", "ownerB" ],
 					branches: [ "branchA", "branchB" ],
 					versions: [ "Any", "vA-*", "vB-*" ],
@@ -344,8 +383,8 @@ describe( "configuration store", () => {
 					selectedOwner: "ownerA",
 					selectedBranch: "branchA",
 					selectedVersion: "versionA",
-					selectedHost: { name: "hostA" },
-					projects: [ "projectA", "projectB" ],
+					selectedHost: { name: "hostA", project: "projectA" },
+					projects: [ "projectA" ],
 					owners: [ "ownerA", "ownerB" ],
 					branches: [ "branchA", "branchB" ],
 					versions: [ "Any", "versionB" ],

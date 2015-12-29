@@ -156,16 +156,32 @@ export default new lux.Store( {
 	getOptions() {
 		const state = this.getState();
 		const tree = state.tree;
-		const selectedProject = state.selections.project;
-		const projects = Object.keys( tree ).sort();
+		const selectedHost = state.selections.host;
+		const pullBuild = state.selections.pullBuild;
+
+		if ( !selectedHost || !selectedHost.project ) {
+			return {
+				projects: [],
+				owners: [],
+				branches: [],
+				versions: [],
+				selectedProject: undefined,
+				selectedOwner: undefined,
+				selectedBranch: undefined,
+				selectedVersion: undefined,
+				selectedHost,
+				pullBuild
+			};
+		}
+
+		const selectedProject = selectedHost.project;
+		const projects = [ selectedProject ];
 		const owners = Object.keys( _get( tree, [ selectedProject ], [] ) ).sort();
 		const selectedOwner = state.selections.owner;
 		const branches = Object.keys( _get( tree, [ selectedProject, selectedOwner ], [] ) ).sort();
 		const selectedBranch = state.selections.branch;
-		const pullBuild = state.selections.pullBuild;
 		const versions = getVersions( { tree, selectedProject, selectedOwner, selectedBranch, pullBuild } );
 		const selectedVersion = state.selections.version;
-		const selectedHost = state.selections.host;
 
 		return {
 			projects,

@@ -13,7 +13,6 @@ function getState( { name, owner, branch } ) {
 		{},
 		projectStore.getProject( name, owner, branch ),
 		{
-			allHosts: projectStore.getHosts(),
 			deployChoice: projectStore.getDeployChoice(),
 			releaseChoice: projectStore.getReleaseChoice()
 		}
@@ -189,12 +188,15 @@ export default React.createClass( {
 							<div className="col-md-8">
 								<VersionGroup
 									versions={ this.state.versions }
-									hosts={ this.state.allHosts }
+									hosts={ this.state.hosts }
 									onDeploy={ this.onDeploy }
 									onRelease={ this.confirmReleasePackage } />
 							</div>
 							<div className="col-md-4">
-								<HostList hosts={ this.state.hosts } onSelectHost={ this.viewHost } />
+								<HostList
+									noHostsMessage="No hosts are configured to run this project."
+									hosts={ this.state.hosts }
+									onSelectHost={ this.viewHost } />
 							</div>
 						</div>
 					</section>

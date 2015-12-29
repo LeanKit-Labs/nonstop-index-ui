@@ -34,13 +34,15 @@ describe( "ProjectDetail Component", () => {
 					}
 				} )
 			},
+			HostList: getMockReactComponent( "HostList" ),
 			ProjectDetailHeader: getMockReactComponent( "ProjectDetailHeader" ),
 			VersionGroup: getMockReactComponent( "VersionGroup" ),
 			"stores/projectStore": {
 				getProject: sinon.stub().returns( {
 					branches: [],
 					owners: [],
-					versions: {}
+					versions: {},
+					hosts: []
 				} ),
 				getHosts: sinon.stub().returns( [] ),
 				getDeployChoice: sinon.stub().returns( null ),
@@ -75,8 +77,8 @@ describe( "ProjectDetail Component", () => {
 			component.state.should.eql( {
 				branches: [],
 				owners: [],
+				hosts: [],
 				versions: {},
-				allHosts: [],
 				deployChoice: null,
 				releaseChoice: null
 			} );
@@ -137,6 +139,13 @@ describe( "ProjectDetail Component", () => {
 			createComponent();
 			const vg = ReactUtils.findRenderedComponentWithType( component, dependencies.VersionGroup );
 			should.exist( vg );
+			vg.props.hosts.should.equal( component.state.hosts );
+		} );
+		it( "should render a HostList", () => {
+			createComponent();
+			const hl = ReactUtils.findRenderedComponentWithType( component, dependencies.HostList );
+			should.exist( hl );
+			hl.props.noHostsMessage.should.equal( "No hosts are configured to run this project." );
 		} );
 		describe( "when a deploy is in progress", () => {
 			describe( "and the host status is present", () => {
