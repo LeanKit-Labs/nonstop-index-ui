@@ -1,0 +1,6 @@
+{
+  "extends": "leankit/es6",
+  "rules": {
+    "arrow-body-style": [ 1, "as-needed" ] // TRIAL require braces in arrow function body
+  }
+}

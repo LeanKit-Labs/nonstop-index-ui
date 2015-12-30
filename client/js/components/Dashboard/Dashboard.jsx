@@ -15,13 +15,13 @@ function getState() {
 
 export default React.createClass( {
 	mixins: [ lux.reactMixin.store, lux.reactMixin.actionCreator ],
+	getActions: [ "viewProject", "viewHost" ],
 	stores: {
 		listenTo: "project",
 		onChange() {
 			this.setState( getState() );
 		}
 	},
-	getActions: [ "viewProject", "viewHost" ],
 	getDefaultProps() {
 		return {};
 	},

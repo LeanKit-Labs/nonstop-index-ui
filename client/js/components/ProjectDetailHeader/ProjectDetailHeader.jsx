@@ -35,9 +35,9 @@ export default React.createClass( {
 					<Avatar owner={ this.props.owner } />{ this.props.owner }
 				</Dropdown.Toggle>
 				<Dropdown.Menu>
-				{ this.props.owners.map( owner => {
-					return <MenuItem key={ owner.name } onSelect={ this.onSelectOwner.bind( this, owner ) }>{ owner.name }</MenuItem>;
-				} ) }
+				{ this.props.owners.map( owner => (
+					<MenuItem key={ owner.name } onSelect={ this.onSelectOwner.bind( this, owner ) }>{ owner.name }</MenuItem>
+				) ) }
 				</Dropdown.Menu>
 			</Dropdown>
 		);
@@ -50,9 +50,9 @@ export default React.createClass( {
 					<i className="fa fa-code-fork"></i> branch: <strong>{ this.props.branch }</strong>
 				</Dropdown.Toggle>
 				<Dropdown.Menu>
-				{ this.props.branches.map( branch => {
-					return <MenuItem key={ branch } onSelect={ this.onSelectBranch.bind( this, branch ) }>{ branch }</MenuItem>;
-				} ) }
+				{ this.props.branches.map( branch => (
+					<MenuItem key={ branch } onSelect={ this.onSelectBranch.bind( this, branch ) }>{ branch }</MenuItem>
+				) ) }
 				</Dropdown.Menu>
 			</Dropdown>
 		);

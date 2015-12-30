@@ -6,7 +6,7 @@ import config from "../clientConfig";
 import configurationStore from "stores/configurationStore";
 import projectStore from "stores/projectStore";
 
-var nsAPI = window.nsAPI = halon( {
+const nsAPI = window.nsAPI = halon( {
 	root: `${ config.nonstopIndexApi }`,
 	knownOptions: {
 		package: [ "list" ],
@@ -19,72 +19,65 @@ var nsAPI = window.nsAPI = halon( {
 } );
 
 function errorHandler( error ) {
-	console.error( error );
+	console.error( error ); // eslint-disable-line no-console
 }
 
 nsAPI.connect().catch( errorHandler );
 
 function applySettings( settings ) {
 	settings = settings || configurationStore.getChanges();
-	nsAPI.host.configure( settings )
-		.then(
-			( data ) => lux.publishAction( "applySettingsSuccess", data ),
-			( data ) => lux.publishAction( "applySettingsError", data )
-		);
+	nsAPI.host.configure( settings ).then(
+		data => lux.publishAction( "applySettingsSuccess", data ),
+		data => lux.publishAction( "applySettingsError", data )
+	);
 }
 
 function loadProjects() {
-	return nsAPI.package.list()
-		.then(
-			( data ) => lux.publishAction( "loadProjectsSuccess", data ),
-			( data ) => lux.publishAction( "loadProjectsError", data )
-		);
+	return nsAPI.package.list().then(
+		data => lux.publishAction( "loadProjectsSuccess", data ),
+		data => lux.publishAction( "loadProjectsError", data )
+	);
 }
 
 function loadHosts() {
-	return nsAPI.host.list()
-		.then(
-			( data ) => lux.publishAction( "loadHostsSuccess", data ),
-			( data ) => lux.publishAction( "loadHostsError", data )
-		);
+	return nsAPI.host.list().then(
+		data => lux.publishAction( "loadHostsSuccess", data ),
+		data => lux.publishAction( "loadHostsError", data )
+	);
 }
 
 function loadHostStatus( host ) {
-	return nsAPI.host.status( { name: host } )
-		.then(
-			( data ) => lux.publishAction( "loadHostStatusSuccess", {
-				name: host,
-				status: data
-			} ),
-			( data ) => lux.publishAction( "loadHostStatusError", data )
-		);
+	return nsAPI.host.status( { name: host } ).then(
+		data => lux.publishAction( "loadHostStatusSuccess", {
+			name: host,
+			status: data
+		} ),
+		data => lux.publishAction( "loadHostStatusError", data )
+	);
 }
 
 function loadUser() {
-	return $.getJSON( "/nonstop/user/me" )
-		.then(
-			( data ) => lux.publishAction( "loadUserSuccess", data ),
-			( data ) => lux.publishAction( "loadUserFailure", data )
-		);
+	return $.getJSON( "/nonstop/user/me" ).then(
+		data => lux.publishAction( "loadUserSuccess", data ),
+		data => lux.publishAction( "loadUserFailure", data )
+	);
 }
 
 function releasePackage( { architecture, branch, osName, osVersion, owner, platform, project, slug } ) {
-	return nsAPI.package.promote( { architecture, branch, osName, osVersion, owner, platform, project, slug } )
-		.then(
-			( data ) => {
-				lux.publishAction( "releasePackageSuccess", data );
-				loadProjects();
-			},
-			( data ) => lux.publishAction( "releasePackageError", data )
-		);
+	return nsAPI.package.promote( { architecture, branch, osName, osVersion, owner, platform, project, slug } ).then(
+		data => {
+			lux.publishAction( "releasePackageSuccess", data );
+			loadProjects();
+		},
+		data => lux.publishAction( "releasePackageError", data )
+	);
 }
 
 function loadEnvironmentForHost( options ) {
-	return nsAPI.host.getEnvironment( options )
-		.then(
-			( data ) => lux.publishAction( "loadEnvironmentForHostSuccess", data ),
-			( data ) => lux.publishAction( "loadEnvironmentForHostError", data )
-		);
+	return nsAPI.host.getEnvironment( options ).then(
+		data => lux.publishAction( "loadEnvironmentForHostSuccess", data ),
+		data => lux.publishAction( "loadEnvironmentForHostError", data )
+	);
 }
 
 export default lux.mixin( {
@@ -104,7 +97,7 @@ export default lux.mixin( {
 		error( msg ) {
 			/* istanbul ignore else */
 			if ( DEBUG ) {
-				console.error( msg );
+				console.error( msg ); // eslint-disable-line no-console
 			}
 		},
 		loadProjects,

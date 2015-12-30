@@ -1,18 +1,19 @@
-var gulp = require( "gulp" );
-var gutil = require( "gulp-util" );
-var gulpAutoprefixer = require( "gulp-autoprefixer" );
-var gulpLess = require( "gulp-less" );
-var sourcemaps = require( "gulp-sourcemaps" );
+const gulp = require( "gulp" );
+const gutil = require( "gulp-util" );
+const gulpAutoprefixer = require( "gulp-autoprefixer" );
+const sourcemaps = require( "gulp-sourcemaps" );
+const gulpFlatten = require( "gulp-flatten" );
+let gulpLess = require( "gulp-less" );
 
 // This works around a strange bug where less would only
 // compile the files once during a gulp.watch loop
 function resetLess() {
 	delete require.cache[ require.resolve( "gulp-less" ) ];
 	delete require.cache[ require.resolve( "less" ) ];
-	gulpLess = require( "gulp-less" );
+	gulpLess = require( "gulp-less" ); // eslint-disable-line global-require
 }
 
-gulp.task( "css:dev", [ "suitcss:refresh" ], function( done ) {
+gulp.task( "css:dev", [ "suitcss:refresh" ], done => {
 	resetLess();
 
 	return gulp.src( [ "./client/less/app.less" ] )
@@ -23,19 +24,19 @@ gulp.task( "css:dev", [ "suitcss:refresh" ], function( done ) {
 				theme: appConfig.theme
 			}
 		} ) )
-		.on( "error", function( err ) {
+		.on( "error", err => {
 			gutil.log( gutil.colors.red( err.message ) );
 			done();
-		}.bind( this ) )
+		} )
 		.pipe( gulpAutoprefixer( {
 			browsers: [ "last 2 versions", "ie >= 9" ],
 			cascade: false
 		} ) )
-		.pipe( sourcemaps.write( { sourceRoot: "/" + appConfig.name + "/source/client/less" } ) )
+		.pipe( sourcemaps.write( { sourceRoot: `/${ appConfig.name }/source/client/less` } ) )
 		.pipe( gulp.dest( "./public/css" ) );
 } );
 
-gulp.task( "css:build", [ "suitcss:refresh" ], function( done ) {
+gulp.task( "css:build", [ "suitcss:refresh" ], done => {
 	resetLess();
 
 	return gulp.src( [ "./client/less/app.less" ] )
@@ -46,10 +47,10 @@ gulp.task( "css:build", [ "suitcss:refresh" ], function( done ) {
 				theme: appConfig.theme
 			}
 		} ) )
-		.on( "error", function( err ) {
+		.on( "error", err => {
 			gutil.log( gutil.colors.red( err.message ) );
 			done();
-		}.bind( this ) )
+		} )
 		.pipe( gulpAutoprefixer( {
 			browsers: [ "last 2 versions", "ie >= 9" ],
 			cascade: false
@@ -57,10 +58,8 @@ gulp.task( "css:build", [ "suitcss:refresh" ], function( done ) {
 		.pipe( gulp.dest( "./public/css" ) );
 } );
 
-var gulpFlatten = require( "gulp-flatten" );
-
-gulp.task( "suitcss:refresh", function() {
-	return gulp.src( [ "./node_modules/suitcss-*/lib/*.css" ] )
+gulp.task( "suitcss:refresh", () =>
+	gulp.src( [ "./node_modules/suitcss-*/lib/*.css" ] )
 		.pipe( gulpFlatten() )
-		.pipe( gulp.dest( "./client/less/suitcss" ) );
-} );
+		.pipe( gulp.dest( "./client/less/suitcss" ) )
+);

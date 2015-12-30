@@ -4,9 +4,9 @@ var autohost = function( config ) {
 	return {
 		start: sinon.spy(),
 		http: {
-			middleware: sinon.spy( function( path, handler ) {
-				path.should.be.a( "string" );
-				path[ 0 ].should.equal( "/" );
+			middleware: sinon.spy( function( mountPath, handler ) {
+				mountPath.should.be.a( "string" );
+				mountPath[ 0 ].should.equal( "/" );
 				handler.should.be.a( "function" );
 			} )
 		},

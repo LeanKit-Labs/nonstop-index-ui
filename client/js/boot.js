@@ -16,7 +16,7 @@ window.NS[ config.appName ] = config.version;
 
 // polyfill window.location.origin used in API calls for IE < 11
 if ( !window.location.origin ) {
-	window.location.origin = window.location.protocol + "//" + window.location.host;
+	window.location.origin = `${ window.location.protocol }//${ window.location.host }`;
 }
 
 require( "./app" );

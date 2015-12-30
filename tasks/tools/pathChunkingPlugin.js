@@ -1,12 +1,10 @@
-var minimatch = require( "minimatch" );
-var webpack = require( "webpack" );
-var _ = require( "lodash" );
+const minimatch = require( "minimatch" );
+const webpack = require( "webpack" );
+const _ = require( "lodash" );
 
 module.exports = function( options ) {
 	function isMatchingModule( mod ) {
-		return mod.resource && _.some( options.paths, function( path ) {
-				return minimatch( mod.resource, path );
-			} );
+		return mod.resource && _.some( options.paths, path => minimatch( mod.resource, path ) );
 	}
 
 	return new webpack.optimize.CommonsChunkPlugin( {

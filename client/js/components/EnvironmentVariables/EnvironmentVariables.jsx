@@ -36,12 +36,12 @@ export default React.createClass( {
 				</thead>
 				<tbody>
 					{
-						this.state.environmentVariables.map( ( { key, val } ) => {
-							return ( <tr key={ key }>
+						this.state.environmentVariables.map( ( { key, val } ) => (
+							<tr key={ key }>
 								<th scope="row">{ key }</th>
 								<td>{ val }</td>
-							</tr> );
-						} )
+							</tr>
+						) )
 					}
 				</tbody>
 			</Table>
@@ -50,12 +50,12 @@ export default React.createClass( {
 	renderNoVars() {
 		return ( <Alert bsStyle="warning" className="u-textCenter environmentVariables-Notice--warning">
 			No environment variables are set for this host.
-		 </Alert> );
+		</Alert> );
 	},
 	renderError() {
 		return ( <Alert bsStyle="danger" className="u-textCenter environmentVariables-Notice--error">
 			Unable to load environment information for this host.
-		 </Alert> );
+		</Alert> );
 	},
 	renderLoading() {
 		return ( <div className="spinner">
@@ -66,16 +66,14 @@ export default React.createClass( {
 		if ( this.state.status === "loaded" ) {
 			if ( this.state.environmentVariables.length ) {
 				return this.renderVariables();
-			} else {
-				return this.renderNoVars();
 			}
+			return this.renderNoVars();
 		} else if ( this.state.status === "loading" ) {
 			return this.renderLoading();
 		} else if ( this.state.status === "error" ) {
 			return this.renderError();
-		} else {
-			return null;
 		}
+		return null;
 	},
 	render() {
 		return (

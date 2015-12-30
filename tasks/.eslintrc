@@ -1,4 +1,5 @@
 {
+  "extends": "leankit/es6",
   "globals": {
     "appConfig": true
   }

@@ -9,7 +9,7 @@ export default new lux.Store( {
 		loadUserSuccess( data ) {
 			this.setState( data );
 		},
-		loadUserFailure: function() {}
+		loadUserFailure() {}
 	},
 	getUser() {
 		const { displayName, username, profileUrl, _json: details } = this.getState();

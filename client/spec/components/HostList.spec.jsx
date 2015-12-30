@@ -49,7 +49,7 @@ describe( "HostList", () => {
 
 	describe( "when rendering", () => {
 		it( "should render the hostList section when hosts are present", () => {
-			createComponent( { hosts: [ HOSTS[0] ] } );
+			createComponent( { hosts: [ HOSTS[ 0 ] ] } );
 			const hostList = ReactUtils.findRenderedDOMComponentWithClass( component, "hostList" );
 			should.exist( hostList );
 		} );
@@ -60,13 +60,13 @@ describe( "HostList", () => {
 		} );
 
 		it( "should render last updated time", () => {
-			createComponent( { hosts: [ HOSTS[0] ] } );
+			createComponent( { hosts: [ HOSTS[ 0 ] ] } );
 			const status = ReactUtils.findRenderedDOMComponentWithClass( component, "hostList-status" ).textContent;
 			status.should.include( "Last Updated: 12:00:00 AM" );
 		} );
 
 		it( "should render fields for a host", () => {
-			const host = Object.assign( {}, HOSTS[0] );
+			const host = Object.assign( {}, HOSTS[ 0 ] );
 			createComponent( { hosts: [ host ] } );
 			const hostList = ReactUtils.findRenderedDOMComponentWithClass( component, "hostList" );
 			const projectRow = hostList.querySelector( "tbody tr:nth-child(1)" ).textContent;
@@ -80,7 +80,7 @@ describe( "HostList", () => {
 		} );
 
 		it( "should render get status button if status not available", () => {
-			const host = Object.assign( {}, HOSTS[0] );
+			const host = Object.assign( {}, HOSTS[ 0 ] );
 			delete host.status;
 			createComponent( { hosts: [ host ] } );
 			const button = ReactDOM.findDOMNode( component ).querySelector( "button" );
@@ -88,16 +88,16 @@ describe( "HostList", () => {
 		} );
 
 		it( "should render update status button if status available", () => {
-			const host = Object.assign( {}, HOSTS[0] );
+			const host = Object.assign( {}, HOSTS[ 0 ] );
 			createComponent( { hosts: [ host ] } );
 			const button = ReactDOM.findDOMNode( component ).querySelector( "button" );
 			button.textContent.should.equal( "Refresh Status" );
 		} );
 
 		it( "should render status if available", () => {
-			const host = Object.assign( {}, HOSTS[0] );
+			const host = Object.assign( {}, HOSTS[ 0 ] );
 			createComponent( { hosts: [ host ] } );
-			let status = ReactUtils.findRenderedDOMComponentWithClass( component, "hostList-status" ).textContent;
+			const status = ReactUtils.findRenderedDOMComponentWithClass( component, "hostList-status" ).textContent;
 			status.should.include( host.status.hostUptime );
 			status.should.include( host.status.serviceUptime );
 			status.should.include( host.slug );
@@ -105,7 +105,7 @@ describe( "HostList", () => {
 		} );
 
 		it( "should be able to render one host", () => {
-			const host = Object.assign( {}, HOSTS[0] );
+			const host = Object.assign( {}, HOSTS[ 0 ] );
 			createComponent( { hosts: [ host ] } );
 			const hostList = ReactUtils.findRenderedDOMComponentWithClass( component, "hostList" );
 			const rowContent = hostList.querySelector( "tbody tr" ).textContent;
@@ -125,7 +125,7 @@ describe( "HostList", () => {
 
 	describe( "when handling clicks", () => {
 		it( "should trigger the loadHostStatus action", () => {
-			const host = Object.assign( {}, HOSTS[0] );
+			const host = Object.assign( {}, HOSTS[ 0 ] );
 			delete host.status;
 			createComponent( { hosts: [ host ] } );
 			const button = ReactUtils.scryRenderedDOMComponentsWithClass( component, "btn" )[ 0 ];

@@ -1,7 +1,8 @@
 import React from "react";
 import "./Avatar.less";
 
-const Avatar = ( { className = "avatar", owner = "anonymous", size = 16 } ) => {
+const AVATAR_SIZE = 16;
+const Avatar = ( { className = "avatar", owner = "anonymous", size = AVATAR_SIZE } ) => {
 	const src = `https://avatars.githubusercontent.com/${ owner }?s=${ size }`;
 	return <img className={ className } src={ src } />;
 };

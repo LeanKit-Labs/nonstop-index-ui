@@ -1,9 +1,9 @@
-var gulp = require( "gulp" );
-var gutil = require( "gulp-util" );
-var processHost = require( "processhost" );
+const gulp = require( "gulp" );
+const gutil = require( "gulp-util" );
+const processHost = require( "processhost" );
 
-gulp.task( "server", function() {
-	var processes = processHost();
+gulp.task( "server", () => {
+	const processes = processHost();
 	processes.start( "server", {
 		cwd: "./",
 		command: "node",
@@ -11,18 +11,18 @@ gulp.task( "server", function() {
 		stdio: "pipe"
 	} );
 
-	var popBrowser = function( data ) {
+	let popBrowser = function( data ) {
 		if ( /autohost/.test( data.toString() ) ) {
-			popBrowser = function() {};
+			popBrowser = () => {};
 		}
 	};
 
-	processes.on( "server.stdout", function( ev ) {
+	processes.on( "server.stdout", ev => {
 		popBrowser( ev.data );
-		gutil.log( "Server: " + ev.data.toString() );
+		gutil.log( `Server: ${ ev.data.toString() }` );
 	} );
 
-	processes.on( "server.stderr", function( ev ) {
-		gutil.log( gutil.colors.red( "Server: " + ev.data.toString() ) );
+	processes.on( "server.stderr", ev => {
+		gutil.log( gutil.colors.red( `Server: ${ ev.data.toString() }` ) );
 	} );
 } );

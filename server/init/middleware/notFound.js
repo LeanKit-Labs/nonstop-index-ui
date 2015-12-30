@@ -13,7 +13,7 @@ module.exports = function( config ) {
 				res.status( 404 ).send( { message: "Not found" } );
 			},
 
-			"default": function() {
+			default: function() {
 				// log the request and respond with 406
 				res.status( 406 ).send( "Not Acceptable" );
 			}

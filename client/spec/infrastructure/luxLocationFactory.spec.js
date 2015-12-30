@@ -1,9 +1,9 @@
-var luxLocationFactoryInject = require( "inject!infrastructure/luxLocationFactory" );
+const luxLocationFactoryInject = require( "inject!infrastructure/luxLocationFactory" );
 
-describe( "LuxLocation factory", function() {
-	var LuxLocation, luxLocationFactory, navStoreStub, windowStub, actions;
+describe( "LuxLocation factory", () => {
+	let LuxLocation, luxLocationFactory, navStoreStub, windowStub, actions;
 
-	beforeEach( function() {
+	beforeEach( () => {
 		actions = {
 			browserNavigated: sinon.stub()
 		};
@@ -30,46 +30,40 @@ describe( "LuxLocation factory", function() {
 		LuxLocation = luxLocationFactory( navStoreStub );
 	} );
 
-	afterEach( function() {
+	afterEach( () => {
 		Object.keys( actions ).forEach( key => delete lux.actions[ key ] );
 	} );
 
-	describe( "when not passing a navigation store", function() {
-		it( "should throw an error", function() {
+	describe( "when not passing a navigation store", () => {
+		it( "should throw an error", () => {
 			luxLocationFactory.should.throw( "LuxLocation must be supplied a navigation store" );
 		} );
 	} );
 
-	describe( "when omitting functionality", function() {
-		it( "should not throw when calling push", function() {
-			( function() {
-				LuxLocation.push( "url" );
-			} ).should.not.throw( Error );
+	describe( "when omitting functionality", () => {
+		it( "should not throw when calling push", () => {
+			( () => LuxLocation.push( "url" ) ).should.not.throw( Error );
 		} );
-		it( "should not throw when calling pop", function() {
-			( function() {
-				LuxLocation.pop();
-			} ).should.not.throw( Error );
+		it( "should not throw when calling pop", () => {
+			( () => LuxLocation.pop() ).should.not.throw( Error );
 		} );
-		it( "should not throw when calling replace", function() {
-			( function() {
-				LuxLocation.replace( "new/url" );
-			} ).should.not.throw( Error );
+		it( "should not throw when calling replace", () => {
+			( () => LuxLocation.replace( "new/url" ) ).should.not.throw( Error );
 		} );
 	} );
 
-	describe( "helper methods", function() {
-		it( "should support getCurrentPath", function() {
+	describe( "helper methods", () => {
+		it( "should support getCurrentPath", () => {
 			navStoreStub.getFullPath.returns( "/path/123" );
 			LuxLocation.getCurrentPath().should.equal( "/path/123" );
 		} );
 
-		it( "should support toString", function() {
+		it( "should support toString", () => {
 			LuxLocation.toString().should.equal( "<LuxLocation>" );
 		} );
 	} );
 
-	describe( "listeners", function() {
+	describe( "listeners", () => {
 		describe( "when subscribing multiple listeners", () => {
 			let listener1, listener2;
 			beforeEach( () => {
@@ -122,20 +116,20 @@ describe( "LuxLocation factory", function() {
 		} );
 
 		it( "should remove the popState listener when the last listener is removed", () => {
-			let listener2 = sinon.stub();
+			const listener2 = sinon.stub();
 			LuxLocation.addChangeListener( listener2 );
 			windowStub.addEventListener.should.be.calledOnce;
 			LuxLocation.removeChangeListener( listener2 );
 		} );
 	} );
 
-	describe( "navigation changes", function() {
+	describe( "navigation changes", () => {
 		let listener;
-		beforeEach( function() {
+		beforeEach( () => {
 			listener = sinon.stub();
 			LuxLocation.addChangeListener( listener );
 		} );
-		afterEach( function() {
+		afterEach( () => {
 			LuxLocation.removeChangeListener( listener );
 		} );
 		describe( "that originated from the browser", () => {
@@ -162,7 +156,7 @@ describe( "LuxLocation factory", function() {
 					.and.calledWith( evt );
 			} );
 
-			it( "should call push when moving forward", function() {
+			it( "should call push when moving forward", () => {
 				navStoreStub.getDirection.returns( "forward" );
 				navStoreStub.getFullPath.returns( "/path/123" );
 
@@ -173,7 +167,7 @@ describe( "LuxLocation factory", function() {
 					path: "/path/123", type: "push"
 				} );
 			} );
-			it( "should call pop when moving back", function() {
+			it( "should call pop when moving back", () => {
 				navStoreStub.getDirection.returns( "back" );
 				navStoreStub.getFullPath.returns( "/path" );
 
@@ -190,7 +184,7 @@ describe( "LuxLocation factory", function() {
 				navStoreStub.wasLastChangeFromBrowser.returns( false );
 			} );
 
-			it( "should call push when moving forward", function() {
+			it( "should call push when moving forward", () => {
 				navStoreStub.getDirection.returns( "forward" );
 				navStoreStub.getFullPath.returns( "/path/123" );
 				navStoreStub.getHistoryEntry.returns( { path: "/path/123", id: 123 } );
@@ -203,7 +197,7 @@ describe( "LuxLocation factory", function() {
 					path: "/path/123", type: "push"
 				} );
 			} );
-			it( "should call pop when moving back", function() {
+			it( "should call pop when moving back", () => {
 				navStoreStub.getDirection.returns( "back" );
 				navStoreStub.getFullPath.returns( "/path" );
 				navStoreStub.getHistoryEntry.returns( { path: "/path/123", id: 234 } );
@@ -218,9 +212,9 @@ describe( "LuxLocation factory", function() {
 		} );
 	} );
 
-	describe( "listeners", function() {
-		it( "should add and remove listeners", function() {
-			var listener = sinon.stub();
+	describe( "listeners", () => {
+		it( "should add and remove listeners", () => {
+			const listener = sinon.stub();
 			LuxLocation.addChangeListener( listener );
 
 			navStoreStub.getDirection.returns( "forward" );

@@ -227,7 +227,7 @@ describe( "VersionGroup", () => {
 			} );
 
 			it( "should render a friendly message in the deploy dropdown", () => {
-				var dropdownButton = ReactUtils.findRenderedComponentWithType( component, components.DropdownButton );
+				const dropdownButton = ReactUtils.findRenderedComponentWithType( component, components.DropdownButton );
 				ReactDOM.findDOMNode( dropdownButton ).textContent.should.contain( "No hosts are configured to run this project." );
 			} );
 		} );

@@ -14,7 +14,7 @@ function reduceProjects( packages ) {
 			return memo;
 		}
 		const versionPath = [ "projects", item.project, "owners", item.owner, "branches", item.branch ];
-		let versions = _get( memo, versionPath, [] );
+		const versions = _get( memo, versionPath, [] );
 
 		versions.push( item.file );
 		_set( memo, versionPath, versions );
@@ -94,7 +94,7 @@ export default new lux.Store( {
 				host.project = _get( status.activity, "running.project", host.project );
 				host.branch = _get( status.activity, "running.branch", host.branch );
 				host.slug = _get( status.activity, "running.slug", host.slug );
-				host.version = _get( status.activity, "running.version", host.version ),
+				host.version = _get( status.activity, "running.version", host.version );
 				host.status = {
 					serviceUptime: _get( status, "uptime.service", "" ),
 					hostUptime: _get( status, "uptime.host", "" ),
@@ -119,7 +119,7 @@ export default new lux.Store( {
 		}
 	},
 	getProjects() {
-		let projects = this.getState().projects;
+		const projects = this.getState().projects;
 
 		return sortBy( reduce( projects, ( memo, project, name ) => {
 			const owner = Object.keys( project.owners )[ 0 ];
@@ -134,21 +134,21 @@ export default new lux.Store( {
 	},
 	getProject( name, owner, branch ) {
 		const { packages, projects, hostByProject } = this.getState();
-		const currentProject = projects[name];
+		const currentProject = projects[ name ];
 
 		if ( !currentProject ) {
 			return { owners: [], branches: [], versions: {}, hosts: [] };
 		}
 
-		const currentOwner = currentProject.owners[owner];
-		let branchPackages = _get( currentOwner, [ "branches", branch ], [] );
+		const currentOwner = currentProject.owners[ owner ];
+		const branchPackages = _get( currentOwner, [ "branches", branch ], [] );
 
-		const versions = branchPackages.reduce( ( memo, name ) => {
-			let item = packages[name];
-			let version = item.version.split( "-" )[0];
+		const versions = branchPackages.reduce( ( memo, branchPackage ) => {
+			const item = packages[ branchPackage ];
+			const version = item.version.split( "-" )[ 0 ];
 
 			const packagesPath = [ version, "builds", `b${item.build}`, "packages" ];
-			let buildPackages = _get( memo, packagesPath, [] );
+			const buildPackages = _get( memo, packagesPath, [] );
 
 			buildPackages.push( item );
 			_set( memo, packagesPath, buildPackages );
@@ -157,12 +157,10 @@ export default new lux.Store( {
 		}, {} );
 
 		return {
-			owners: map( currentProject.owners, ( owner, name ) => {
-				return {
-					name,
-					branches: Object.keys( owner.branches )
-				};
-			} ),
+			owners: map( currentProject.owners, ( value, key ) => ( {
+				name: key,
+				branches: Object.keys( value.branches )
+			} ) ),
 			branches: Object.keys( currentOwner.branches ),
 			versions,
 			hosts: hostByProject[ name ] || []
@@ -183,7 +181,7 @@ export default new lux.Store( {
 	getDeployChoiceSettings() {
 		const { pkg, host } = this.getDeployChoice();
 		const data = [];
-		[ "project", "owner", "branch", "version" ].forEach( function( field ) {
+		[ "project", "owner", "branch", "version" ].forEach( field => {
 			data.push( { op: "change", field, value: pkg[ field ] } );
 		} );
 		return {

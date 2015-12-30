@@ -18,20 +18,20 @@ function getState() {
 
 export default React.createClass( {
 	mixins: [ lux.reactMixin.actionCreator, lux.reactMixin.store ],
+	getActions: [ "initializePage", "handleAlertClose" ],
 	stores: {
 		listenTo: "layout",
 		onChange() {
 			this.setState( getState() );
 		}
 	},
-	getActions: [ "initializePage", "handleAlertClose" ],
 	getInitialState() {
 		return getState();
 	},
-	componentDidUpdate: function( props, state ) {
+	componentDidUpdate( props, state ) {
 		this.updateTitle();
 	},
-	componentDidMount: function() {
+	componentDidMount() {
 		this.updateTitle();
 		this.initializePage( {} );
 	},
@@ -48,13 +48,15 @@ export default React.createClass( {
 	},
 	renderAlert() {
 		const alert = this.state.alert;
+		const DISMISS_ALTER_DELAY = 5000;
+
 		return (
-			<Alert className={ "app-alert u-textCenter" } bsStyle={ alert.type } onDismiss={ this.handleAlertClose } dismissAfter={ 5000 }>
+			<Alert className={ "app-alert u-textCenter" } bsStyle={ alert.type } onDismiss={ this.handleAlertClose } dismissAfter={ DISMISS_ALTER_DELAY }>
 				<p>{ alert.message }</p>
 			</Alert>
 		);
 	},
-	render: function() {
+	render() {
 		if ( this.state.initialized ) {
 			return (
 				<div className="skin-blue">
@@ -66,8 +68,7 @@ export default React.createClass( {
 					</div>
 				</div>
 			);
-		} else {
-			return this.renderLoader();
 		}
+		return this.renderLoader();
 	}
 } );

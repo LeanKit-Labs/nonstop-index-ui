@@ -1,15 +1,15 @@
 /* eslint-disable */
-var webpack = require( "webpack" );
+const webpack = require( "webpack" );
 /* eslint-enable */
-var glob = require( "glob" );
-var _ = require( "lodash" );
-var path = require( "path" );
+const glob = require( "glob" );
+const _ = require( "lodash" );
+const path = require( "path" );
 
 function aliasComponents() {
-	var components = {};
-	var matches = glob.sync( "./client/js/components/**/*.jsx" );
-	matches.forEach( function( match ) {
-		var filename = path.basename( match, ".jsx" );
+	const components = {};
+	const matches = glob.sync( "./client/js/components/**/*.jsx" );
+	matches.forEach( match => {
+		const filename = path.basename( match, ".jsx" );
 		components[ filename ] = path.join( appConfig.root, match );
 	} );
 	return components;
@@ -36,10 +36,10 @@ module.exports = {
 		root: path.join( appConfig.root, "./client/js" ),
 		extensions: [ "", ".webpack.js", ".web.js", ".js", ".jsx" ],
 		alias: _.extend( {
-				window: "infrastructure/windowProxy",
-				"react-router": "react-router/umd/ReactRouter",
-				modernizr: "lib/modernizr/modernizr.custom"
-			}, aliasComponents()
+			window: "infrastructure/windowProxy",
+			"react-router": "react-router/umd/ReactRouter",
+			modernizr: "lib/modernizr/modernizr.custom"
+		}, aliasComponents()
 		)
 	}
 };

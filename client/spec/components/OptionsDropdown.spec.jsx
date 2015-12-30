@@ -6,12 +6,12 @@ describe( "OptionsDropdown", () => {
 	beforeEach( () => {
 		component = null;
 
-		let Dropdown = getMockReactComponent( "Dropdown" );
+		const Dropdown = getMockReactComponent( "Dropdown" );
 		Dropdown.Toggle = getMockReactComponent( "Dropdown.Toggle" );
 		Dropdown.Menu = getMockReactComponent( "Dropdown.Menu" );
 
 		components = {
-			Dropdown: Dropdown,
+			Dropdown,
 			MenuItem: getMockReactComponent( "MenuItem" )
 		};
 

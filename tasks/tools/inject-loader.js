@@ -1,4 +1,4 @@
-var loader = require( "inject-loader" );
+const loader = require( "inject-loader" );
 
 // wrapper to inject-loader that adds an istanbul ignore comment
 module.exports = function( input ) {

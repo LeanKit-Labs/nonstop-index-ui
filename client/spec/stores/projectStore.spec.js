@@ -76,7 +76,7 @@ describe( "project store", () => {
 
 			it( "should not add status if host is not found", () => {
 				const state = projectStore.getState();
-				state.hosts = projectsWithHostsParsed["nonstop-index-ui"].hosts;
+				state.hosts = projectsWithHostsParsed[ "nonstop-index-ui" ].hosts;
 				lux.publishAction.bind( lux, "loadHostStatusSuccess", {
 					name: "host-not-found",
 					status: statusResponse

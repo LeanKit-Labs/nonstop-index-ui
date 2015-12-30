@@ -1,12 +1,8 @@
-var webpack = require( "webpack" );
-var _ = require( "lodash" );
-var path = require( "path" );
-var shared = _.cloneDeep( require( "./shared.config" ) );
-var pathChunkingPlugin = require( "../tools/pathChunkingPlugin" );
-
-function localLoader( loader ) {
-	return path.join( appConfig.root, "./tasks/tools/" + loader + "-loader.js" );
-}
+const webpack = require( "webpack" );
+const _ = require( "lodash" );
+const path = require( "path" );
+const shared = _.cloneDeep( require( "./shared.config" ) );
+const pathChunkingPlugin = require( "../tools/pathChunkingPlugin" );
 
 module.exports = _.merge( shared, {
 	entry: path.join( appConfig.root, "client/js/boot.js" ),

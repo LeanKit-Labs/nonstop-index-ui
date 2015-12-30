@@ -12,6 +12,7 @@ chai.use( require( "sinon-chai" ) );
 /*eslint-enable */
 global.proxyquire = require( "proxyquire" ).noPreserveCache().noCallThru();
 
+ /* eslint-disable no-invalid-this */
 chai.Assertion.addMethod( "returnError", function( message ) {
 	var obj = this._obj;
 	if ( !obj.then ) {
@@ -43,8 +44,10 @@ chai.Assertion.addMethod( "partiallyEql", function( partial ) {
 		);
 	} );
 } );
+/* eslint-enable no-invalid-this */
 
 function consoleLulz( original ) {
+	/* eslint-disable no-console */
 	var _log = console[ original ];
 	console[ original ] = function() {
 		if ( typeof arguments[ 0 ] === "string" && /^(\S|\t|\s)/.test( arguments[ 0 ] ) ) {
@@ -53,6 +56,7 @@ function consoleLulz( original ) {
 			return; // swallow this message
 		}
 	};
+	/* eslint-enable no-console */
 }
 consoleLulz( "log" );
 consoleLulz( "warn" );
@@ -68,7 +72,7 @@ function deepCompare( a, b, k ) {
 			diffs = diffs.concat( deepCompare( a[ c ], b[ c ], key ) );
 		} );
 	} else {
-		var equal = a == b; // jshint ignore:line
+		var equal = a == b; // eslint-disable-line eqeqeq
 		if ( !equal ) {
 			diffs.push( "expected " + k + " to equal " + a + " but got " + b );
 		}

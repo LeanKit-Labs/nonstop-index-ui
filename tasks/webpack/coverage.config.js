@@ -1,6 +1,6 @@
-var webpack = require( "webpack" );
-var _ = require( "lodash" );
-var config = _.cloneDeep( require( "./test.config" ) );
+const webpack = require( "webpack" );
+const _ = require( "lodash" );
+const config = _.cloneDeep( require( "./test.config" ) );
 
 // including plugins again, as they error out after being cloned from the test config
 config.plugins = [

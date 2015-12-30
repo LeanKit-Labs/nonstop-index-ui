@@ -2,9 +2,7 @@ import lux from "lux.js";
 import { map, sortBy, pick } from "lodash";
 
 function removeHalArtifacts( resp ) {
-	return pick( resp, ( val, key ) => {
-		return key[ 0 ] !== "_";
-	} );
+	return pick( resp, ( val, key ) => key[ 0 ] !== "_" );
 }
 
 export default new lux.Store( {
@@ -19,9 +17,10 @@ export default new lux.Store( {
 			this.setState( { host: name, status: "loading" } );
 		},
 		loadEnvironmentForHostSuccess( data ) {
-			const sorted = sortBy( map( removeHalArtifacts( data ), ( val, key ) => {
-				return { key, val };
-			} ), "key" );
+			const sorted = sortBy(
+				map( removeHalArtifacts( data ), ( val, key ) => ( { key, val } ) ),
+				"key"
+			);
 			this.setState( { environmentVariables: sorted, status: "loaded" } );
 		},
 		loadEnvironmentForHostError( data ) {

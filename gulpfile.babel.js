@@ -1,10 +1,8 @@
-var gulp = require( "gulp" );
-var gutil = require( "gulp-util" );
-var _ = require( "lodash" );
-var argv = require( "yargs" ).argv;
-var livereload = require( "gulp-livereload" );
-var path = require( "path" );
-var fs = require( "fs" );
+/* eslint-env es6 */
+
+const gulp = require( "gulp" );
+const gutil = require( "gulp-util" );
+const livereload = require( "gulp-livereload" );
 
 require( "./tasks/shared/appConfig" );
 

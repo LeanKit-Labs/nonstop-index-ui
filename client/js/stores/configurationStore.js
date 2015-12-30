@@ -89,7 +89,7 @@ export default new lux.Store( {
 		loadProjectsSuccess( { packages: pkgs } ) {
 			const packages = cloneDeep( pkgs );
 			const tree = {};
-			packages.forEach( function( pkg ) {
+			packages.forEach( pkg => {
 				_set( tree, [ pkg.project, pkg.owner, pkg.branch, pkg.version ], pkg );
 				pkg.simpleVersion = pkg.simpleVersion || pkg.version.split( "-" )[ 0 ];
 				pkg.released = !pkg.build;
@@ -102,7 +102,7 @@ export default new lux.Store( {
 
 			// default values to match the first host
 			if ( hosts.length ) {
-				let host = projectStore.mapHostDetails( hosts[ 0 ] );
+				const host = projectStore.mapHostDetails( hosts[ 0 ] );
 				selections = getDefaultSelectionsFromHost( host );
 			}
 
@@ -110,7 +110,7 @@ export default new lux.Store( {
 		},
 		selectProject( project ) {
 			updateSelections( this, {
-				project: project,
+				project,
 				owner: null,
 				branch: null,
 				version: null
@@ -118,21 +118,19 @@ export default new lux.Store( {
 		},
 		selectOwner( owner ) {
 			updateSelections( this, {
-				owner: owner,
+				owner,
 				branch: null,
 				version: null
 			} );
 		},
 		selectBranch( branch ) {
 			updateSelections( this, {
-				branch: branch,
+				branch,
 				version: null
 			} );
 		},
 		selectVersion( version ) {
-			updateSelections( this, {
-				version: version
-			} );
+			updateSelections( this, { version } );
 		},
 		selectHost( host ) {
 			updateSelections( this, getDefaultSelectionsFromHost( host ) );
@@ -206,7 +204,12 @@ export default new lux.Store( {
 			{ op: "change", field: "releaseOnly", value: selections.pullBuild === "ReleaseOnly" }
 		];
 
-		if ( selections.version !== "Any" ) {
+		if ( selections.version === "Any" ) {
+			changes.push(
+				{ op: "remove", field: "version" },
+				{ op: "remove", field: "build" }
+			);
+		} else {
 			changes.push( {
 				op: "change",
 				field: "version",
@@ -219,11 +222,6 @@ export default new lux.Store( {
 					field: "build"
 				} );
 			}
-		} else {
-			changes.push(
-				{ op: "remove", field: "version" },
-				{ op: "remove", field: "build" }
-			);
 		}
 
 		return {
@@ -233,9 +231,7 @@ export default new lux.Store( {
 	},
 	getApplyEnabled() {
 		const state = this.getState();
-		const allTrue = all( state.selections, ( value, key ) => {
-			return value || key === "releaseOnly";
-		} );
+		const allTrue = all( state.selections, ( value, key ) => value || key === "releaseOnly" );
 
 		return allTrue && !state.updateInProgress;
 	}
