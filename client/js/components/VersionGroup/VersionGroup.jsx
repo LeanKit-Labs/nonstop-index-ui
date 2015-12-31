@@ -23,13 +23,16 @@ function platform( plat ) {
 }
 
 function buildNumber( build ) {
-	return padLeft( build.substr( 1 ), 4, "0" );
+	const FINAL_WIDTH = 4;
+	return padLeft( build.substr( 1 ), FINAL_WIDTH, "0" );
 }
 
-function slug( { owner, project, slug } ) {
-	return <a href={ `https://github.com/${owner}/${project}/commit/${slug}` }>
-		{ slug }
-	</a>;
+function slug( { owner, project, slug: sha } ) {
+	return (
+		<a href={ `https://github.com/${owner}/${project}/commit/${sha}` }>
+			{ sha }
+		</a>
+	);
 }
 
 export default React.createClass( {
@@ -46,26 +49,27 @@ export default React.createClass( {
 			hosts: []
 		};
 	},
+	renderReleaseStatus( pkg ) {
+		if ( pkg.releasable ) {
+			return (
+				<Button componentClass="a" bsStyle="success" onClick={ this.props.onRelease.bind( this, pkg ) } title="Release">
+					<i className="fa fa-check-circle"></i> Release
+				</Button>
+			);
+		}
+
+		return pkg.released ? "Released" : "Not Released";
+	},
 	renderBuildGroup( { packages }, build ) {
 		const packagesCount = packages.length;
-		return ( map( packages, ( p, index ) => {
-			return (
-				<tr key={ p.file } className={ p.released ? "success" : "" }>
-					{ index === 0 ? <td rowSpan={ packagesCount }>{ buildNumber( build ) }</td> : null }
-					<td>{ platform( p.platform ) }</td>
-					<td>{ architecture( p.architecture ) }</td>
-					<td>{ slug( p ) }</td>
-					<td>{ this.renderActions( p ) }</td>
-					<td>
-						{
-							p.releasable ? <Button componentClass="a" bsStyle="success" onClick={ this.props.onRelease.bind( this, p ) } title="Release">
-								<i className="fa fa-check-circle"></i> Release
-							</Button> : ( p.released ? "Released" : "Not Released" )
-						}
-					</td>
-				</tr>
-			);
-		} ) );
+		return ( map( packages, ( p, index ) => <tr key={ p.file } className={ p.released ? "success" : "" }>
+			{ index === 0 ? <td rowSpan={ packagesCount }>{ buildNumber( build ) }</td> : null }
+			<td>{ platform( p.platform ) }</td>
+			<td>{ architecture( p.architecture ) }</td>
+			<td>{ slug( p ) }</td>
+			<td>{ this.renderActions( p ) }</td>
+			<td>{ this.renderReleaseStatus( p ) }</td>
+		</tr> ) );
 	},
 	handleOnDeploy( pkg, event, host ) {
 		this.props.onDeploy( { host, pkg } );

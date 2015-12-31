@@ -1,23 +1,23 @@
-var gulp = require( "gulp" );
-var gutil = require( "gulp-util" );
-var _ = require( "lodash" );
-var webpack = require( "webpack" );
-var gulpWebpack = require( "webpack-stream" );
-var webpackConfig = require( "./webpack/build.config.js" );
-var webpackTestConfig = require( "./webpack/test.config.js" );
-var webpackCoverageConfig = require( "./webpack/coverage.config.js" );
-var warningParser = require( "./tools/warning-parser.js" );
-var argv = require( "yargs" ).argv;
+const gulp = require( "gulp" );
+const gutil = require( "gulp-util" );
+const _ = require( "lodash" );
+const webpack = require( "webpack" );
+const gulpWebpack = require( "webpack-stream" );
+const webpackConfig = require( "./webpack/build.config.js" );
+const webpackTestConfig = require( "./webpack/test.config.js" );
+const webpackCoverageConfig = require( "./webpack/coverage.config.js" );
+const warningParser = require( "./tools/warning-parser.js" );
+const argv = require( "yargs" ).argv;
 
-gulp.task( "webpack:watch", function() {
+gulp.task( "webpack:watch", () => {
 	webpackTestConfig.watch = true;
 	webpackTestConfig.watchDelay = 250;
 } );
 
-gulp.task( "webpack:build", [ "generate-config" ], function( done ) {
+gulp.task( "webpack:build", [ "generate-config" ], done => {
 	process.env.BABEL_ENV = "production";
 	gulp.src( "./client/js/boot.js" )
-		.pipe( gulpWebpack( webpackConfig, null, function( err, stats ) {
+		.pipe( gulpWebpack( webpackConfig, null, ( err, stats ) => {
 			stats.compilation.warnings = warningParser( {
 				warnings: stats.compilation.warnings,
 				filters: [
@@ -30,9 +30,9 @@ gulp.task( "webpack:build", [ "generate-config" ], function( done ) {
 				]
 			} );
 
-			var json = stats.toJson( {}, true );
+			const json = stats.toJson( {}, true );
 
-			var fileStats = {
+			const fileStats = {
 				css: {
 					label: "LESS/CSS",
 					files: [],
@@ -50,10 +50,10 @@ gulp.task( "webpack:build", [ "generate-config" ], function( done ) {
 				}
 			};
 
-			json.chunks.forEach( function( chunk ) {
-				chunk.modules.forEach( function( module ) {
-					var name = _.last( module.name.split( "!" ) );
-					var config = fileStats.app;
+			json.chunks.forEach( chunk => {
+				chunk.modules.forEach( module => {
+					const name = _.last( module.name.split( "!" ) );
+					let config = fileStats.app;
 
 					if ( /\.less/.test( name ) ) {
 						config = fileStats.css;
@@ -65,25 +65,26 @@ gulp.task( "webpack:build", [ "generate-config" ], function( done ) {
 				} );
 			} );
 
-			var total = fileStats.css.size + fileStats.lib.size + fileStats.app.size;
+			const total = fileStats.css.size + fileStats.lib.size + fileStats.app.size;
+			const MILLISECONDS_PER_SECOND = 1000;
+			gutil.log( gutil.colors.green( `--------- Build Finished in ${ ( ( stats.endTime - stats.startTime ) / MILLISECONDS_PER_SECOND ) }s ----------` ) );
 
-			gutil.log( gutil.colors.green( "--------- Build Finished in " + ( ( stats.endTime - stats.startTime ) / 1000 ) + "s ----------" ) );
-
-			_.each( fileStats, function( group ) {
-				var percent = ( Math.round( ( group.size / total ) * 10000 ) / 100 );
+			_.each( fileStats, group => {
+				const FRACTION_TO_PERCENTAGE = 100;
+				const percent = Math.round( group.size / total ) * FRACTION_TO_PERCENTAGE;
 				if ( argv.verbose ) {
 					gutil.log( gutil.colors.green(
 						group.label,
-						"Size: " + group.size,
-						"Percentage: " + percent + "%",
-						"Files: \n\t" + group.files.join( "\n  " ) + "\n"
+						`Size: ${ group.size }`,
+						`Percentage: ${ percent }%`,
+						`Files: \n\t${ group.files.join( "\n  " ) }\n`
 					) );
 				} else {
 					gutil.log( gutil.colors.green(
 						group.label,
-						"Files: " + group.files.length,
-						"Size: " + group.size,
-						"Percentage: " + percent + "%"
+						`Files: ${ group.files.length }`,
+						`Size: ${ group.size }`,
+						`Percentage: ${ percent }%`
 					) );
 				}
 			} );
@@ -116,14 +117,14 @@ gulp.task( "webpack:build", [ "generate-config" ], function( done ) {
 } );
 
 function webpackSpecBuild( config, done ) {
-	var doneOnce = false;
+	let doneOnce = false;
 
 	process.env.BABEL_ENV = "test";
 
-	webpack( config, function( err, stats ) {
+	webpack( config, ( err, stats ) => {
 		// This statement keeps done from being called after
 		// webpack watch triggers a rebuild
-		var _stats = stats.toJson( {
+		const _stats = stats.toJson( {
 			hash: false,
 			version: false,
 			timings: true,
@@ -151,10 +152,10 @@ function webpackSpecBuild( config, done ) {
 	} );
 }
 
-gulp.task( "webpack:test", [ "format", "generate-config", "test:build-karma-index" ], function( done ) {
+gulp.task( "webpack:test", [ "format", "generate-config", "test:build-karma-index" ], done => {
 	webpackSpecBuild( webpackTestConfig, done );
 } );
 
-gulp.task( "webpack:coverage", [ "format", "generate-config", "test:build-karma-index" ], function( done ) {
+gulp.task( "webpack:coverage", [ "format", "generate-config", "test:build-karma-index" ], done => {
 	webpackSpecBuild( webpackCoverageConfig, done );
 } );

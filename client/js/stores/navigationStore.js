@@ -5,7 +5,7 @@ import { findIndex } from "lodash";
 // We are well aware that there's plenty of work to be done to
 // get basePath, urlPrefix, etc. all aligned and to be made
 // fully configurable, etc. Right now, the goal is to ship a PoC
-var basePath = "/";
+const basePath = "/";
 
 function navigateForward( store, path, fromBrowser ) {
 	const { history, currentHistory } = store.getState();
@@ -16,14 +16,14 @@ function navigateForward( store, path, fromBrowser ) {
 	}
 
 	history.push( {
-		path: path,
+		path,
 		id: +( new Date() )
 	} );
 
 	store.setState( {
-		path: path,
+		path,
 		direction: "forward",
-		history: history,
+		history,
 		currentHistory: history.length - 1,
 		lastChangeFromBrowser: fromBrowser === true
 	} );
@@ -42,11 +42,11 @@ export default new lux.Store( {
 		lastChangeFromBrowser: false
 	},
 	handlers: {
-		browserNavigated: function( event ) {
+		browserNavigated( event ) {
 			const { history, currentHistory } = this.getState();
 			const { state: eventState } = event;
 			const pastEvent = findIndex( history, { id: eventState ? eventState.id : 0 } );
-			if ( pastEvent > -1 ) {
+			if ( ~pastEvent ) {
 				this.setState( {
 					currentHistory: pastEvent,
 					path: history[ pastEvent ].path,
@@ -57,10 +57,11 @@ export default new lux.Store( {
 				navigateForward( this, eventState.path, true );
 			}
 		},
-		navigateBack: function() {
-			let { history, currentHistory } = this.getState();
-			currentHistory = currentHistory - 1;
-			const newPath = history[ currentHistory ];
+		navigateBack() {
+			const state = this.getState();
+			let { currentHistory } = state;
+			currentHistory -= currentHistory;
+			const newPath = state.history[ currentHistory ];
 			this.setState( {
 				path: newPath.path,
 				direction: "backward",
@@ -68,13 +69,13 @@ export default new lux.Store( {
 				lastChangeFromBrowser: false
 			} );
 		},
-		viewHome: function() {
+		viewHome() {
 			navigateForward( this, "nonstop/" );
 		},
-		viewProject: function( { name, owner, branch } ) {
+		viewProject( { name, owner, branch } ) {
 			navigateForward( this, `nonstop/project/${name}/${owner}/${branch}` );
 		},
-		viewConfigurator: function() {
+		viewConfigurator() {
 			navigateForward( this, "nonstop/host/configure" );
 		}
 	},

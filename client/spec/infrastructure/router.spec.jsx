@@ -15,13 +15,11 @@ describe( "Router", () => {
 		};
 
 		const App = React.createClass( {
-			render: () => {
-				return ( <div className="component-app">App<RouteHandler /></div> );
-			}
+			render: () => <div className="component-app">App<RouteHandler /></div>
 		} );
 
 		router = routerFactory( {
-			App: App,
+			App,
 			Dashboard: getMockReactComponent( "Dashboard" ),
 			ProjectDetail: getMockReactComponent( "ProjectDetail" ),
 			HostConfigurator: getMockReactComponent( "HostConfigurator" ),

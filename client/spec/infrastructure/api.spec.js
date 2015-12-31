@@ -23,11 +23,9 @@ describe( "API", () => {
 				configure: sinon.stub().resolves( hostConfigurationResponse ),
 				getEnvironment: sinon.stub().resolves( envResponseBody )
 			},
-			connect: sinon.spy( () => {
-				return {
-					catch: sinon.stub().callsArgWith( 0, "connect error" )
-				};
-			} )
+			connect: sinon.spy( () => ( {
+				catch: sinon.stub().callsArgWith( 0, "connect error" )
+			} ) )
 		};
 
 		jQueryAdapter = sinon.stub();
@@ -191,7 +189,7 @@ describe( "API", () => {
 				lux.publishAction( "loadProjects" );
 				halonStubs.package.list.should.be.calledOnce;
 			} );
-			it( "should publish loadProjectsSuccess action", ( done ) => {
+			it( "should publish loadProjectsSuccess action", done => {
 				lux.customActionCreator( {
 					loadProjectsSuccess( data ) {
 						data.should.eql( packagesResponse );
@@ -202,7 +200,7 @@ describe( "API", () => {
 			} );
 		} );
 		describe( "with failed response", () => {
-			it( "should publish loadProjectsError action", ( done ) => {
+			it( "should publish loadProjectsError action", done => {
 				halonStubs.package.list = sinon.stub().rejects( new Error( "OHSNAP" ) );
 				lux.customActionCreator( {
 					loadProjectsError( err ) {
@@ -221,7 +219,7 @@ describe( "API", () => {
 				lux.publishAction( "loadHosts" );
 				halonStubs.host.list.should.be.calledOnce;
 			} );
-			it( "should publish loadHostsSuccess action", ( done ) => {
+			it( "should publish loadHostsSuccess action", done => {
 				lux.customActionCreator( {
 					loadHostsSuccess( data ) {
 						data.should.eql( hostsResponse );
@@ -232,7 +230,7 @@ describe( "API", () => {
 			} );
 		} );
 		describe( "with failed response", () => {
-			it( "should publish loadHostsError action", ( done ) => {
+			it( "should publish loadHostsError action", done => {
 				halonStubs.host.list = sinon.stub().rejects( new Error( "OHSNAP" ) );
 				lux.customActionCreator( {
 					loadHostsError( err ) {
@@ -252,7 +250,7 @@ describe( "API", () => {
 				halonStubs.host.status.should.be.calledOnce
 					.and.calledWith( { name: "littlebrudder" } );
 			} );
-			it( "should publish loadHostStatusSuccess action", ( done ) => {
+			it( "should publish loadHostStatusSuccess action", done => {
 				lux.customActionCreator( {
 					loadHostStatusSuccess( data ) {
 						data.should.eql( {
@@ -266,7 +264,7 @@ describe( "API", () => {
 			} );
 		} );
 		describe( "with failed response", () => {
-			it( "should publish loadHostStatusError action", ( done ) => {
+			it( "should publish loadHostStatusError action", done => {
 				halonStubs.host.status = sinon.stub().rejects( new Error( "OHSNAP" ) );
 				lux.customActionCreator( {
 					loadHostStatusError( err ) {
@@ -291,7 +289,7 @@ describe( "API", () => {
 						} ]
 					} );
 			} );
-			it( "should publish applySettingsSuccess action", ( done ) => {
+			it( "should publish applySettingsSuccess action", done => {
 				lux.customActionCreator( {
 					applySettingsSuccess( data ) {
 						data.should.eql( hostConfigurationResponse );
@@ -302,7 +300,7 @@ describe( "API", () => {
 			} );
 		} );
 		describe( "with failed response", () => {
-			it( "should publish applySettingsError action", ( done ) => {
+			it( "should publish applySettingsError action", done => {
 				halonStubs.host.configure = sinon.stub().rejects( new Error( "OHSNAP" ) );
 				lux.customActionCreator( {
 					applySettingsError( err ) {
@@ -339,7 +337,7 @@ describe( "API", () => {
 	} );
 
 	describe( "when handling releasePackage", () => {
-		var promoteActionMock = {
+		const promoteActionMock = {
 			architecture: "x64",
 			branch: "master",
 			osName: "any",
@@ -355,7 +353,7 @@ describe( "API", () => {
 				halonStubs.package.promote.should.be.calledOnce
 					.and.calledWith( promoteActionMock );
 			} );
-			it( "should publish applySettingsSuccess action", ( done ) => {
+			it( "should publish applySettingsSuccess action", done => {
 				lux.customActionCreator( {
 					releasePackageSuccess( data ) {
 						data.should.eql( pkgPromotionResponse );
@@ -366,7 +364,7 @@ describe( "API", () => {
 			} );
 		} );
 		describe( "with failed response", () => {
-			it( "should publish releasePackageError action", ( done ) => {
+			it( "should publish releasePackageError action", done => {
 				halonStubs.package.promote = sinon.stub().rejects( new Error( "OHSNAP" ) );
 				lux.customActionCreator( {
 					releasePackageError( err ) {
@@ -382,7 +380,7 @@ describe( "API", () => {
 	describe( "when handling error", () => {
 		it( "should invoke console.error", () => {
 			lux.publishAction( "error", "OH MY GOSH! WE'VE GOT GAUGES!" );
-			console.error.should.be.calledWith( "OH MY GOSH! WE'VE GOT GAUGES!" );
+			console.error.should.be.calledWith( "OH MY GOSH! WE'VE GOT GAUGES!" ); // eslint-disable-line no-console
 		} );
 	} );
 
@@ -393,7 +391,7 @@ describe( "API", () => {
 				halonStubs.host.getEnvironment.should.be.calledOnce
 					.and.calledWith( loadEnvironmentForHostActionState );
 			} );
-			it( "should publish loadEnvironmentForHostSuccess action", ( done ) => {
+			it( "should publish loadEnvironmentForHostSuccess action", done => {
 				lux.customActionCreator( {
 					loadEnvironmentForHostSuccess( data ) {
 						data.should.eql( envResponseBody );
@@ -404,7 +402,7 @@ describe( "API", () => {
 			} );
 		} );
 		describe( "with failed response", () => {
-			it( "should publish loadEnvironmentForHostError action", ( done ) => {
+			it( "should publish loadEnvironmentForHostError action", done => {
 				halonStubs.host.getEnvironment = sinon.stub().rejects( new Error( "OHSNAP" ) );
 				lux.customActionCreator( {
 					loadEnvironmentForHostError( err ) {

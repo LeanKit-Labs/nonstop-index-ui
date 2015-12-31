@@ -1,10 +1,10 @@
-var webpack = require( "webpack" );
-var _ = require( "lodash" );
-var path = require( "path" );
-var shared = _.cloneDeep( require( "./shared.config" ) );
+const webpack = require( "webpack" );
+const _ = require( "lodash" );
+const path = require( "path" );
+const shared = _.cloneDeep( require( "./shared.config" ) );
 
 function localLoader( loader ) {
-	return path.join( appConfig.root, "./tasks/tools/" + loader + "-loader.js" );
+	return path.join( appConfig.root, `./tasks/tools/${ loader }-loader.js` );
 }
 
 module.exports = _.merge( shared, {

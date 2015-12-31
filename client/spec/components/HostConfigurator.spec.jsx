@@ -103,7 +103,7 @@ describe( "HostConfigurator", () => {
 				it( "should display the dropdown toggle", () => {
 					const dropdown = dropdowns[ field ];
 					const selected = optionsData[ `selected${ _.capitalize( field ) }` ];
-					const optionsField = `${ field }${ field !== "branch" ? "s" : "es" }`;
+					const optionsField = `${ field }${ field === "branch" ? "es" : "s" }`;
 					const options = optionsData[ optionsField ];
 					const onSelect = component[ `select${ _.capitalize( field ) }` ];
 
@@ -130,7 +130,7 @@ describe( "HostConfigurator", () => {
 	} );
 
 	describe( "when handling store changes", () => {
-		[ "configuration", "project" ].forEach( ( namespace ) => {
+		[ "configuration", "project" ].forEach( namespace => {
 			it( `should update on changes to the ${ namespace } store`, () => {
 				dependencies[ "stores/configurationStore" ].getApplyEnabled.returns( false );
 				postal.channel( "lux.store" ).publish( `${ namespace }.changed` );

@@ -19,15 +19,15 @@ export default React.createClass( {
 		this.props.onSelectProject( project );
 	},
 	renderProjects() {
-		return this.props.projects.map( project => {
-			return <a key={ project.name } href={ `/nonstop/project/${project.name}/${project.owner}/${project.branch}` } onClick={ this.onProjectClick.bind( this, project ) } className="list-group-item">
+		return this.props.projects.map( project => (
+			<a key={ project.name } href={ `/nonstop/project/${project.name}/${project.owner}/${project.branch}` } onClick={ this.onProjectClick.bind( this, project ) } className="list-group-item">
 				<h3 className="list-group-item-heading"><span>{ project.name }</span></h3>
 				<p className="list-group-item-text text-muted">
 					<Avatar owner={ project.owner } />
 					<i className="fa fa-code-fork"></i> <strong>{ project.owner }/{ project.branch }</strong>
 				</p>
-			</a>;
-		} );
+			</a>
+		) );
 	},
 	render() {
 		return (

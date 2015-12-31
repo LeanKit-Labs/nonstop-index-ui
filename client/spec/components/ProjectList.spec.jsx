@@ -50,24 +50,24 @@ describe( "ProjectList", () => {
 
 			items.should.have.lengthOf( 3 );
 
-			items[0].getAttribute( "href" ).should.equal( "/nonstop/project/project-one/owner-one/branch-one" );
-			items[1].getAttribute( "href" ).should.equal( "/nonstop/project/project-two/owner-two/branch-two" );
-			items[2].getAttribute( "href" ).should.equal( "/nonstop/project/project-three/owner-three/branch-three" );
+			items[ 0 ].getAttribute( "href" ).should.equal( "/nonstop/project/project-one/owner-one/branch-one" );
+			items[ 1 ].getAttribute( "href" ).should.equal( "/nonstop/project/project-two/owner-two/branch-two" );
+			items[ 2 ].getAttribute( "href" ).should.equal( "/nonstop/project/project-three/owner-three/branch-three" );
 
-			headings[0].textContent.should.equal( "project-one" );
-			headings[1].textContent.should.equal( "project-two" );
-			headings[2].textContent.should.equal( "project-three" );
+			headings[ 0 ].textContent.should.equal( "project-one" );
+			headings[ 1 ].textContent.should.equal( "project-two" );
+			headings[ 2 ].textContent.should.equal( "project-three" );
 
-			details[0].textContent.trim().should.equal( "owner-one/branch-one" );
-			details[1].textContent.trim().should.equal( "owner-two/branch-two" );
-			details[2].textContent.trim().should.equal( "owner-three/branch-three" );
+			details[ 0 ].textContent.trim().should.equal( "owner-one/branch-one" );
+			details[ 1 ].textContent.trim().should.equal( "owner-two/branch-two" );
+			details[ 2 ].textContent.trim().should.equal( "owner-three/branch-three" );
 		} );
 	} );
 
 	describe( "when clicking on a project", () => {
 		let projects;
 
-		beforeEach( function() {
+		beforeEach( () => {
 			projects = [
 				{ name: "project-one", owner: "owner", branch: "master" },
 				{ name: "project-two", owner: "owner", branch: "master" },
@@ -76,7 +76,7 @@ describe( "ProjectList", () => {
 			render( { projects } );
 		} );
 		it( "should trigger onSelectProject with the project name", () => {
-			let items = ReactUtils.scryRenderedDOMComponentsWithClass( component, "list-group-item" );
+			const items = ReactUtils.scryRenderedDOMComponentsWithClass( component, "list-group-item" );
 
 			ReactUtils.Simulate.click( items[ 1 ] );
 

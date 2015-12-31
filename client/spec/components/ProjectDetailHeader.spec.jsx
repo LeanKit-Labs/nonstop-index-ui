@@ -4,12 +4,12 @@ describe( "ProjectDetailHeader", () => {
 	let component, components, dependencies, ProjectDetailHeader, selectBranchStub, selectOwnerStub;
 
 	beforeEach( () => {
-		let Dropdown = getMockReactComponent( "Dropdown" );
+		const Dropdown = getMockReactComponent( "Dropdown" );
 		Dropdown.Toggle = getMockReactComponent( "Dropdown.Toggle" );
 		Dropdown.Menu = getMockReactComponent( "Dropdown.Menu" );
 
 		components = {
-			Dropdown: Dropdown,
+			Dropdown,
 			MenuItem: getMockReactComponent( "MenuItem" )
 		};
 

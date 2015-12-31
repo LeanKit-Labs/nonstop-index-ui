@@ -408,10 +408,10 @@ describe( "configuration store", () => {
 			} );
 
 			it( "should remove -* from LatestBuild version", () => {
-				const selections = configurationStore.getState().selections;
+				const latestSelections = configurationStore.getState().selections;
 
-				selections.pullBuild = "LatestBuild";
-				selections.version = "vA-*";
+				latestSelections.pullBuild = "LatestBuild";
+				latestSelections.version = "vA-*";
 				configurationStore.getChanges().should.eql( {
 					name: "hostA",
 					data: [
@@ -426,9 +426,9 @@ describe( "configuration store", () => {
 			} );
 
 			it( "should set releaseOnly to true if pullBuild is ReleaseOnly", () => {
-				const selections = configurationStore.getState().selections;
+				const releaseOnlySelections = configurationStore.getState().selections;
 
-				selections.pullBuild = "ReleaseOnly";
+				releaseOnlySelections.pullBuild = "ReleaseOnly";
 				configurationStore.getChanges().should.eql( {
 					name: "hostA",
 					data: [
@@ -443,10 +443,10 @@ describe( "configuration store", () => {
 			} );
 
 			it( "should send a removal for version when selecting Any version and ReleaseOnly", () => {
-				const selections = configurationStore.getState().selections;
+				const realseOnlySelections = configurationStore.getState().selections;
 
-				selections.pullBuild = "ReleaseOnly";
-				selections.version = "Any";
+				realseOnlySelections.pullBuild = "ReleaseOnly";
+				realseOnlySelections.version = "Any";
 				configurationStore.getChanges().should.eql( {
 					name: "hostA",
 					data: [
@@ -461,10 +461,10 @@ describe( "configuration store", () => {
 			} );
 
 			it( "should send a removal for version when selecting Any version and LatestBuild", () => {
-				const selections = configurationStore.getState().selections;
+				const latestBuildSelections = configurationStore.getState().selections;
 
-				selections.pullBuild = "LatestBuild";
-				selections.version = "Any";
+				latestBuildSelections.pullBuild = "LatestBuild";
+				latestBuildSelections.version = "Any";
 				configurationStore.getChanges().should.eql( {
 					name: "hostA",
 					data: [

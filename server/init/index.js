@@ -2,6 +2,9 @@ var autohost = require( "autohost" );
 var GitHubAuth = require( "autohost-github-auth" );
 var when = require( "when" );
 var _ = require( "lodash" );
+var sessionFactory = require( "./session" );
+var middlewareHeaderFactory = require( "./middleware/header" );
+var middlewareCacheHeaderFactory = require( "./middleware/cache-header" );
 
 module.exports = function( options ) {
 	var fount = options.fount;
@@ -23,7 +26,7 @@ module.exports = function( options ) {
 			hostConfig.authProvider = new GitHubAuth( config );
 		}
 
-		var sessionStore = require( "./session" )( autohost.sessionLib, config.session );
+		var sessionStore = sessionFactory( autohost.sessionLib, config.session );
 		if ( sessionStore ) {
 			hostConfig.session = _.extend( {}, config.session.config, { store: sessionStore } );
 		}
@@ -54,8 +57,8 @@ module.exports = function( options ) {
 			} );
 		} );
 
-		result.host.http.middleware( "/", require( "./middleware/header" )( pkg ) );
-		result.host.http.middleware( "/", require( "./middleware/cache-header" )() );
+		result.host.http.middleware( "/", middlewareHeaderFactory( pkg ) );
+		result.host.http.middleware( "/", middlewareCacheHeaderFactory() );
 		result.host.start();
 		return result;
 	}

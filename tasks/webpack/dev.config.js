@@ -1,8 +1,8 @@
-var webpack = require( "webpack" );
-var _ = require( "lodash" );
-var path = require( "path" );
-var shared = _.cloneDeep( require( "./shared.config" ) );
-var pathChunkingPlugin = require( "../tools/pathChunkingPlugin" );
+const webpack = require( "webpack" );
+const _ = require( "lodash" );
+const path = require( "path" );
+const shared = _.cloneDeep( require( "./shared.config" ) );
+const pathChunkingPlugin = require( "../tools/pathChunkingPlugin" );
 
 module.exports = _.merge( shared, {
 	debug: true,
@@ -13,7 +13,7 @@ module.exports = _.merge( shared, {
 	devtool: "cheap-module-eval-source-map",
 	output: {
 		path: path.join( appConfig.root, "./public/js" ),
-		publicPath: appConfig.rootUrl + "/js/",
+		publicPath: `${ appConfig.rootUrl }/js/`,
 		filename: "main.js"
 	},
 	module: {

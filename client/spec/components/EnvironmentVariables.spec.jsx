@@ -66,7 +66,7 @@ describe( "EnvironmentVariables", () => {
 
 	describe( "when rendering", () => {
 		it( "should render the host in the title", () => {
-			dependencies["stores/envVarStore"].getEnvironmentInfo = sinon.stub().returns( loadingState );
+			dependencies[ "stores/envVarStore" ].getEnvironmentInfo = sinon.stub().returns( loadingState );
 			createComponent();
 			const title = ReactUtils.findRenderedComponentWithType( component, dependencies[ "react-bootstrap/lib" ].Modal.Title );
 			ReactDOM.findDOMNode( title ).textContent.should.contain( loadingState.host );
@@ -83,7 +83,7 @@ describe( "EnvironmentVariables", () => {
 
 		describe( "when environment info is loading", () => {
 			it( "should render the loading spinner", () => {
-				dependencies["stores/envVarStore"].getEnvironmentInfo = sinon.stub().returns( loadingState );
+				dependencies[ "stores/envVarStore" ].getEnvironmentInfo = sinon.stub().returns( loadingState );
 				createComponent();
 				should.exist(
 					ReactUtils.findRenderedDOMComponentWithClass( component, "spinner" )
@@ -93,7 +93,7 @@ describe( "EnvironmentVariables", () => {
 
 		describe( "when environment info has loaded", () => {
 			it( "should render the table of env vars", () => {
-				dependencies["stores/envVarStore"].getEnvironmentInfo = sinon.stub().returns( loadedState );
+				dependencies[ "stores/envVarStore" ].getEnvironmentInfo = sinon.stub().returns( loadedState );
 				createComponent();
 				const body = ReactUtils.findRenderedComponentWithType( component, dependencies[ "react-bootstrap/lib" ].Modal.Body );
 				const table = ReactDOM.findDOMNode( ReactUtils.findRenderedComponentWithType( body, dependencies[ "react-bootstrap/lib" ].Table ) );
@@ -109,7 +109,7 @@ describe( "EnvironmentVariables", () => {
 
 		describe( "when environment info has failed to load", () => {
 			it( "should render the warning notice", () => {
-				dependencies["stores/envVarStore"].getEnvironmentInfo = sinon.stub().returns( errorState );
+				dependencies[ "stores/envVarStore" ].getEnvironmentInfo = sinon.stub().returns( errorState );
 				createComponent();
 				const alertComp = ReactUtils.findRenderedComponentWithType( component, dependencies[ "react-bootstrap/lib" ].Alert );
 				should.exist( alertComp );
@@ -119,7 +119,7 @@ describe( "EnvironmentVariables", () => {
 
 		describe( "when environment info is empty", () => {
 			it( "should render the error notice", () => {
-				dependencies["stores/envVarStore"].getEnvironmentInfo = sinon.stub().returns( emptyState );
+				dependencies[ "stores/envVarStore" ].getEnvironmentInfo = sinon.stub().returns( emptyState );
 				createComponent();
 				const alertComp = ReactUtils.findRenderedComponentWithType( component, dependencies[ "react-bootstrap/lib" ].Alert );
 				should.exist( alertComp );
@@ -130,7 +130,7 @@ describe( "EnvironmentVariables", () => {
 
 	describe( "when clicking close", () => {
 		it( "should close the modal", () => {
-			dependencies["stores/envVarStore"].getEnvironmentInfo = sinon.stub().returns( loadedState );
+			dependencies[ "stores/envVarStore" ].getEnvironmentInfo = sinon.stub().returns( loadedState );
 			createComponent();
 			const button = ReactUtils.findRenderedComponentWithType( component, dependencies[ "react-bootstrap/lib" ].Button );
 			button.props.onClick();
@@ -140,10 +140,10 @@ describe( "EnvironmentVariables", () => {
 
 	describe( "when the environment store emits change events", () => {
 		it( "should call setState on the component", () => {
-			dependencies["stores/envVarStore"].getEnvironmentInfo = sinon.stub().returns( loadedState );
+			dependencies[ "stores/envVarStore" ].getEnvironmentInfo = sinon.stub().returns( loadedState );
 			createComponent();
 			component.setState = sinon.stub();
-			dependencies["stores/envVarStore"].getEnvironmentInfo = sinon.stub().returns( defaultState );
+			dependencies[ "stores/envVarStore" ].getEnvironmentInfo = sinon.stub().returns( defaultState );
 			postal.publish( {
 				channel: "lux.store",
 				topic: "environment.changed",

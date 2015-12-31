@@ -1,0 +1,9 @@
+client/js/clientConfig.js
+client/spec/helpers/phantomjs-shims.js
+client/spec/karma-index.js
+node_modules/**
+client/{coverage,html,less}/**
+client/js/lib/**
+client/js/clientConfig.js
+server/coverage/**
+{_spec-tmp,public}/**

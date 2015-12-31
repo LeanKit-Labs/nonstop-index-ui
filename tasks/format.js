@@ -1,13 +1,11 @@
-var gulp = require( "gulp" );
-var gutil = require( "gulp-util" );
-var jscs = require( "gulp-jscs" );
-var gulpChanged = require( "gulp-changed" );
+const gulp = require( "gulp" );
+const jscs = require( "gulp-jscs" );
+const gulpChanged = require( "gulp-changed" );
+const FileCache = require( "gulp-file-cache" );
+const fileCache = new FileCache( ".gulp-format-cache" );
 
-var FileCache = require( "gulp-file-cache" );
-var fileCache = new FileCache( ".gulp-format-cache" );
-
-gulp.task( "format", [ "lint" ], function() {
-	return gulp.src( [ "*.js", "{client,server,tasks}/**/*.{js,jsx}" ] )
+gulp.task( "format", [ "lint" ], () =>
+	gulp.src( [ "*.js", "{client,server,tasks}/**/*.{js,jsx}" ] )
 		.pipe( fileCache.filter() )
 		.pipe( jscs( {
 			configPath: ".jscsrc",
@@ -15,5 +13,5 @@ gulp.task( "format", [ "lint" ], function() {
 		} ) )
 		.pipe( fileCache.cache() )
 		.pipe( gulpChanged( ".", { hasChanged: gulpChanged.compareSha1Digest } ) )
-		.pipe( gulp.dest( "." ) );
-} );
+		.pipe( gulp.dest( "." ) )
+);

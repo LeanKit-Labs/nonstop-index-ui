@@ -51,15 +51,18 @@ export default React.createClass( {
 		);
 	},
 	renderUser() {
+		const AVATAR_SIZE_SMALL = 50;
+		const AVATAR_SIZE_LARGE = 180;
+
 		return (
 			<Dropdown componentClass="li" bsStyle={ null } className="user user-menu" id="userDropdown">
 				<Dropdown.Toggle bsStyle={ null } useAnchor={ true } className="dropdown-toggle" noCaret={ true }>
-					<Avatar owner={ this.state.user.username } className="user-image" size={ 50 } />
+					<Avatar owner={ this.state.user.username } className="user-image" size={ AVATAR_SIZE_SMALL } />
 					<span className="hidden-xs">{ this.state.user.displayName }</span>
 				</Dropdown.Toggle>
 				<Dropdown.Menu>
 					<li className="user-header">
-						<Avatar owner={ this.state.user.username } size={ 180 } className="img-circle" alt="User Image" />
+						<Avatar owner={ this.state.user.username } size={ AVATAR_SIZE_LARGE } className="img-circle" alt="User Image" />
 						<p>
 							{ this.state.user.displayName }
 							<small>{ this.state.user.company }</small>

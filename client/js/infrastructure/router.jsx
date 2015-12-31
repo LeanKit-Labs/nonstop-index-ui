@@ -1,4 +1,4 @@
-import Router,{ Route } from "react-router";
+import Router, { Route } from "react-router";
 import App from "App";
 import Dashboard from "Dashboard";
 import ProjectDetail from "ProjectDetail";
@@ -6,12 +6,12 @@ import HostList from "HostList";
 import HostConfigurator from "HostConfigurator";
 import luxLocationFactory from "infrastructure/luxLocationFactory";
 import navigationStore from "stores/navigationStore";
-import React from "react"; //eslint-disable-line no-unused-vars
+import React from "react";
 import ReactDOM from "react-dom";
 import config from "../clientConfig";
 
-var routes = (
-	<Route path={ config.urlPrefix + "/" } handler={ App }>
+const routes = (
+	<Route path={ `${config.urlPrefix}/` } handler={ App }>
 		<Route path="project/:name/:owner/:branch" handler={ ProjectDetail } />
 		<Route path="host" handler={ HostList } />
 		<Route path="host/configure" handler={ HostConfigurator } />
@@ -20,7 +20,7 @@ var routes = (
 );
 
 const router = Router.create( {
-	routes: routes,
+	routes,
 	location: luxLocationFactory( navigationStore )
 } );
 

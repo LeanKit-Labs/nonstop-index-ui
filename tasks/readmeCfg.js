@@ -1,8 +1,8 @@
-var gulp = require( "gulp" );
-var _ = require( "lodash" );
-var fs = require( "fs" );
-var path = require( "path" );
-var opsTerms = [
+const gulp = require( "gulp" );
+const _ = require( "lodash" );
+const fs = require( "fs" );
+const path = require( "path" );
+const opsTerms = [
 	"NS_AUTH_GITHUB_ORGANIZATION",
 	"NS__AUTH__GITHUB__CLIENT_ID",
 	"NS__AUTH__GITHUB__CLIENT_SECRET",
@@ -21,40 +21,40 @@ var opsTerms = [
 	"NS_SESSION_REDIS_PREFIX",
 	"NS__INDEX_URL"
 ];
+const configDefaults = require( "../config.defaults.json" );
 
 function insertMarkers( str ) {
-	var caps = str.replace( /[^A-Z]/g, "" );
+	const caps = str.replace( /[^A-Z]/g, "" );
 	if ( !caps ) {
 		return str;
 	}
 
 	// insert _ marker prior to each capitalized letter
-	_.each( caps, function( cp ) {
-		var pos = str.indexOf( cp );
-		str = str.substring( 0, pos ) + "_" + str.substring( pos );
+	_.each( caps, cp => {
+		const pos = str.indexOf( cp );
+		str = `${ str.substring( 0, pos ) }_${ str.substring( pos ) }`;
 	} );
 
 	return str;
 }
 
 function processConfigNode( keyBase, data, output, hasCamelCase ) {
-	var item, _word, key, _hasCamelCase, wordSeparator;
-	_.each( _.keys( data ), function( word ) {
-		_word = insertMarkers( word );
-		_hasCamelCase = hasCamelCase || _word.indexOf( "_" ) > 0;
+	_.each( _.keys( data ), word => {
+		const _word = insertMarkers( word );
+		const _hasCamelCase = hasCamelCase || _word.indexOf( "_" ) > 0;
 
-		item = data[ word ];
-		key = keyBase.slice( 0 );
+		const item = data[ word ];
+		const key = keyBase.slice( 0 );
 		key.push( _word );
 
 		if ( _.isPlainObject( item ) ) {
 			processConfigNode( key, item, output, _hasCamelCase );
 		} else {
-			wordSeparator = _hasCamelCase ? "__" : "_";
+			const wordSeparator = _hasCamelCase ? "__" : "_";
 
 			output.push( {
 				section: key[ 1 ].replace( /_/g, "" ),
-				varName: key.join( wordSeparator ).toUpperCase(),
+				constName: key.join( wordSeparator ).toUpperCase(),
 				defaultValue: JSON.stringify( item )
 			} );
 		}
@@ -62,51 +62,51 @@ function processConfigNode( keyBase, data, output, hasCamelCase ) {
 }
 
 function generateEnvVarMarkdown( root ) {
-	var items = [];
-	processConfigNode( [ "NS" ], require( "../config.defaults.json" ), items );
+	const items = [];
+	processConfigNode( [ "NS" ], configDefaults, items );
 
 	// convert to markdown
-	var section = "";
-	var buffer = _.map( items, function( item ) {
-		var line = "";
-		var varName = opsTerms.indexOf( item.varName ) >= 0 ? item.varName + "\\*" : item.varName;
+	let section = "";
+	const buffer = _.map( items, item => {
+		let line = "";
+		const constName = opsTerms.indexOf( item.constName ) >= 0 ? `${ item.constName }\\*` : item.constName;
 		if ( section !== item.section ) {
 			section = item.section;
-			line += "| **" + section + "** | |\n";
+			line += `| **${ section }** | |\n`;
 		}
-		line += "| " + varName + " | `" + item.defaultValue + "` |";
+		line += `| ${ constName } | \`${ item.defaultValue }\` |`;
 		return line;
 	} );
 	return buffer.join( "\n" );
 }
 
-String.prototype.getSectionIndexes = function( header ) {
-	var template = "<!-- " + header + " -->\n";
-	var startIndex = this.indexOf( template ) + template.length;
-	var stopIndex = this.indexOf( "<!-- /" + header );
+String.prototype.getSectionIndexes = function( header ) { // eslint-disable-line no-extend-native
+	const template = `<!-- ${ header } -->\n`;
+	const startIndex = this.indexOf( template ) + template.length;
+	const stopIndex = this.indexOf( `<!-- /${ header }` );
 	if ( startIndex < 0 || stopIndex < 0 || startIndex >= stopIndex ) {
+		/* eslint-disable no-console */
 		console.log( "Error: the target file does not contain a comment section with tags" );
-		console.log( "        `<!-- " + header + " -->` and `<!-- /" + header + " -->`" );
+		console.log( `        \`<!-- ${ header } -->\` and \`<!-- /${ header } -->\`` );
+		/* eslint-enable no-console */
 		return null;
 	}
 	return { start: startIndex, stop: stopIndex	};
 };
 
-gulp.task( "document-config", [], function( done ) {
-	var readme = path.resolve( __dirname, "../README.md" );
-	fs.readFile( readme, { encoding: "utf8" }, function( err, md ) {
-		var index = md.getSectionIndexes( "EnvironmentVariables" );
+gulp.task( "document-config", [], done => {
+	const readme = path.resolve( __dirname, "../README.md" );
+	fs.readFile( readme, { encoding: "utf8" }, ( err, md ) => {
+		const index = md.getSectionIndexes( "EnvironmentVariables" );
 
 		if ( !index ) {
-			process.exit( 1 );
+			process.exit( 1 ); // eslint-disable-line no-process-exit
 		}
 
-		var header = "| Group / Variable | Default |\n|-------------|---------|\n";
-		var generatedMD = header + generateEnvVarMarkdown( "NS" ) + "\n";
+		const header = "| Group / Variable | Default |\n|-------------|---------|\n";
+		const generatedMD = `${ header}${ generateEnvVarMarkdown( "NS" ) }\n`;
 
-		var update = md.substring( 0, index.start ) + generatedMD + md.substring( index.stop );
-		fs.writeFile( readme, update, function() {
-			done();
-		} );
+		const update = md.substring( 0, index.start ) + generatedMD + md.substring( index.stop );
+		fs.writeFile( readme, update, done );
 	} );
 } );

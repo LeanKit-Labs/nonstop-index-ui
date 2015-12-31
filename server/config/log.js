@@ -14,9 +14,8 @@ function createLog( topic ) {
 		topics.push( log );
 		logs[ topic ] = log;
 		return log;
-	} else {
-		return logs[ topic ];
 	}
+	return logs[ topic ];
 }
 
 function configure( config ) {
@@ -36,7 +35,7 @@ function configure( config ) {
 
 module.exports = function( config, ns ) {
 	if ( typeof config === "string" ) {
-		ns = config;
+		ns = config; // eslint-disable-line no-param-reassign
 	} else {
 		configure( config );
 	}

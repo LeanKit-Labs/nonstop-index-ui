@@ -1,38 +1,10 @@
 {
-  "globals": {
-    "DEBUG": false,
-    "define": false
-  },
-
-  "ecmaFeatures": {
-    "jsx": true,
-    "modules" : true
-  },
-
-  "env": {
-    "browser": true,
-    "node": true,
-    "es6": true,
-    "mocha": true
-  },
-
-  "plugins": [
-    "react"
-  ],
-
-  "rules": {
-    "jsx-quotes": 1,
-    "no-undef": 2,
-    "no-unused-vars": [2, {"vars": "all", "args": "none"}],
-    "no-underscore-dangle" : 0,
-    "react/jsx-no-duplicate-props": 1,
-    "react/jsx-no-undef": 1,
-    "react/jsx-sort-prop-types": 1,
-    "react/jsx-uses-react": 1,
-    "react/no-did-mount-set-state": [ 1, "allow-in-func" ],
-    "react/no-did-update-set-state": 1,
-    "react/react-in-jsx-scope": 1,
-    "react/self-closing-comp": 1,
-    "react/prop-types": 1
-  }
+	"extends": "leankit",
+	"rules": {
+		"complexity": [ 1, 5 ], // TRIAL specify the maximum cyclomatic complexity allowed in a program
+		"no-negated-condition": 1, // TRIAL disallow negated conditions
+		"newline-after-var": 0, // TODO this should possibly be a TRIAL rule
+		"no-param-reassign": [ 0, { "props": false } ], // TODO move this upstream
+		"no-eq-null": 0 // TODO move this upstream
+	}
 }

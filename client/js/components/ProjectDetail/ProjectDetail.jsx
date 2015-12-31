@@ -68,7 +68,7 @@ export default React.createClass( {
 		this.viewProject( {
 			name: params.name,
 			owner: owner.name,
-			branch: branch
+			branch
 		} );
 	},
 	onDeploy( { pkg, host } ) {
@@ -76,7 +76,7 @@ export default React.createClass( {
 		this.triggerDeploy( { pkg, host } );
 	},
 	renderDeployModal() {
-		const deployChoice = this.state.deployChoice || {} ;
+		const deployChoice = this.state.deployChoice || {};
 		const { pkg, host } = deployChoice;
 		return (
 			<Modal key="deployModal" show={ !!this.state.deployChoice } onHide={ this.cancelDeploy }>
@@ -113,7 +113,7 @@ export default React.createClass( {
 		);
 	},
 	renderReleaseModal() {
-		const releaseChoice = this.state.releaseChoice || {} ;
+		const releaseChoice = this.state.releaseChoice || {};
 		const { project, owner, branch, slug, architecture, platform, version } = releaseChoice;
 		return (
 			<Modal key="releaseModal" bsSize="small" keyboard show={ !!this.state.releaseChoice } onHide={ this.cancelReleasePackage }>

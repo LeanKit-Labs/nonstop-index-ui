@@ -3,9 +3,9 @@ var reporters = [ "spec" ];
 // This isn't part of package JSON
 // but will attempt to use it if available
 try {
-	require( "karma-osx-reporter" );
+	require( "karma-osx-reporter" ); // eslint-disable-line global-require
 	reporters.push( "osx" );
-} catch ( e ) {}
+} catch ( e ) {} // eslint-disable-line no-empty
 
 module.exports = function( config ) {
 	config.set( {

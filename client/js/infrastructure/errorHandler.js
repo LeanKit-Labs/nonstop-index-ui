@@ -1,4 +1,4 @@
-define( [ "lux.js" ], function( lux ) {
+define( [ "lux.js" ], lux => {
 	// handle errors (suitable for window.onerror)
 	function handleException( message, url, line, column, error ) {
 		lux.publishAction( "error", error && error.stack ? error.stack : message );
@@ -6,7 +6,7 @@ define( [ "lux.js" ], function( lux ) {
 
 	// log unhandled rejections
 	function handleRejection( rejection ) {
-		var logData = rejection.value.toString();
+		let logData = rejection.value.toString();
 
 		// add stack, if log message is an Error
 		if ( rejection.value instanceof Error && rejection.value.stack ) {
@@ -18,7 +18,7 @@ define( [ "lux.js" ], function( lux ) {
 
 		/* istanbul ignore next only used for development */
 		if ( DEBUG ) {
-			setTimeout( function() {
+			setTimeout( () => {
 				// get sourcemap support in rejected promises ( based on https://github.com/cujojs/when/issues/416 )
 				if ( !rejection.handled ) {
 					throw rejection.value;
@@ -28,7 +28,7 @@ define( [ "lux.js" ], function( lux ) {
 	}
 
 	return {
-		handleRejection: handleRejection,
-		handleException: handleException
+		handleRejection,
+		handleException
 	};
 } );

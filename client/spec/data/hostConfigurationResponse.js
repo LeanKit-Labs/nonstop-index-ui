@@ -8,7 +8,7 @@ module.exports = {
 		token: "4e8d2204-5422-4534-aaa4-4cf297085ef1",
 		ssl: false
 	},
-	"package": {
+	package: {
 		project: "littlebrudder",
 		owner: "arobson",
 		branch: "master",

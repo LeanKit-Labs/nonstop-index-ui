@@ -3,7 +3,7 @@ module.exports = {
 		host: "17 hours 17 minutes 48 seconds",
 		service: "17 hours 4 minutes 55 seconds"
 	},
-	"package": {
+	package: {
 		project: "littlebrudder",
 		owner: "arobson",
 		branch: "master",

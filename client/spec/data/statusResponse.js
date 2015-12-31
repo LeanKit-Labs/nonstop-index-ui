@@ -3,7 +3,7 @@ module.exports = {
 		host: "21 hours 41 minutes 21 seconds",
 		service: "1 hours 6 minutes 24 seconds"
 	},
-	"package": "N/A",
+	package: "N/A",
 	activity: {
 		running: {
 			branch: "master",

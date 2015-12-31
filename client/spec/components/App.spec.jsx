@@ -22,9 +22,7 @@ describe( "App Component", () => {
 			"react-bootstrap/lib/Alert": getMockReactComponent( "Alert" ),
 			"react-router": {
 				RouteHandler: React.createClass( {
-					render: () => {
-						return <div className="handledRoute"></div>;
-					}
+					render: () => <div className="handledRoute"></div>
 				} )
 			},
 			"stores/layoutStore": {

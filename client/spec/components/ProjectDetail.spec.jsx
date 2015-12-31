@@ -214,7 +214,7 @@ describe( "ProjectDetail Component", () => {
 				it( "should enable the deploy button", () => {
 					const footer = ReactUtils.scryRenderedComponentsWithType( component, dependencies[ "react-bootstrap/lib" ].Modal.Footer )[ 0 ];
 					const buttons = ReactUtils.scryRenderedComponentsWithType( footer, dependencies[ "react-bootstrap/lib" ].Button );
-					buttons[1].props.disabled.should.be.false;
+					buttons[ 1 ].props.disabled.should.be.false;
 				} );
 			} );
 			describe( "and the host status is not yet present", () => {
@@ -247,7 +247,7 @@ describe( "ProjectDetail Component", () => {
 				it( "should disable the deploy button", () => {
 					const footer = ReactUtils.scryRenderedComponentsWithType( component, dependencies[ "react-bootstrap/lib" ].Modal.Footer )[ 0 ];
 					const buttons = ReactUtils.scryRenderedComponentsWithType( footer, dependencies[ "react-bootstrap/lib" ].Button );
-					buttons[1].props.disabled.should.be.true;
+					buttons[ 1 ].props.disabled.should.be.true;
 				} );
 			} );
 
@@ -307,7 +307,7 @@ describe( "ProjectDetail Component", () => {
 		it( "should cancel when cancel is clicked", () => {
 			const footer = ReactUtils.scryRenderedComponentsWithType( component, dependencies[ "react-bootstrap/lib" ].Modal.Footer )[ 0 ];
 			const buttons = ReactUtils.scryRenderedComponentsWithType( footer, dependencies[ "react-bootstrap/lib" ].Button );
-			buttons[0].props.onClick();
+			buttons[ 0 ].props.onClick();
 			actions.cancelDeploy.should.be.calledOnce;
 		} );
 	} );
@@ -326,7 +326,7 @@ describe( "ProjectDetail Component", () => {
 		it( "should call finalizeDeploy when deploy is clicked", () => {
 			const footer = ReactUtils.scryRenderedComponentsWithType( component, dependencies[ "react-bootstrap/lib" ].Modal.Footer )[ 0 ];
 			const buttons = ReactUtils.scryRenderedComponentsWithType( footer, dependencies[ "react-bootstrap/lib" ].Button );
-			buttons[1].props.onClick();
+			buttons[ 1 ].props.onClick();
 			actions.finalizeDeploy.should.be.calledOnce;
 		} );
 	} );

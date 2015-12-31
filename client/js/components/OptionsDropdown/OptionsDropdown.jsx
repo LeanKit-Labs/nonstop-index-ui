@@ -21,9 +21,9 @@ const OptionsDropdown = ( { name, selected, options, onSelect } ) => {
 					<i className="fa fa-book"></i> { getName( selected ) }
 				</Dropdown.Toggle>
 				<Dropdown.Menu>
-					{ options.map( option => {
-						return <MenuItem key={ getName( option ) } onSelect={ onSelect.bind( undefined, option ) }>{ getName( option ) }</MenuItem>;
-					} ) }
+					{ options.map( option => (
+						<MenuItem key={ getName( option ) } onSelect={ onSelect.bind( undefined, option ) }>{ getName( option ) }</MenuItem>
+					) ) }
 				</Dropdown.Menu>
 			</Dropdown>
 		</div>
