@@ -3,8 +3,6 @@
 	"rules": {
 		"complexity": [ 1, 5 ], // TRIAL specify the maximum cyclomatic complexity allowed in a program
 		"no-negated-condition": 1, // TRIAL disallow negated conditions
-		"newline-after-var": 0, // TODO this should possibly be a TRIAL rule
-		"no-param-reassign": [ 0, { "props": false } ], // TODO move this upstream
-		"no-eq-null": 0 // TODO move this upstream
+		"no-param-reassign": [ 0, { "props": false } ] // TRIAL disallow reassignment of function parameters
 	}
 }
