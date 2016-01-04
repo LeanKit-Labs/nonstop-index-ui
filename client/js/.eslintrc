@@ -6,32 +6,6 @@
 	},
 	"rules": {
 		"complexity": [ 1, 10 ], // TRIAL specify the maximum cyclomatic complexity allowed in a program
-		"react/jsx-handler-names": 0, // TODO move this upstream
-		"no-extra-parens": 0, // TODO move this upstream
-		"react/jsx-boolean-value": 0, // TODO move this upstream
-		"react/sort-comp": [ 1, {
-			"order": [
-				"mixins",
-				"lux",
-				"props",
-				"state",
-				"everything-else",
-				"render"
-			],
-			"groups": {
-				"lux": [
-					"getActionGroup",
-					"getActions",
-					"stores"
-				],
-				"props": [
-					"propTypes",
-					"getDefaultProps"
-				],
-				"state": [
-					"getInitialState"
-				]
-			}
-		} ], // Enforce component methods order
+		"no-extra-parens": 0 // Turn off for react/wrap-multilines. This should be moved to leankit/react
 	}
 }
